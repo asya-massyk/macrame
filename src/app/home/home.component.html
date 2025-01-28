@@ -1,0 +1,19 @@
+<div class="home-container">
+  
+    <section class="welcome-section">
+      <h1>Ласкаво просимо до нашого застосунку!</h1>
+      <p>Цей застосунок допоможе вам зберігати і організовувати свої проєкти. Вхід або реєстрація дозволить вам зберігати свої дані для подальшої роботи.</p>
+      
+      <!-- Перевірка авторизації -->
+      <div *ngIf="!isLoggedIn; else loggedInContent">
+        <button (click)="goToRegistration()">Реєстрація</button>
+        <button (click)="goToLogin()">Вхід</button>
+      </div>
+      
+      <ng-template #loggedInContent>
+        <p>Вітаємо, ви авторизовані!</p>
+        <button (click)="goToProfile()">Перейти до профілю</button>
+      </ng-template>
+    </section>
+  </div>
+  
