@@ -1,24 +1,44 @@
-nav {
-    background-color: #333;
-    color: white;
-    padding: 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .nav-links {
-    list-style: none;
-    display: flex;
-    gap: 15px;
-  }
-  
-  .nav-links a {
-    color: white;
-    text-decoration: none;
-    font-weight: bold;
-  }
-  
-  .nav-links a:hover {
-    text-decoration: underline;
-  }
+.navbar {
+  display: flex;
+  justify-content: center; /* Вирівнює елементи на відстані */
+  align-items: center; /* Вертикальне вирівнювання по центру */
+  background-color: #3344DC;
+  border-radius: 30px;
+  height: 30px;
+  padding: 10px 20px; /* Відступи для навігаційної панелі */
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  background-color: black;
+  padding: 8px 15px;
+  border-radius: 30px; /* Овальна форма */
+}
+
+.logo-container img {
+  height: 28px;
+  margin-right: 2px;
+  width: auto;
+}
+
+.navbar ul {
+  display: flex; /* Встановлює елементи списку в ряд */
+  padding: 0;
+  margin: 0;
+  list-style-type: none; /* Прибирає маркери списку */
+}
+
+.navbar li {
+  margin: 0 20px; /* Відступи між елементами списку */
+}
+
+.navbar a {
+  color: white;
+  text-decoration: none;
+  transition: color 0.3s ease; /* Додаємо плавний перехід */
+}
+
+.navbar a:hover {
+  color: #f39c12; /* Змінюємо колір при наведенні */
+}

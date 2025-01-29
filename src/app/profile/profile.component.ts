@@ -2,7 +2,9 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-profile',
-  template: `<h2>Ваш профіль</h2>`,
-  styles: [`h2 { text-align: center; margin-top: 50px; }`]
+  templateUrl: './profile.component.html',
+  styleUrls: ['./profile.component.scss']
 })
-export class ProfileComponent {}
+export class ProfileComponent {
+  user = { name: 'Користувач', email: 'user@gmail.com' };
+}

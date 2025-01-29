@@ -7,12 +7,12 @@ import { Router } from '@angular/router';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent {
-  isLoggedIn: boolean = false; // Змінна для перевірки авторизації
+  isLoggedIn: boolean = false;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router) {} 
 
   goToRegistration() {
-    this.router.navigate(['/registration']);
+    this.router.navigate(['/register']); 
   }
 
   goToLogin() {
@@ -21,5 +21,5 @@ export class HomeComponent {
 
   goToProfile() {
     this.router.navigate(['/profile']);
-  }
+ }
 }

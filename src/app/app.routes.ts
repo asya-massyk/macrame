@@ -7,8 +7,8 @@ import { LoginComponent } from './login/login.component';
 import { ProfileComponent } from './profile/profile.component';
 
 export const routes: Routes = [
-    { path: '', component: HomeComponent },
-    { path: 'auth', component: AuthComponent },
+    { path: '', component: HomeComponent }, 
+    { path: 'home', component: HomeComponent },
     { path: 'login', component: LoginComponent },
     { path: 'register', component: RegistrationComponent },
     { path: 'profile', component: ProfileComponent },
