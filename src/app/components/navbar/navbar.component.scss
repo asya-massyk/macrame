@@ -1,44 +1,58 @@
 .navbar {
-  display: flex;
-  justify-content: center; /* Вирівнює елементи на відстані */
-  align-items: center; /* Вертикальне вирівнювання по центру */
-  background-color: #3344DC;
-  border-radius: 30px;
-  height: 30px;
-  padding: 10px 20px; /* Відступи для навігаційної панелі */
-}
+    display: flex;
+    align-items: center;
+    background-color: #3344DC;
+    border-radius: 30px;
+    height: 30px; 
+    padding: 10px 20px;
+    position: relative; 
+    justify-content: space-between;
+  }
+  
+  .logo-container {
+    display: flex;
+    align-items: center;
+    background-color: black;
+    padding: 8px 15px;
+    border-radius: 30px;
+    position: absolute;
+    top: 3px; 
+    left: 3px; 
+  }
+  
+  .logo-container img {
+    height: 28px;
+    margin-right: 2px;
+    width: auto;
+  }
+  
+  .navbar ul {
+    display: flex;
+    flex-grow: 1;
+    justify-content: space-between;
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+  }
+  
+  .navbar li {
+    margin: 0 20px;
+  }
+  
+  .navbar a {
+    color: rgb(0, 0, 0);
+    top: 3px; 
+    text-decoration: none;
+    font-size: 20px;
+    transition: color 0.3s ease;
+  }
 
-.logo-container {
-  display: flex;
-  align-items: center;
-  background-color: black;
-  padding: 8px 15px;
-  border-radius: 30px; /* Овальна форма */
-}
-
-.logo-container img {
-  height: 28px;
-  margin-right: 2px;
-  width: auto;
-}
-
-.navbar ul {
-  display: flex; /* Встановлює елементи списку в ряд */
-  padding: 0;
-  margin: 0;
-  list-style-type: none; /* Прибирає маркери списку */
-}
-
-.navbar li {
-  margin: 0 20px; /* Відступи між елементами списку */
-}
-
-.navbar a {
-  color: white;
-  text-decoration: none;
-  transition: color 0.3s ease; /* Додаємо плавний перехід */
-}
-
-.navbar a:hover {
-  color: #f39c12; /* Змінюємо колір при наведенні */
+  .navbar a:hover {
+    color: #ffffff;
+  }
+  
+  .nav-item img {
+    height: 25px; 
+    width: 25px;
+    margin-right: 20px;
 }
