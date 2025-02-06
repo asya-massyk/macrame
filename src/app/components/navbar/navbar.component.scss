@@ -3,8 +3,7 @@
     align-items: center;
     background-color: #3344DC;
     border-radius: 30px;
-    height: 30px; 
-    padding: 10px 20px;
+    height: 50px; /* Трохи збільшив висоту */
     position: relative; 
     justify-content: space-between;
   }
@@ -22,8 +21,8 @@
   
   .logo-container img {
     height: 28px;
+    width: 100px; /* Виправив помилку */
     margin-right: 2px;
-    width: auto;
   }
   
   .navbar ul {
@@ -36,30 +35,35 @@
   }
   
   .navbar li {
+    display: flex;
+    align-items: center; /* Вирівнює іконку з текстом */
     margin: 0 20px;
   }
   
   .navbar a {
     color: rgb(0, 0, 0);
-    top: 3px; 
     text-decoration: none;
     font-size: 20px;
     transition: color 0.3s ease;
   }
-
+  
   .navbar a:hover {
     color: #ffffff;
+  }
+  
+  .nav-item {
+    display: flex;
+    align-items: center; /* Вирівнює текст і іконку */
   }
   
   .nav-item img {
     height: 25px; 
     width: 25px;
-    margin-right: 20px;
+    margin-right: 10px;
     transition: filter 0.3s ease, transform 0.3s ease;
     transform: scale(1.1);
-}
-
-.nav-item:hover img {
-    filter: brightness(0) saturate(100%) invert(100%); 
-    transform: scale(1.1);
-}
+  }
+  
+  .nav-item:hover img {
+    filter: brightness(0) saturate(100%) invert(100%);
+  }
