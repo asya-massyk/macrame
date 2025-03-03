@@ -8,30 +8,28 @@ html, body {
   width: 100%;
   height: 100%;
   font-family: "Poppins", sans-serif;
-  background-color: #f8f8f8; /* Легкий фон */
 }
 
 .home-container {
   display: flex;
-  height: calc(100vh - 170px); /* Віднімаємо висоту навбару та футера */
-  padding: 40px 80px;
+  height: calc(100vh - 195px); 
+  padding-left: 80px;
+  padding-right: 80px;
   align-items: center;
   justify-content: space-between;
 }
 
-/* Текстова секція */
 .text-section {
-  flex: 1.2; /* Збільшуємо текстову область */
+  flex: 1.2; 
   display: flex;
   flex-direction: column;
   justify-content: center;
-  text-align: justify; /* Вирівнюємо текст по ширині */
-  padding: 0 50px; /* Додаємо внутрішні відступи */
+  text-align: justify;
 }
 
 .text-section h1 {
   text-align: center;
-  font-size: 48px; /* Збільшуємо заголовок */
+  font-size: 52px; 
   font-weight: bold;
   color: #3344DC;
   margin-bottom: 25px;
@@ -39,10 +37,11 @@ html, body {
 }
 
 .text-section p {
-  font-size: 22px;
+  font-size: 30px;
   color: #585E83;
   line-height: 1.8;
   animation: slideInLeft 1s ease-in-out;
+  padding-right: 50px;
 }
 
 /* Анімація появи */
@@ -68,26 +67,16 @@ html, body {
   display: flex;
   justify-content: center;
   align-items: center;
+  
 }
 
 .image-section img {
-  width: 75%;
-  max-height: 70vh;
+  width: 95%;
+  max-height: 95vh;
   object-fit: contain;
   animation: slideInRight 1s ease-in-out;
 }
 
-/* Футер */
-.footer {
-  height: 70px;
-  background-color: #3344DC;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 16px;
-  position: relative;
-}
 
 /* Адаптивність */
 @media (max-width: 1024px) {
@@ -99,7 +88,7 @@ html, body {
 
   .text-section {
     max-width: 100%;
-    padding: 20px;
+    padding: 15px;
     order: 2;
   }
 
