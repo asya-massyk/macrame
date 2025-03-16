@@ -1,0 +1,24 @@
+<div class="form-container"> 
+  <div class="form-image"></div>
+  <div class="form-content">
+      <h1>Реєстрація</h1>
+      <form>
+          <div class="input-group">
+              <input type="email" id="email" name="email" placeholder="Введіть email" required>
+          </div>
+          <div class="input-group">
+            <input type="password" id="password" name="password" placeholder="Введіть пароль" required>
+            <img src="assets/icons/eye-closed.svg" class="toggle-password"
+                 (click)="togglePassword('password', $event)">
+          </div>
+          
+          <div class="input-group">
+            <input type="password" id="confirm-password" name="confirm-password" placeholder="Підтвердіть пароль" required>
+            <img src="assets/icons/eye-closed.svg" class="toggle-password"
+                 (click)="togglePassword('confirm-password', $event)">
+          </div>          
+          <button type="submit">Зареєструватись</button>
+      </form>
+      <p>Вже є акаунт? <a href="/login">Увійти</a></p>
+  </div>
+</div>

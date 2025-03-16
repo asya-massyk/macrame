@@ -1,0 +1,29 @@
+footer {
+  background-color: #d657c1;
+  color: rgb(0, 0, 0);
+  text-align: center;
+  padding: 1rem;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0; /* Забезпечує повну ширину */
+  width: 100%;
+  z-index: 100; /* Для гарантії, що футер буде поверх іншого контенту */
+}
+
+
+/* Для екранів менше 1024px */
+@media (max-width: 1024px) {
+  footer {
+    padding: 0.75rem;
+    font-size: 15px;
+  }
+}
+
+/* Для екранів менше 480px */
+@media (max-width: 480px) {
+  footer {
+    padding: 0.5rem;
+    font-size: 14px;
+  }
+}

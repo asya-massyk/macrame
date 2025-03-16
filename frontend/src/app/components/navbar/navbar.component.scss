@@ -1,0 +1,154 @@
+.navbar { 
+  display: flex;
+  align-items: center;
+  background-color: #3344DC;
+  border-radius: 30px;
+  height: 50px; 
+  position: relative; 
+  justify-content: space-between;
+  width: 100%;
+  padding: 0 20px 0 3px;
+  box-sizing: border-box;
+  overflow: hidden;
+  width: 100vw; /* Забезпечує повну ширину екрана */
+  max-width: 100%; /* Запобігає звуженню */
+  
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  background-color: black;
+  padding: 8px 15px;
+  border-radius: 30px;
+  margin-right: 20px;
+}
+
+.logo-container img {
+  height: 30px;
+  width: 120px; 
+  margin-right: 2px;
+}
+
+.navbar ul {
+  display: flex;
+  flex-grow: 1;
+  justify-content: space-between;
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+}
+
+.navbar ul li:first-child {
+  margin-left: 0px !important;
+}
+
+.navbar ul li:last-child {
+  margin-right: 0px !important;
+}
+
+
+
+.navbar li {
+  display: flex;
+  align-items: center;
+}
+
+.navbar a {
+  color: rgb(0, 0, 0);
+  text-decoration: none;
+  font-size: 20px;
+  transition: color 0.3s ease;
+}
+
+.navbar a:hover {
+  color: #ffffff;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+}
+
+.nav-item img {
+  margin-right: 10px;
+  transition: filter 0.3s ease, transform 0.3s ease;
+  transform: scale(1.1);
+}
+
+.nav-item:hover img {
+  filter: brightness(0) saturate(100%) invert(100%);
+}
+
+@media screen and (max-width: 944px) {
+  .logo-container {
+    display: flex;               
+    justify-content: center;     
+    align-items: center;         
+    margin: 0;                   
+  }
+
+  .logo-container img {
+    content: url("../../../assets/icons/logo_small.svg");
+    width: 30px;                 
+    height: 30px;                
+  }
+
+  .navbar a {
+    font-size: 0;
+    color: transparent;
+    transition: font-size 0.5s ease, color 0.5s ease;
+  }
+
+  .navbar a:hover {
+    font-size: 0;
+    color: transparent;
+  }
+
+  .navbar li {
+    margin: 0 10px;
+  }
+  
+  .nav-item img {
+    margin-right: 10px;
+    width: 24px;
+    height: 24px;
+  }
+
+  .navbar ul {
+    justify-content: space-evenly;
+  }
+}
+
+@media screen and (max-width: 632px) {
+  .navbar {
+    padding: 0 10px;
+  }
+
+  .logo-container {
+    margin-right: 10px;
+  }
+
+  .navbar ul {
+    justify-content: space-between;
+  }
+
+  .navbar a {
+    font-size: 0;
+  }
+
+  .nav-item img {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .navbar {
+    padding: 0 15px;
+  }
+
+  .logo-container {
+    margin-right: 10px;
+  }
+}
