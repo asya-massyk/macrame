@@ -2,12 +2,9 @@
   "name": "macrame",
   "version": "0.0.0",
   "scripts": {
-    "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
-    "watch": "ng build --watch --configuration development",
-    "test": "ng test",
-    "serve:ssr:macrame": "node dist/macrame/server/server.mjs"
+    "start": "concurrently \"npm run start:frontend\" \"npm run start:backend\"",
+    "start:frontend": "cd frontend && npm install && npm start && open http://localhost:4200",
+    "start:backend": "cd backend && npm install && python manage.py runserver"
   },
   "private": true,
   "dependencies": {
@@ -42,6 +39,7 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
+    "open": "^10.1.0",
     "typescript": "~5.5.2"
   }
 }
