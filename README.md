@@ -1,27 +1,13 @@
 # Macrame
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.7.
+Опис проекту
+Цей веб-застосунок розроблений для створення та обміну ескізами макраме. Користувачі можуть завантажувати фотографії, перетворювати їх на піксельні схеми, створювати нові ескізи, обирати матеріали, а також ділитися своїми роботами з іншими користувачами. У застосунку є можливість переглядати ескізи, взаємодіяти з іншими користувачами через форум, а також отримувати покрокові інструкції для створення фенечок.
 
-## Development server
-
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
-
-## Code scaffolding
-
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
-
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Функціональність
+Головна сторінка: Привітальний текст та кнопки для реєстрації або входу.
+Авторизація: Форма для входу та реєстрації користувачів.
+Панель користувача: Перегляд своїх ескізів, створення нових ескізів.
+Редактор ескізів: Інтерфейс для створення та редагування схем макраме.
+Інструкції: Покрокові інструкції для створення фенечок.
+Спільнота: Форум для обміну досвідом та схемами, коментування і лайкання схем.
+Перетворення фото на піксельну схему: Завантаження фото, обрізка та перетворення на піксельну схему.
