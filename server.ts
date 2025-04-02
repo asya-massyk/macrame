@@ -1,15 +1,11 @@
-import { APP_BASE_HREF } from '@angular/common';
-import { CommonEngine } from '@angular/ssr';
 import express, { Request, Response, NextFunction } from 'express';
-import { fileURLToPath } from 'node:url';
-import { dirname, join, resolve } from 'node:path';
-import bootstrap from './src/main.server';
+import { Sequelize } from 'sequelize';
 import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
-import { Sequelize, DataTypes, Optional, Model} from 'sequelize';
+import { initUserModel, User } from './backend/backend/models/User'; 
 
-// Завантаження змінних середовища
+
 dotenv.config();
 
 // Підключення до бази даних
@@ -19,58 +15,12 @@ const sequelize = new Sequelize(
   process.env['DB_PASS']!,
   {
     host: process.env['DB_HOST'],
-    dialect: process.env['DB_DIALECT'] as 'postgres',
+    dialect: 'postgres', // можна змінити на іншу СУБД, якщо потрібно
   }
 );
 
-
-// Створення інтерфейсів
-interface UserAttributes {
-  id: number;
-  username: string;
-  email: string;
-  password: string;
-}
-
-interface UserCreationAttributes extends Optional<UserAttributes, 'id'> {}
-
-// Визначення моделі
-class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
-  id!: number;
-  username!: string;
-  email!: string;
-  password!: string;
-}
-
-// Опис моделі в Sequelize
-User.init(
-  {
-    id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
-    },
-    username: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true,
-    },
-    email: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true,
-    },
-    password: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-  },
-  {
-    sequelize, // з'єднання з базою даних
-    modelName: 'User',
-  }
-);
-
+// Ініціалізація моделі користувача
+initUserModel(sequelize);
 
 // Авторизація користувача
 const authenticateUser = async (username: string, password: string) => {
@@ -92,75 +42,54 @@ const generateJWT = (user: any) => {
   return jwt.sign({ id: user.id, username: user.username }, process.env['JWT_SECRET']!, { expiresIn: '1h' });
 };
 
-export function app(): express.Express {
-  const server = express();
-  const serverDistFolder = dirname(fileURLToPath(import.meta.url));
-  const browserDistFolder = resolve(serverDistFolder, '../browser');
-  const indexHtml = join(serverDistFolder, 'index.server.html');
+// Запуск сервера
+const app = express();
+app.use(express.json());
 
-  const commonEngine = new CommonEngine();
+// Маршрут для авторизації
+app.post('/api/login', async (req: Request, res: Response, next: NextFunction) => {
+  const { username, password } = req.body;
 
-  server.set('view engine', 'html');
-  server.set('views', browserDistFolder);
+  try {
+    const user = await authenticateUser(username, password);
+    const token = generateJWT(user);
+    res.json({ token });
+  } catch (err: unknown) {
+    next(err);
+  }
+});
 
-  // Маршрут для авторизації
-  server.post('/api/login', async (req: Request, res: Response, next: NextFunction) => {
-    const { username, password } = req.body;
+// Маршрут для реєстрації користувача
+app.post('/api/register', async (req: Request, res: Response, next: NextFunction) => {
+  const { username, email, password } = req.body;
 
-    try {
-      const user = await authenticateUser(username, password);
-      const token = generateJWT(user);
-      res.json({ token });
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        next(err);
-      } else {
-        next(new Error('An unknown error occurred'));
-      }
-    }
-  });
-
-  // Serve static files from /browser
-  server.get('**', express.static(browserDistFolder, {
-    maxAge: '1y',
-    index: 'index.html',
-  }));
-
-  // All regular routes use the Angular engine
-  server.get('**', (req, res, next) => {
-    const { protocol, originalUrl, baseUrl, headers } = req;
-
-    commonEngine
-      .render({
-        bootstrap,
-        documentFilePath: indexHtml,
-        url: `${protocol}://${headers.host}${originalUrl}`,
-        publicPath: browserDistFolder,
-        providers: [{ provide: APP_BASE_HREF, useValue: baseUrl }],
-      })
-      .then((html) => res.send(html))
-      .catch((err) => next(err));
-  });
-
-  return server;
-}
-
-function run(): void {
-  const port = process.env['PORT'] || 4000;
-
-  // Підключення до бази даних і запуск сервера
-  sequelize.authenticate()
-    .then(() => {
-      console.log('✅ Підключено до бази даних PostgreSQL');
-    })
-    .catch((error) => {
-      console.error('❌ Помилка підключення до бази даних:', error);
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = await User.create({
+      username, email, password: hashedPassword,
+      isEmailConfirmed: false
     });
 
-  const server = app();
-  server.listen(port, () => {
-    console.log(`Node Express server listening on http://localhost:${port}`);
-  });
-}
+    // Генерація токену для підтвердження пошти
+    const confirmationToken = jwt.sign({ id: newUser.id }, process.env['JWT_SECRET']!, { expiresIn: '1h' });
 
-run();
+    // Відправка email для підтвердження (потрібно налаштувати email-сервер)
+
+    res.status(201).json({ message: 'Користувача успішно зареєстровано! Перевірте вашу пошту для підтвердження.' });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// Підключення до бази даних і запуск сервера
+sequelize.authenticate()
+  .then(() => {
+    console.log('✅ Підключено до бази даних PostgreSQL');
+  })
+  .catch((error) => {
+    console.error('❌ Помилка підключення до бази даних:', error);
+  });
+
+app.listen(4000, () => {
+  console.log('Сервер працює на порту 4000');
+});

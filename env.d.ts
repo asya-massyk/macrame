@@ -7,6 +7,9 @@ declare namespace NodeJS {
       DB_DIALECT: string;
       JWT_SECRET: string;
       PORT?: string;
+      GMAIL_USER: string;
+      GMAIL_PASS: string;
+      BASE_URL: string;
     }
   }
   
