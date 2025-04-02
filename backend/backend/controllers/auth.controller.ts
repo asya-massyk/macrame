@@ -9,62 +9,66 @@ import jwt from 'jsonwebtoken';
 
 export const register = async (req: Request, res: Response, next: NextFunction) => {
     const { username, email, password } = req.body;
-   // Перевірка пароля (мінімум 8 символів)
-   if (password.length < 8) {
-    return res.status(400).json({ message: 'Пароль має містити не менше 8 символів' });
+
+    if (password.length < 8) {
+        return res.status(400).json({ message: 'Пароль має містити не менше 8 символів' });
     }
     if (!username || !email || !password) {
-      return res.status(400).json({ message: 'Всі поля повинні бути заповнені' });
+        return res.status(400).json({ message: 'Всі поля повинні бути заповнені' });
     }
-  
+
     try {
-      // Перевірка чи існує користувач з таким ім'ям або email
-      const existingUser = await User.findOne({
-        where: { [Op.or]: [{ username }, { email }] },
-      });
-  
-      if (existingUser) {
-        return res.status(400).json({ message: 'Користувач з таким ім\'ям або email вже існує' });
-      }
-  
-      // Хешування пароля перед збереженням
-      const hashedPassword = await bcrypt.hash(password, 10);
-  
-      // Створення нового користувача
-      const newUser = await User.create({
-          username,
-          email,
-          password: hashedPassword,
-          isEmailConfirmed: false
-      });
-  
-      // Генерація токену для підтвердження пошти
-      const confirmationToken = generateConfirmationToken(newUser.id);
-  
-      // Надсилання листа для підтвердження пошти
-      await sendConfirmationEmail(newUser.email, confirmationToken);
-  
-      res.status(201).json({ message: 'Користувач успішно зареєстрований! Перевірте свою пошту для підтвердження.' });
+        // Перевірка чи існує користувач з таким ім'ям або email
+        console.log('Перевірка на існуючого користувача...');
+        const existingUser = await User.findOne({
+            where: { [Op.or]: [{ username }, { email }] },
+        });
+
+        if (existingUser) {
+            return res.status(400).json({ message: 'Користувач з таким ім\'ям або email вже існує' });
+        }
+
+        // Хешування пароля перед збереженням
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Створення нового користувача
+        const newUser = await User.create({
+            username,
+            email,
+            password: hashedPassword,
+            isEmailConfirmed: false
+        });
+
+        // Генерація токену для підтвердження пошти
+        const confirmationToken = generateConfirmationToken(newUser.id);
+
+        // Надсилання листа для підтвердження пошти
+        console.log('Надсилання листа...');
+        await sendConfirmationEmail(newUser.email, confirmationToken);
+
+        res.status(201).json({ message: 'Користувач успішно зареєстрований! Перевірте свою пошту для підтвердження.' });
     } catch (err) {
-      next(err);
+        console.error(err);
+        next(err);
     }
-  };
+};
   
-// Підтвердження email
 export const confirmEmail = async (req: Request, res: Response, next: NextFunction) => {
     const { token } = req.query;
-  
+
+    console.log('Токен підтвердження:', token); // Додати лог
+
     try {
-      // Декодуємо токен
-      const decoded: any = jwt.verify(token as string, process.env.JWT_SECRET || 'your-secret-key');
-      const userId = decoded.userId;
-  
-      // Оновлюємо статус користувача в базі
-      await User.update({ isEmailConfirmed: true }, { where: { id: userId } });
-  
-      res.status(200).json({ message: 'Email успішно підтверджено!' });
+        const decoded: any = jwt.verify(token as string, process.env.JWT_SECRET || 'your-secret-key');
+        const userId = decoded.userId;
+
+        console.log('Підтвердження користувача:', userId); // Додати лог
+
+        await User.update({ isEmailConfirmed: true }, { where: { id: userId } });
+
+        res.status(200).json({ message: 'Email успішно підтверджено!' });
     } catch (error) {
-      console.error('Помилка підтвердження:', error);
-      res.status(400).json({ message: 'Невірний або застарілий токен підтвердження.' });
+        console.error('Помилка підтвердження:', error);
+        res.status(400).json({ message: 'Невірний або застарілий токен підтвердження.' });
     }
-  };
+};
