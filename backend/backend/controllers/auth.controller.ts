@@ -5,10 +5,14 @@ import { sendConfirmationEmail } from '../services/mail.service'; // Імпор�
 import { generateConfirmationToken } from '../services/auth.service'; // Імпортуємо функцію для генерації токену
 import { Sequelize } from 'sequelize';
 import { Op } from 'sequelize';
+import jwt from 'jsonwebtoken';
 
 export const register = async (req: Request, res: Response, next: NextFunction) => {
     const { username, email, password } = req.body;
-  
+   // Перевірка пароля (мінімум 8 символів)
+   if (password.length < 8) {
+    return res.status(400).json({ message: 'Пароль має містити не менше 8 символів' });
+    }
     if (!username || !email || !password) {
       return res.status(400).json({ message: 'Всі поля повинні бути заповнені' });
     }
@@ -46,3 +50,21 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
     }
   };
   
+// Підтвердження email
+export const confirmEmail = async (req: Request, res: Response, next: NextFunction) => {
+    const { token } = req.query;
+  
+    try {
+      // Декодуємо токен
+      const decoded: any = jwt.verify(token as string, process.env.JWT_SECRET || 'your-secret-key');
+      const userId = decoded.userId;
+  
+      // Оновлюємо статус користувача в базі
+      await User.update({ isEmailConfirmed: true }, { where: { id: userId } });
+  
+      res.status(200).json({ message: 'Email успішно підтверджено!' });
+    } catch (error) {
+      console.error('Помилка підтвердження:', error);
+      res.status(400).json({ message: 'Невірний або застарілий токен підтвердження.' });
+    }
+  };
