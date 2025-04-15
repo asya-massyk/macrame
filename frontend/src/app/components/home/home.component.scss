@@ -44,6 +44,18 @@ html, body {
   padding-right: 50px;
 }
 
+.welcome-message {
+  color: green;
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.error-message {
+  color: red;
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
 /* Анімація появи */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-10px); }

@@ -31,7 +31,8 @@ class CustomUserManager(BaseUserManager):
 
 class User(AbstractBaseUser, PermissionsMixin):
     nickname = models.CharField(max_length=30, unique=True, verbose_name="Нікнейм")
-    email = models.EmailField(unique=True, verbose_name="Email")
+    email = models.EmailField(unique=True)
+    is_email_verified = models.BooleanField(default=False)
     first_name = models.CharField(max_length=30, verbose_name="Ім’я")
     last_name = models.CharField(max_length=30, verbose_name="Прізвище")
     phone_number = models.CharField(

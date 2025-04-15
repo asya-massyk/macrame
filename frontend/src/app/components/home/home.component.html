@@ -3,6 +3,12 @@
 </head>
 <div class="home-container">
   <section class="text-section">
+    @if (welcomeMessage) {
+      <div class="welcome-message">{{ welcomeMessage }}</div>
+    }
+    @if (errorMessage) {
+      <div class="error-message">{{ errorMessage }}</div>
+    }
     <h1>Ласкаво просимо до світу макраме!</h1>
     <p>
       Наша платформа створена для тих, хто захоплюється макраме та рукоділлям. 

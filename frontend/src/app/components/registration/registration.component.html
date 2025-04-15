@@ -1,27 +1,48 @@
-<div class="form-container"> 
-  <div class="form-image"></div>
-  <div class="form-content">
+<div class="form-container">
+    <div class="form-image"></div>
+    <div class="form-content">
       <h1>Реєстрація</h1>
-      <form>
-          <div class="input-group">
-          <input type="name" id="name" name="name" placeholder="Введіть ім'я" required>
-          </div>
-          <div class="input-group">
-              <input type="email" id="email" name="email" placeholder="Введіть email" required>
-          </div>
-          <div class="input-group">
-            <input type="password" id="password" name="password" placeholder="Введіть пароль" required>
-            <img src="assets/icons/eye-closed.svg" class="toggle-password"
-                 (click)="togglePassword('password', $event)">
-          </div>
-          
-          <div class="input-group">
-            <input type="password" id="confirm-password" name="confirm-password" placeholder="Підтвердіть пароль" required>
-            <img src="assets/icons/eye-closed.svg" class="toggle-password"
-                 (click)="togglePassword('confirm-password', $event)">
-          </div>          
-          <button type="submit">Зареєструватись</button>
+      @if (message) {
+        <div class="success-message">{{ message }}</div>
+      }
+      @if (error) {
+        <div class="error-message">{{ error }}</div>
+      }
+      <form (ngSubmit)="registerUser($event)">
+        <div class="input-group">
+          <input type="text" id="name" name="name" placeholder="Введіть ім'я" [(ngModel)]="user.name" required (input)="onInputChange()">
+          @if (errors.name) {
+            <div class="error-message">{{ errors.name }}</div>
+          }
+        </div>
+        <div class="input-group">
+          <input type="text" id="nickname" name="nickname" placeholder="Введіть нікнейм" [(ngModel)]="user.nickname" required (input)="onInputChange()">
+          @if (errors.nickname) {
+            <div class="error-message">{{ errors.nickname }}</div>
+          }
+        </div>
+        <div class="input-group">
+          <input type="email" id="email" name="email" placeholder="Введіть email" [(ngModel)]="user.email" required (input)="onInputChange()">
+          @if (errors.email) {
+            <div class="error-message">{{ errors.email }}</div>
+          }
+        </div>
+        <div class="input-group">
+          <input type="password" id="password" name="password" placeholder="Введіть пароль" [(ngModel)]="user.password" required (input)="onInputChange()">
+          <img src="assets/icons/eye-closed.svg" class="toggle-password" (click)="togglePassword('password', $event)">
+          @if (errors.password) {
+            <div class="error-message">{{ errors.password }}</div>
+          }
+        </div>
+        <div class="input-group">
+          <input type="password" id="confirm-password" name="confirm-password" placeholder="Підтвердіть пароль" [(ngModel)]="user.confirm_password" required (input)="onInputChange()">
+          <img src="assets/icons/eye-closed.svg" class="toggle-password" (click)="togglePassword('confirm-password', $event)">
+          @if (errors.confirm_password) {
+            <div class="error-message">{{ errors.confirm_password }}</div>
+          }
+        </div>
+        <button type="submit" [disabled]="hasErrors()">Зареєструватись</button>
       </form>
       <p>Вже є акаунт? <a href="/login">Увійти</a></p>
+    </div>
   </div>
-</div>
