@@ -5,7 +5,6 @@ from django.core.mail import send_mail
 from django.conf import settings
 from .models import User
 from .utils import generate_verification_token, verify_token
-from django.http import HttpResponseRedirect
 
 class RegisterView(APIView):
     def post(self, request):
@@ -56,7 +55,7 @@ class RegisterView(APIView):
             return Response({'error': f'Помилка створення користувача: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         token = generate_verification_token(email)
-        verification_url = f"http://localhost:4200/verify-success/{token}"
+        verification_url = f"http://localhost:4200/home?token={token}"
 
         subject = 'Підтвердження email для Macrame'
         message = f'Привіт, {username}!\n\nБудь ласка, підтвердь свій email, перейшовши за посиланням:\n{verification_url}\n\nДякуємо!'
@@ -79,7 +78,7 @@ class RegisterView(APIView):
                 f"Macrame Support <{settings.DEFAULT_FROM_EMAIL}>",
                 [email],
                 fail_silently=False,
-                html_message=html_message  # Додаємо HTML-версію
+                html_message=html_message
             )
             print(f"Лист успішно відправлено на {email}")
         except Exception as e:
@@ -90,15 +89,38 @@ class RegisterView(APIView):
 
 class VerifyEmailView(APIView):
     def get(self, request, token):
+        print(f"Received token: {token}")
         email = verify_token(token)
+        print(f"Decoded email from token: {email}")
         if email:
             try:
                 user = User.objects.get(email=email)
+                print(f"Found user: {user.email}, is_email_verified: {user.is_email_verified}")
                 if not user.is_email_verified:
                     user.is_email_verified = True
                     user.save()
-                    return HttpResponseRedirect(f"http://localhost:4200/verify-success/{token}?verified=true")
-                return HttpResponseRedirect(f"http://localhost:4200/verify-success/{token}?verified=true")
+                    user.refresh_from_db()
+                    print(f"After save, is_email_verified: {user.is_email_verified}")
+                    return Response({
+                        'status': 'success',
+                        'verified': True,
+                        'redirect_url': 'http://localhost:4200/home?verified=true'
+                    }, status=status.HTTP_200_OK)
+                return Response({
+                    'status': 'success',
+                    'verified': True,
+                    'redirect_url': 'http://localhost:4200/home?verified=true'
+                }, status=status.HTTP_200_OK)
             except User.DoesNotExist:
-                return HttpResponseRedirect(f"http://localhost:4200/verify-success/{token}?verified=false")
-        return HttpResponseRedirect(f"http://localhost:4200/verify-success/{token}?verified=false")
+                print(f"User with email {email} not found")
+                return Response({
+                    'status': 'error',
+                    'verified': False,
+                    'redirect_url': 'http://localhost:4200/home?verified=false'
+                }, status=status.HTTP_404_NOT_FOUND)
+        print("Invalid token, email not decoded")
+        return Response({
+            'status': 'error',
+            'verified': False,
+            'redirect_url': 'http://localhost:4200/home?verified=false'
+        }, status=status.HTTP_400_BAD_REQUEST)
