@@ -1,16 +1,16 @@
 $primary-color: #D95DB0;
 $secondary-color: #3344DC;
-$placeholder-color: #aaa; 
+$placeholder-color: #aaa;
 
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f4;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .form-container {
@@ -45,77 +45,25 @@ body {
   text-align: center;
 }
 
-
 h1 {
-    font-size: 26px;
-    margin-top: -20px; 
-    margin-bottom: 50px; 
-    color: black;
+  font-size: 26px;
+  margin-top: -20px;
+  margin-bottom: 30px;
+  color: black;
 }
 
 .input-group {
-    margin-bottom: 15px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  height: 50px;  // Фіксована висота для кожного поля
 }
 
-input[type="name"],
+input[type="text"],
 input[type="email"],
 input[type="password"] {
-    width: 333px;
-    height: 24px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    font-size: 16px;
-    color: black;
-    outline: none;
-
-    &::placeholder {
-        color: $placeholder-color;
-        font-size: 14px;
-    }
-}
-
-button {
-    background: linear-gradient(to right, $primary-color, $secondary-color);
-    color: white;
-    padding: 15px;
-    border: none;
-    border-radius: 10px;
-    width: 200px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: 0.3s ease;
-    margin-top: 15px;
-
-    &:hover {
-        background: linear-gradient(to right, darken($primary-color, 10%), darken($secondary-color, 10%));
-    }
-}
-
-p {
-    font-size: 14px;
-    color: black;
-}
-
-a {
-    color: $secondary-color;
-    text-decoration: none;
-}
-
-a:hover {
-    text-decoration: underline;
-}
-.input-group {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.input-group input {
   width: 333px;
   height: 24px;
   padding: 10px;
@@ -124,12 +72,70 @@ a:hover {
   font-size: 16px;
   color: black;
   outline: none;
+
+  &::placeholder {
+    color: $placeholder-color;
+    font-size: 14px;
+  }
+}
+
+button {
+  background: linear-gradient(to right, $primary-color, $secondary-color);
+  color: white;
+  padding: 15px;
+  border: none;
+  border-radius: 10px;
+  width: 200px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: 0.3s ease;
+  margin-top: 15px;
+
+  &:hover {
+    background: linear-gradient(to right, darken($primary-color, 10%), darken($secondary-color, 10%));
+  }
+
+  &[disabled] {
+    background: #ccc;
+    cursor: not-allowed;
+  }
+}
+
+p {
+  font-size: 14px;
+  color: black;
+}
+
+a {
+  color: $secondary-color;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 .toggle-password {
   position: absolute;
   right: 10px;
+  top: 10px;  // Вирівнюємо по вертикалі
   width: 20px;
   height: 20px;
   cursor: pointer;
+}
+
+.error-message {
+  color: red;
+  font-size: 10px;
+  position: absolute;
+  bottom: -10px;  // Розташовуємо під полем
+  left: 0;
+  right: 0;
+  text-align: center;
+}
+
+.success-message {
+  color: green;
+  font-size: 14px;
+  margin-bottom: 15px;
 }
