@@ -1,14 +1,17 @@
-from itsdangerous import URLSafeTimedSerializer
+import jwt
 from django.conf import settings
 
 def generate_verification_token(email):
-    serializer = URLSafeTimedSerializer(settings.SECRET_KEY)
-    return serializer.dumps(email, salt='email-verification')
+    token = jwt.encode({'email': email}, settings.SECRET_KEY, algorithm='HS256')
+    return token
 
-def verify_token(token, expiration=3600):
-    serializer = URLSafeTimedSerializer(settings.SECRET_KEY)
+def verify_token(token):
     try:
-        email = serializer.loads(token, salt='email-verification', max_age=expiration)
-        return email
-    except Exception:
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
+        return payload.get('email')
+    except jwt.ExpiredSignatureError:
+        print("Token has expired")
+        return None
+    except jwt.InvalidTokenError:
+        print("Invalid token")
         return None
