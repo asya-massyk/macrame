@@ -1,56 +1,46 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
-  selector: 'app-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss']
+    selector: 'app-home',
+    templateUrl: './home.component.html',
+    styleUrls: ['./home.component.scss'],
+    standalone: true
 })
 export class HomeComponent implements OnInit {
-  welcomeMessage: string | null = null;
-  errorMessage: string | null = null;
+    isLoggedIn = false;
+    loginStatusMessage: string | null = null;
 
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private authService: AuthService
-  ) {}
+    constructor(
+        private authService: AuthService,
+        private route: ActivatedRoute,
+        private router: Router
+    ) { }
 
-  ngOnInit() {
-    this.route.queryParams.subscribe(params => {
-      const token = params['token'];
-      const verified = params['verified'] === 'true';
-      console.log('Query params:', params);
-      console.log('Token:', token, 'Verified:', verified);
-
-      if (token) {
-        this.authService.verifyEmail(token).subscribe({
-          next: (response) => {
-            console.log('Verify email response:', response);
-            if (response.status === 'success' && response.verified) {
-              this.welcomeMessage = 'Вітаю, ви успішно зареєструвалися!';
-              this.errorMessage = null;
-              this.router.navigateByUrl('/home?verified=true');
-            } else {
-              this.errorMessage = 'Недійсне посилання для підтвердження';
-              this.welcomeMessage = null;
-              this.router.navigateByUrl('/home?verified=false');
+    ngOnInit() {
+        this.authService.isLoggedIn$.subscribe(isLoggedIn => {
+            console.log('HomeComponent: isLoggedIn changed to', isLoggedIn);
+            this.isLoggedIn = isLoggedIn;
+            if (isLoggedIn && this.loginStatusMessage === null) {
+                this.loginStatusMessage = 'Вітаємо, ви увійшли в систему!';
+                setTimeout(() => {
+                    this.loginStatusMessage = null;
+                    this.router.navigate(['/home'], { replaceUrl: true });
+                }, 5000);
             }
-          },
-          error: (err) => {
-            console.error('Verify email error:', err);
-            this.errorMessage = err.error?.error || 'Помилка при підтвердженні email';
-            this.welcomeMessage = null;
-            this.router.navigateByUrl('/home?verified=false');
-          }
         });
-      } else if (verified) {
-        this.welcomeMessage = 'Вітаю, ви успішно зареєструвалися!';
-        this.errorMessage = null;
-      } else {
-        console.log('No token or verified param found');
-      }
-    });
-  }
+
+        this.route.queryParams.subscribe(params => {
+            const verified = params['verified'] === 'true';
+            const message = params['message'];
+            if (verified && this.isLoggedIn) {
+                this.loginStatusMessage = message || 'Вітаємо, ви увійшли в систему!';
+                setTimeout(() => {
+                    this.loginStatusMessage = null;
+                    this.router.navigate(['/home'], { replaceUrl: true });
+                }, 5000);
+            }
+        });
+    }
 }

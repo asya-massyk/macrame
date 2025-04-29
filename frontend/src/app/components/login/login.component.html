@@ -1,18 +1,43 @@
-<div class="form-container"> 
+<div class="form-container">
   <div class="form-image"></div>
   <div class="form-content">
-      <h1>Вхід</h1>
-      <form>
-          <div class="input-group">
-              <input type="email" id="email" name="email" placeholder="Введіть email" required>
-          </div>
-          <div class="input-group">
-            <input type="password" id="password" name="password" placeholder="Введіть пароль" required>
-            <img src="assets/icons/eye-closed.svg" class="toggle-password"
-                 (click)="togglePassword('password', $event)">
-          </div>      
-          <button type="submit">Увійти</button>
-      </form>
-      <p>Ще не маєте акаунту? <a href="/register">Зареєструйтесь</a></p>
+    <h1>Вхід</h1>
+    @if (message) {
+      <div class="success-message">{{ message }}</div>
+    }
+    @if (error) {
+      <div class="error-message">{{ error }}</div>
+    }
+    <form (ngSubmit)="onSubmit($event)">
+      <div class="input-group">
+        <input
+          type="text"
+          id="identifier"
+          name="identifier"
+          placeholder="Введіть нікнейм або email"
+          [(ngModel)]="user.identifier"
+          required
+        />
+      </div>
+      <div class="input-group">
+        <input
+          type="password"
+          id="password"
+          name="password"
+          placeholder="Введіть пароль"
+          [(ngModel)]="user.password"
+          required
+        />
+        <img
+          src="assets/icons/eye-closed.svg"
+          class="toggle-password"
+          (click)="togglePassword('password', $event)"
+        />
+      </div>
+      <button type="submit">Увійти</button>
+    </form>
+    <p>
+      Ще не маєте акаунту? <a href="/register">Зареєструйтесь</a>
+    </p>
   </div>
 </div>

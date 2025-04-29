@@ -1,31 +1,77 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
+import { AuthService } from '../services/auth.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+    selector: 'app-login',
+    standalone: true,
+    imports: [FormsModule],
+    templateUrl: './login.component.html',
+    styleUrls: ['./login.component.scss']
 })
 export class LoginComponent {
-  constructor(private router: Router) {}
+    user = { identifier: '', password: '' };
+    error: string | null = null;
+    message: string | null = null;
 
-  registerUser(event: Event) {
-    event.preventDefault(); 
-    console.log("Користувач зареєстрований!");
-    this.router.navigate(['/home']); 
-  }
+    constructor(
+        private router: Router,
+        private authService: AuthService,
+        private cdr: ChangeDetectorRef
+    ) { }
 
-  togglePassword(inputId: string, event: Event) {
-    event.preventDefault(); 
-    const input = document.getElementById(inputId) as HTMLInputElement;
-    const icon = event.target as HTMLImageElement;
-
-    if (input.type === "password") {
-      input.type = "text";
-      icon.src = "../../../assets/icons/eye.svg"; 
-    } else {
-      input.type = "password";
-      icon.src = "../../../assets/icons/eye-closed.svg"; 
+    onSubmit(event: Event) {
+        event.preventDefault();
+        if (!this.user.identifier || !this.user.password) {
+            this.error = 'Заповніть усі поля';
+            this.cdr.detectChanges();
+            return;
+        }
+        console.log('Attempting login with:', this.user);
+        this.authService.login(this.user).subscribe({
+            next: (response) => {
+                console.log('Login response in LoginComponent:', response);
+                this.message = 'Успішний вхід!';
+                this.error = null;
+                setTimeout(() => {
+                    console.log('Navigating to /home');
+                    this.router.navigate(['/home']);
+                    this.cdr.detectChanges();
+                }, 100);
+            },
+            error: (err) => {
+                console.log('Login error in LoginComponent:', err);
+                this.error = err.message || 'Невірний email/нікнейм або пароль';
+                if (this.error && this.error.includes('підтвердьте')) {
+                    this.message = 'Перевірте вашу пошту для підтвердження';
+                } else {
+                    this.message = null;
+                }
+                this.cdr.detectChanges();
+            }
+        });
     }
-  }
+
+    togglePassword(inputId: string, event: Event) {
+        event.preventDefault();
+        const input = document.getElementById(inputId);
+        if (!input) {
+            console.error(`Element with ID ${inputId} not found`);
+            return;
+        }
+        const typedInput = input as HTMLInputElement;
+        const icon = event.target;
+        if (!(icon instanceof HTMLImageElement)) {
+            console.error(`Event target is not an HTMLImageElement:`, icon);
+            return;
+        }
+        if (typedInput.type === 'password') {
+            typedInput.type = 'text';
+            icon.src = '../../../assets/icons/eye.svg';
+        } else {
+            typedInput.type = 'password';
+            icon.src = '../../../assets/icons/eye-closed.svg';
+        }
+    }
 }

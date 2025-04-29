@@ -11,7 +11,7 @@ export const routes: Routes = [
     { path: 'home', component: HomeComponent }, 
     { path: 'login', component: LoginComponent },
     { path: 'register', component: RegistrationComponent },
-    { path: 'verify-email/:token', component: VerifyEmailComponent },
+    { path: 'verify-email', component: VerifyEmailComponent },
     //{ path: 'profile', component: ProfileComponent },
     // { path: 'editor', loadComponent: () => import('./editor/editor.component').then(m => m.EditorComponent) },
     // { path: 'community', loadComponent: () => import('./community/community.component').then(m => m.CommunityComponent) }
