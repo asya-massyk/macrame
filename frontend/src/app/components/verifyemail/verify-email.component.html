@@ -1,0 +1,12 @@
+<div class="verify-email-container">
+    <h1>Підтвердження email</h1>
+    @if (message) {
+        <div class="success-message">{{ message }}</div>
+    }
+    @if (error) {
+        <div class="error-message">{{ error }}</div>
+    }
+    @if (isVerified) {
+        <button (click)="goToHome()">Повернутися на сайт</button>
+    }
+</div>

@@ -2,12 +2,12 @@
     <div class="form-image"></div>
     <div class="form-content">
       <h1>Реєстрація</h1>
-      @if (message) {
-        <div class="success-message">{{ message }}</div>
-      }
-      @if (error) {
-        <div class="error-message">{{ error }}</div>
-      }
+    @if (error) {
+      <div class="error-message">{{ error }}</div>
+    }
+    @if (message) {
+      <div class="success-message">{{ message }}</div>
+    }
       <form (ngSubmit)="registerUser($event)">
         <div class="input-group">
           <input type="text" id="name" name="name" placeholder="Введіть ім'я" [(ngModel)]="user.name" required (input)="onInputChange()">
