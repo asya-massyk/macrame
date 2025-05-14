@@ -56,3 +56,26 @@ class LoginSerializer(serializers.Serializer):
 
         data['user'] = auth_user
         return data
+
+class ForgotPasswordSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+    def validate_email(self, value):
+        logger.info(f"Validating email: {value}")
+        if not User.objects.filter(email=value).exists():
+            raise serializers.ValidationError('Користувача з таким email не знайдено')
+        return value
+
+class ResetPasswordSerializer(serializers.Serializer):
+    token = serializers.CharField()
+    new_password = serializers.CharField(write_only=True)
+    confirm_password = serializers.CharField(write_only=True)
+
+    def validate(self, data):
+        logger.info(f"Validating reset password data: {data}")
+        new_password = data.get('new_password')
+        confirm_password = data.get('confirm_password')
+
+        if new_password != confirm_password:
+            raise serializers.ValidationError('Паролі не співпадають')
+        return data

@@ -9,6 +9,7 @@ import { EditProfileComponent } from './components/edit-profile/edit-profile.com
 import { AddSketchComponent } from './components/sketch/sketch.component';
 import { AuthGuard } from './auth.guard';
 import { EditSketchComponent } from './components/edit-sketch/edit-sketch.component';
+import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -16,6 +17,7 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegistrationComponent },
   { path: 'verify-email', component: VerifyEmailComponent },
+  { path: 'reset-password', component: ResetPasswordComponent },
   { path: 'pixel', component: PixelationComponent, canActivate: [AuthGuard] },
   { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard] },
   { path: 'edit-profile', component: EditProfileComponent, canActivate: [AuthGuard] },

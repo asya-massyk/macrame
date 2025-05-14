@@ -19,9 +19,13 @@ logger = logging.getLogger(__name__)
 class LoginView(APIView):
     def post(self, request):
         logger.info(f"Login request data: {request.data}")
+        identifier = request.data.get('identifier')
+        logger.info(f"Attempting login with identifier: {identifier}")
+        
         serializer = LoginSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
             user = serializer.validated_data['user']
+            logger.info(f"User found: {user}, email: {user.email}, nickname: {user.nickname}")
             refresh = RefreshToken.for_user(user)
             logger.info(f"Returning tokens for user: {user}")
             return Response({
@@ -67,7 +71,7 @@ class RegisterView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        existing_user = User.objects.filter(email=email).first()
+        existing_user = User.objects.filter(email__iexact=email).first()
         logger.info(f"Checking existing user for email {email}: {existing_user}")
         if existing_user:
             logger.info(f"Email {email} already exists, verified: {existing_user.is_email_verified}")
@@ -153,6 +157,142 @@ class RegisterView(APIView):
             logger.error(f"Failed to send verification email: {str(e)}")
             raise
 
+class ForgotPasswordView(APIView):
+    def post(self, request):
+        logger.info(f"Forgot password request data: {request.data}")
+        email = request.data.get('email')
+
+        if not email:
+            logger.error("Email not provided")
+            return Response(
+                {'error': 'Поле email обов\'язкове'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Нормалізація email: видаляємо пробіли та приводимо до нижнього регістру
+        email = email.strip().lower()
+        logger.info(f"Normalized email from request: {email}")
+
+        # Спочатку шукаємо за email
+        user = User.objects.filter(email__iexact=email).first()
+        
+        # Якщо не знайдено за email, шукаємо за nickname
+        if not user:
+            logger.info(f"User not found by email: {email}, trying to search by nickname")
+            user = User.objects.filter(nickname__iexact=email).first()
+            if user:
+                logger.info(f"User found by nickname: {user.nickname}, associated email: {user.email}")
+                email = user.email  # Використовуємо email, пов’язаний із користувачем
+
+        if not user:
+            logger.error(f"User not found for email or nickname: {email}")
+            logger.info(f"Existing emails in DB: {list(User.objects.values_list('email', flat=True))}")
+            logger.info(f"Existing nicknames in DB: {list(User.objects.values_list('nickname', flat=True))}")
+            logger.info(f"Raw user data in DB: {list(User.objects.values('email', 'nickname', 'is_email_verified'))}")
+            return Response(
+                {'error': 'Користувача з таким email або нікнеймом не знайдено'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        try:
+            # Генеруємо токен для скидання пароля
+            token = generate_verification_token(user.email)
+            reset_url = f"http://localhost:4200/reset-password?token={token}"
+            subject = 'Скидання пароля для Macrame'
+            html_message = f"""
+            <html>
+              <body style="font-family: Arial, sans-serif; line-height: 1.6;">
+                <h2>Привіт, {user.name}!</h2>
+                <p>Ви запросили скидання пароля для вашого акаунту в Macrame.</p>
+                <p>Натисніть на кнопку нижче, щоб скинути пароль:</p>
+                <a href="{reset_url}" target="_self" style="display: inline-block; padding: 10px 20px; 
+                    background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px;">
+                    Скинути Пароль
+                </a>
+                <p>Якщо ви не робили цей запит, проігноруйте це повідомлення.</p>
+                <p>Дякуємо!</p>
+              </body>
+            </html>
+            """
+
+            logger.info(f"Sending password reset email to: {user.email}")
+            send_mail(
+                subject,
+                '',
+                f"Macrame Support <{settings.DEFAULT_FROM_EMAIL}>",
+                [user.email],
+                fail_silently=False,
+                html_message=html_message
+            )
+            logger.info(f"Password reset email sent to {user.email}")
+
+            return Response(
+                {'message': 'Посилання для скидання пароля надіслано на ваш email'},
+                status=status.HTTP_200_OK
+            )
+
+        except Exception as e:
+            logger.error(f"Failed to send password reset email: {str(e)}")
+            return Response(
+                {'error': f'Помилка відправлення email: {str(e)}'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+class ResetPasswordView(APIView):
+    def post(self, request):
+        logger.info(f"Reset password request data: {request.data}")
+        token = request.data.get('token')
+        new_password = request.data.get('new_password')
+        confirm_password = request.data.get('confirm_password')
+
+        if not token or not new_password or not confirm_password:
+            logger.error("Missing required fields")
+            return Response(
+                {'error': 'Усі поля обов\'язкові: token, new_password, confirm_password'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if new_password != confirm_password:
+            logger.error("Passwords do not match")
+            return Response(
+                {'error': 'Паролі не співпадають'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
+            email = verify_token(token)
+            logger.info(f"Decoded email from token: {email}")
+            if not email:
+                logger.error("Invalid or expired token")
+                return Response(
+                    {'error': 'Недійсний або прострочений токен'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            user = User.objects.filter(email__iexact=email).first()
+            if not user:
+                logger.error(f"User not found for email: {email}")
+                return Response(
+                    {'error': 'Користувача не знайдено'},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+
+            user.set_password(new_password)
+            user.save()
+            logger.info(f"Password reset successfully for user: {user.email}")
+
+            return Response(
+                {'message': 'Пароль успішно скинуто'},
+                status=status.HTTP_200_OK
+            )
+
+        except Exception as e:
+            logger.error(f"Error resetting password: {str(e)}")
+            return Response(
+                {'error': f'Помилка скидання пароля: {str(e)}'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
 class VerifyEmailView(APIView):
     def get(self, request):
         token = request.query_params.get('token')
@@ -175,7 +315,7 @@ class VerifyEmailView(APIView):
                     'message': 'Недійсний або прострочений токен'
                 }, status=status.HTTP_400_BAD_REQUEST)
 
-            user = User.objects.filter(email=email).first()
+            user = User.objects.filter(email__iexact=email).first()
             logger.info(f"User lookup: email={email}, found user={user}")
             if not user:
                 logger.error(f"User not found for email: {email}")
@@ -229,7 +369,7 @@ class ProfileAPIView(APIView):
 @login_required
 def profile(request):
     user = request.user
-    sketches = user.sketches.all().order_by('-created_at')  # Замінюємо posts на sketches
+    sketches = user.sketches.all().order_by('-created_at')
     if not user.date_of_birth:
         return redirect('complete_profile')
     return render(request, 'profile/ProfilePage.html', {'user': user, 'sketches': sketches})
@@ -253,7 +393,7 @@ def edit_profile(request):
         user.bio = request.POST.get('bio')
         if 'avatar' in request.FILES:
             avatar_file = request.FILES['avatar']
-            user.avatar = avatar_file  # Assign file object directly
+            user.avatar = avatar_file
         password = request.POST.get('password')
         if password:
             user.set_password(password)
@@ -295,7 +435,7 @@ class EditProfileAPIView(APIView):
                     return Response({
                         'error': 'Дозволені формати: JPEG, PNG'
                     }, status=status.HTTP_400_BAD_REQUEST)
-                user.avatar = avatar_file  # Assign file object directly
+                user.avatar = avatar_file
 
             user.save()
             logger.info(f"Profile updated successfully for user: {user.nickname}")
