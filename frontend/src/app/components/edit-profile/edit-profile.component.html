@@ -1,0 +1,46 @@
+<div class="edit-profile-container">
+  <div class="edit-profile-form">
+    <h2 class="pixelation-title">Редагування профілю</h2>
+    <div *ngIf="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
+    <form (ngSubmit)="saveProfile()" class="space-y-4" #profileForm="ngForm">
+      <div>
+        <label for="name">Ім’я:</label>
+        <input [(ngModel)]="editForm.name" id="name" name="name" placeholder="Введіть ім’я" type="text">
+      </div>
+      <div>
+        <label for="bio">Біо:</label>
+        <textarea [(ngModel)]="editForm.bio" id="bio" name="bio" placeholder="Введіть біо"></textarea>
+      </div>
+      <div>
+        <label for="avatar">Аватар:</label>
+        <div class="file-input-wrapper">
+          <input type="file" (change)="onAvatarChange($event)" id="avatar" name="avatar" accept="image/*">
+          <span class="file-input-label">
+            {{ selectedAvatarName || 'Вибрати файл' }}
+          </span>
+        </div>
+        <div class="avatar-cropper" *ngIf="avatarPreview">
+          <div class="cropper-overlay" (mousedown)="startDragging($event)" (touchstart)="startDragging($event)" (wheel)="zoom($event)">
+            <div class="cropper-circle">
+              <img [src]="avatarPreview" [style.transform]="imageTransform" alt="Avatar Preview" draggable="false" />
+            </div>
+          </div>
+          <div class="zoom-controls">
+            <button type="button" (click)="zoomIn()" class="zoom-btn">+</button>
+            <button type="button" (click)="zoomOut()" class="zoom-btn">–</button>
+          </div>
+        </div>
+      </div>
+      <div>
+        <label for="password">Новий пароль:</label>
+        <input [(ngModel)]="editForm.password" id="password" name="password" type="password" placeholder="Введіть пароль">
+      </div>
+      <div class="flex">
+        <button type="submit" class="pixelation-button pixelation-button--download">Зберегти</button>
+        <button type="button" (click)="navigateBack()" class="pixelation-button pixelation-button--undo">Назад</button>
+      </div>
+    </form>
+  </div>
+</div>

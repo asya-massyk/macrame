@@ -10,9 +10,8 @@
   padding: 0 20px 0 3px;
   box-sizing: border-box;
   overflow: hidden;
-  width: 100vw; /* Забезпечує повну ширину екрана */
-  max-width: 100%; /* Запобігає звуженню */
-  
+  width: 100vw;
+  max-width: 100%;
 }
 
 .logo-container {
@@ -47,8 +46,6 @@
   margin-right: 0px !important;
 }
 
-
-
 .navbar li {
   display: flex;
   align-items: center;
@@ -80,6 +77,31 @@
   filter: brightness(0) saturate(100%) invert(100%);
 }
 
+.logout-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: rgb(0, 0, 0);
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  transition: color 0.3s ease;
+}
+
+.logout-btn:hover {
+  color: #ffffff;
+}
+
+.logout-btn img {
+  margin-right: 10px;
+  transition: filter 0.3s ease, transform 0.3s ease;
+  transform: scale(1.1);
+}
+
+.logout-btn:hover img {
+  filter: brightness(0) saturate(100%) invert(100%);
+}
+
 @media screen and (max-width: 944px) {
   .logo-container {
     display: flex;               
@@ -94,13 +116,13 @@
     height: 30px;                
   }
 
-  .navbar a {
+  .navbar a, .logout-btn {
     font-size: 0;
     color: transparent;
     transition: font-size 0.5s ease, color 0.5s ease;
   }
 
-  .navbar a:hover {
+  .navbar a:hover, .logout-btn:hover {
     font-size: 0;
     color: transparent;
   }
@@ -133,7 +155,7 @@
     justify-content: space-between;
   }
 
-  .navbar a {
+  .navbar a, .logout-btn {
     font-size: 0;
   }
 

@@ -1,0 +1,273 @@
+$primary-color: #3344dc;
+$secondary-color: #D95DB0;
+
+.edit-sketch-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+  padding-bottom: 220px;
+  font-family: 'Poppins', sans-serif;
+  background-color: #000;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.sketch-controls {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+
+  label {
+    font-size: 16px;
+    color: #aaa;
+  }
+
+  input {
+    padding: 5px;
+    border: 2px solid #585e83;
+    border-radius: 5px;
+    background-color: #fff;
+    color: #000;
+    width: 80px;
+
+    &:focus {
+      border-color: $primary-color;
+    }
+  }
+
+  button {
+    background: linear-gradient(to right, $secondary-color, $primary-color);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+
+    &:hover {
+      background: linear-gradient(to right, darken($secondary-color, 10%), darken($primary-color, 10%));
+    }
+  }
+}
+
+.sketch-area {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+
+  .canvas-wrapper {
+    max-width: 600px; // Обмеження для прокрутки
+    max-height: 600px;
+    overflow: auto;
+    border: 1px solid #585e83;
+    border-radius: 8px;
+  }
+
+  .sketch-canvas {
+    border: 2px solid #585e83;
+    border-radius: 8px;
+    cursor: crosshair;
+  }
+
+  .color-palette {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 200px;
+    padding: 10px;
+    background-color: #222;
+    border-radius: 8px;
+
+    .color-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 5px;
+
+      .color-item {
+        width: 30px;
+        height: 30px;
+        border: 1px solid #333;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: transform 0.2s;
+
+        &:hover {
+          transform: scale(1.1);
+        }
+      }
+    }
+
+    .hue-strip {
+      position: relative;
+      width: 100%;
+      height: 20px;
+      background: linear-gradient(
+        to right,
+        #ff0000,
+        #ff9900,
+        #ffff00,
+        #00ff00,
+        #00ffff,
+        #0000ff,
+        #9900ff,
+        #ff00ff,
+        #ff0000
+      );
+      border: 1px solid #333;
+      border-radius: 4px;
+      cursor: pointer;
+
+      .hue-indicator {
+        position: absolute;
+        top: -2px;
+        width: 4px;
+        height: 24px;
+        border: 1px solid #fff;
+        border-radius: 2px;
+        transform: translateX(-50%);
+      }
+    }
+
+    .lightness-control {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+
+      label {
+        font-size: 14px;
+        color: #aaa;
+      }
+
+      input[type="range"] {
+        width: 100%;
+        height: 8px;
+        background-color: #585e83;
+        border-radius: 5px;
+        outline: none;
+        transition: background-color 0.3s ease;
+
+        &::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          appearance: none;
+          width: 16px;
+          height: 16px;
+          background-color: $primary-color;
+          border-radius: 50%;
+          cursor: pointer;
+          transition: background-color 0.3s ease;
+
+          &:hover {
+            background-color: darken($primary-color, 10%);
+          }
+        }
+      }
+
+      .selected-color {
+        width: 100%;
+        height: 20px;
+        border: 1px solid #333;
+        border-radius: 4px;
+        margin-top: 5px;
+      }
+    }
+  }
+}
+
+.sketch-options {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  align-items: center;
+
+  label {
+    font-size: 14px;
+    color: #aaa;
+  }
+
+  input, select {
+    padding: 5px;
+    border: 2px solid #585e83;
+    border-radius: 5px;
+    background-color: #fff;
+    color: #000;
+
+    &:focus {
+      border-color: $primary-color;
+    }
+  }
+
+  input {
+    width: 150px;
+  }
+
+  select {
+    width: 100px;
+  }
+}
+
+.sketch-actions {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+
+  button {
+    background: $primary-color;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+
+    &:hover {
+      background: darken($primary-color, 10%);
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .edit-sketch-container {
+    padding: 15px;
+    padding-bottom: 220px;
+  }
+
+  .sketch-controls {
+    flex-direction: column;
+    align-items: center;
+
+    input {
+      width: 100px;
+    }
+  }
+
+  .sketch-area {
+    flex-direction: column;
+    align-items: center;
+
+    .canvas-wrapper {
+      max-width: 300px;
+      max-height: 300px;
+    }
+
+    .color-palette {
+      width: 100%;
+      max-width: 300px;
+
+      .color-grid {
+        grid-template-columns: repeat(5, 1fr);
+      }
+    }
+  }
+
+  .sketch-options {
+    flex-direction: column;
+    align-items: center;
+
+    input, select {
+      width: 100%;
+      max-width: 200px;
+    }
+  }
+}

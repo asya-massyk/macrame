@@ -1,0 +1,40 @@
+<div class="add-post-container">
+  <div class="add-post-form">
+    <h2 class="pixelation-title">Додати ескіз</h2>
+    <div *ngIf="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
+    <form (ngSubmit)="saveSketch()" class="space-y-4">
+      <div>
+        <label for="sketch-image">Зображення:</label>
+        <div class="file-input-wrapper">
+          <input
+            type="file"
+            (change)="onPostImageChange($event)"
+            id="sketch-image"
+            name="image"
+            accept="image/*"
+          />
+          <span class="file-input-label">Вибрати зображення</span>
+        </div>
+        <!-- Image Preview -->
+        <div class="image-preview" *ngIf="imagePreview">
+          <img [src]="imagePreview" alt="Selected sketch preview" />
+        </div>
+      </div>
+      <div>
+        <label for="caption">Опис:</label>
+        <textarea
+          [(ngModel)]="newSketch.caption"
+          id="caption"
+          name="caption"
+          placeholder="Введіть опис"
+        ></textarea>
+      </div>
+      <div class="flex">
+        <button type="submit" class="pixelation-button pixelation-button--download">Опублікувати</button>
+        <button type="button" (click)="navigateBack()" class="pixelation-button pixelation-button--undo">Назад</button>
+      </div>
+    </form>
+  </div>
+</div>

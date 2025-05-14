@@ -1,4 +1,54 @@
 <div class="profile-container">
-    <h2>Мій профіль</h2>
-    <p>Тут буде інформація про користувача.</p>
+  <div class="profile-header">
+    <button class="edit-profile-btn" (click)="navigateToEditProfile()">
+      <i class="edit-icon">✎</i> Редагувати профіль
+    </button>
+
+    <div class="user-info">
+      <img
+        [src]="avatarUrl"
+        alt="Avatar"
+        class="avatar"
+        (error)="avatarUrl = 'assets/icons/avatar.svg'"
+      />
+      <div class="name-section">
+        <h1>{{ nickname || 'Без імені' }}</h1>
+        <p class="name">{{ name || '' }}</p>
+      </div>
+    </div>
+
+    <p class="bio" *ngIf="bio">{{ bio }}</p>
+
+    <div class="profile-divider"></div>
+
+    <button class="add-post-btn" (click)="navigateToAddSketch()">Додати ескіз</button>
   </div>
+
+  <div class="posts-section">
+    <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+    <div *ngIf="sketches.length > 0; else noSketches" class="sketch-grid">
+      <div *ngFor="let sketch of sketches" class="sketch-item">
+        <img
+          *ngIf="sketch.image"
+          [src]="sketch.image"
+          alt="Sketch image"
+          class="sketch-image"
+          (error)="sketch.image = null"
+        />
+        <div class="sketch-overlay">
+          <p class="sketch-caption">{{ truncateContent(sketch.caption) || 'Без опису' }}</p>
+          <p class="sketch-date">{{ sketch.created_at | date: 'medium' }}</p>
+          <button
+            class="delete-btn"
+            (click)="deleteSketch(sketch.id); $event.stopPropagation()"
+          >
+            Видалити
+          </button>
+        </div>
+      </div>
+    </div>
+    <ng-template #noSketches>
+      <p class="no-posts-text">Наразі у вас немає ескізів</p>
+    </ng-template>
+  </div>
+</div>
