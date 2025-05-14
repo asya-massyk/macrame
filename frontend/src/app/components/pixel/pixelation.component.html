@@ -1,92 +1,95 @@
 <div class="pixelation-container">
-    <!-- Початковий екран -->
-    <div *ngIf="!imageSrc" class="pixelation-welcome">
-      <h1 class="pixelation-title">Створіть кастомну схему!</h1>
-      <p class="pixelation-subtitle">Завантажте зображення, щоб перетворити його на піксельну картину</p>
-      <label for="file-upload" class="pixelation-upload-button">
-        <span class="pixelation-upload-icon">📷</span>
-        Виберіть зображення
-      </label>
-      <input
-        id="file-upload"
-        type="file"
-        accept="image/*"
-        (change)="onImageUpload($event)"
-        class="pixelation-input-hidden"
-      />
-    </div>
-  
-    <!-- Відображення canvas -->
-    <canvas
-      *ngIf="imageSrc"
-      #pixelationCanvas
-      class="pixelation-canvas"
-      (mousedown)="startCrop($event)"
-      (mousemove)="updateCrop($event)"
-      (mouseup)="endCrop()"
-    ></canvas>
-  
-    <!-- Повзунок для пікселізації -->
-    <div *ngIf="imageSrc && !isCropping" class="pixelation-slider-container">
+  <!-- Декоративні зображення -->
+  <div class="pixelation-decor-left"></div>
+  <div class="pixelation-decor-right"></div>
 
-      <input
-        type="range"
-        [min]="minPixelCount"
-        [max]="maxPixelCount"
-        step="1"
-        [(ngModel)]="pixelCount"
-        (ngModelChange)="updatePixelation()"
-        class="pixelation-slider"
-      />
-    </div>
-  
-    <!-- Вибір формату та назви файлу -->
-    <div *ngIf="imageSrc" class="pixelation-download-options">
-      <label class="pixelation-download-label">Назва файлу:</label>
-      <input
-        type="text"
-        [(ngModel)]="fileName"
-        placeholder="pixelated_image"
-        class="pixelation-input pixelation-input--filename"
-      />
-  
-      <label class="pixelation-download-label">Формат:</label>
-      <select
-        [(ngModel)]="downloadFormat"
-        class="pixelation-input pixelation-input--format"
-      >
-        <option value="image/png">PNG</option>
-        <option value="image/jpeg">JPEG</option>
-      </select>
-    </div>
-  
-    <!-- Кнопки -->
-    <div *ngIf="imageSrc" class="pixelation-buttons">
-      <button
-        *ngIf="history.length > 0"
-        (click)="undo()"
-        class="pixelation-button pixelation-button--undo"
-      >
-        Скасувати
-      </button>
-      <button
-        *ngIf="!isCropping"
-        (click)="startCropping()"
-        class="pixelation-button pixelation-button--crop"
-      >
-        Обрізати
-      </button>
-      <button
-        (click)="rotateImage()"
-        class="pixelation-button pixelation-button--rotate"
-      >
-        Повернути
-      </button>
-      <button
-        (click)="downloadImage()"
-        class="pixelation-button pixelation-button--download"
-      >
-        Завантажити
-      </button>
-    </div>
+  <!-- Початковий екран -->
+  <div *ngIf="!imageSrc" class="pixelation-welcome">
+    <h1 class="pixelation-title">Створіть власну схему!</h1>
+    <p class="pixelation-subtitle">Завантажте зображення, щоб перетворити його на піксельну картину</p>
+    <label for="file-upload" class="pixelation-upload-button">
+      <span class="pixelation-upload-icon">📷</span>
+      Виберіть зображення
+    </label>
+    <input
+      id="file-upload"
+      type="file"
+      accept="image/*"
+      (change)="onImageUpload($event)"
+      class="pixelation-input-hidden"
+    />
   </div>
+
+  <!-- Відображення canvas -->
+  <canvas
+    *ngIf="imageSrc"
+    #pixelationCanvas
+    class="pixelation-canvas"
+    (mousedown)="startCrop($event)"
+    (mousemove)="updateCrop($event)"
+    (mouseup)="endCrop()"
+  ></canvas>
+
+  <!-- Повзунок для пікселізації -->
+  <div *ngIf="imageSrc && !isCropping" class="pixelation-slider-container">
+    <input
+      type="range"
+      [min]="minPixelCount"
+      [max]="maxPixelCount"
+      step="1"
+      [(ngModel)]="pixelCount"
+      (ngModelChange)="updatePixelation()"
+      class="pixelation-slider"
+    />
+  </div>
+
+  <!-- Вибір формату та назви файлу -->
+  <div *ngIf="imageSrc" class="pixelation-download-options">
+    <label class="pixelation-download-label">Назва файлу:</label>
+    <input
+      type="text"
+      [(ngModel)]="fileName"
+      placeholder="pixelated_image"
+      class="pixelation-input pixelation-input--filename"
+    />
+
+    <label class="pixelation-download-label">Формат:</label>
+    <select
+      [(ngModel)]="downloadFormat"
+      class="pixelation-input pixelation-input--format"
+    >
+      <option value="image/png">PNG</option>
+      <option value="image/jpeg">JPEG</option>
+    </select>
+  </div>
+
+  <!-- Кнопки -->
+  <div *ngIf="imageSrc" class="pixelation-buttons">
+    <button
+      *ngIf="history.length > 0"
+      (click)="undo()"
+      class="pixelation-button pixelation-button--undo"
+    >
+      Скасувати
+    </button>
+    <button
+      *ngIf="!isCropping"
+      (click)="startCropping()"
+      class="pixelation-button pixelation-button--crop"
+    >
+      Обрізати
+    </button>
+    <button
+      (click)="rotateImage()"
+      class="pixelation-button pixelation-button--rotate"
+    >
+      Повернути
+    </button>
+    <button
+      (click)="downloadImage()"
+      class="pixelation-button pixelation-button--download"
+    >
+      Завантажити
+    </button>
+  </div>
+</div>

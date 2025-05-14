@@ -20,6 +20,8 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 # Application definition
 INSTALLED_APPS = [
+    'corsheaders',
+    'accounts',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -27,9 +29,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'rest_framework_simplejwt',  # Додано для SimpleJWT
-    'corsheaders',
-    'accounts',
+    'rest_framework_simplejwt',  
 ]
 
 MIDDLEWARE = [
@@ -85,9 +85,11 @@ REST_FRAMEWORK = {
 
 # CORS
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:4200',  # Angular
+    'http://localhost:4200',
+    "http://127.0.0.1:4200",
 ]
 
+CORS_ALLOW_ALL_ORIGINS = True
 # Email settings
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'

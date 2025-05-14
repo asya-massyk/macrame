@@ -1,41 +1,41 @@
 <nav class="navbar">
   <ul>
     <li>
-      <a href="/home">
+      <a (click)="navigateToHome()">
         <div class="logo-container nav-item">
           <img src="assets/icons/logo.svg" alt="Logo">
         </div>
       </a>
     </li>
-    <li>
-      <a href="/home" class="nav-item">
+    <li *ngIf="isAuthenticated">
+      <a (click)="navigateToHome()" class="nav-item">
         <img src="assets/icons/home.svg"> Головна
       </a>
     </li>
-    <li>
-      <a href="/editor" class="nav-item">
+    <li *ngIf="isAuthenticated">
+      <a (click)="navigateToEditor()" class="nav-item">
         <img src="assets/icons/edit.svg"> Редактор ескізу
       </a>
     </li>
-    <li>
-      <a href="/pixel" class="nav-item">
+    <li *ngIf="isAuthenticated">
+      <a (click)="navigateToPixel()" class="nav-item">
         <img src="assets/icons/pixel.svg"> Пікселізація
       </a>
     </li>
-    <li>
-      <a href="/community" class="nav-item">
-        <img src="assets/icons/community.svg"> Спільнота
-      </a>
-    </li>
-    <li>
-      <a href="/login" class="nav-item">
-        <img src="assets/icons/registration.svg"> Увійти/Зареєструватися
-      </a>      
-    </li>
-    <li>
-      <a href="/profile" class="nav-item">
+    <li *ngIf="isAuthenticated">
+      <a (click)="navigateToProfile()" class="nav-item">
         <img src="assets/icons/profile.svg"> Профіль
       </a>
+    </li>
+    <li *ngIf="!isAuthenticated">
+      <a (click)="navigateToLogin()" class="nav-item">
+        <img src="assets/icons/registration.svg"> Увійти/Зареєструватися
+      </a>
+    </li>
+    <li *ngIf="isAuthenticated">
+      <button class="nav-item logout-btn" (click)="logout()">
+        <img src="assets/icons/logout.svg" alt="Logout"> Вийти
+      </button>
     </li>
   </ul>
 </nav>

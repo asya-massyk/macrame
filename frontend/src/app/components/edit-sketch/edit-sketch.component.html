@@ -1,0 +1,50 @@
+<div class="edit-sketch-container">
+  <div class="sketch-controls">
+    <label for="width-input">Ширина (пікселів):</label>
+    <input type="number" id="width-input" [(ngModel)]="width" min="1" max="1000" />
+    <label for="height-input">Висота (пікселів):</label>
+    <input type="number" id="height-input" [(ngModel)]="height" min="1" max="1000" />
+    <label for="zoom-input">Масштаб (%):</label>
+    <input type="number" id="zoom-input" [(ngModel)]="zoomLevel" min="10" max="500" (ngModelChange)="updateZoom()" />
+    <button (click)="createCanvas()">Створити</button>
+  </div>
+
+  <div class="sketch-area">
+    <div class="canvas-wrapper">
+      <canvas #sketchCanvas class="sketch-canvas"></canvas>
+    </div>
+    <div class="color-palette">
+      <div class="color-grid">
+        <div
+          *ngFor="let color of basicColors"
+          class="color-item"
+          [style.backgroundColor]="color"
+          (click)="selectColor(color)"
+        ></div>
+      </div>
+      <div class="hue-strip" #hueStrip (click)="selectHue($event)">
+        <div class="hue-indicator" [style.left]="huePosition + '%'" [style.backgroundColor]="hueColor"></div>
+      </div>
+      <div class="lightness-control">
+        <label>Насиченість:</label>
+        <input type="range" min="0" max="100" [(ngModel)]="lightness" (ngModelChange)="updateColor()" />
+        <div class="selected-color" [style.backgroundColor]="selectedColor"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sketch-options">
+    <label for="file-name">Назва файлу:</label>
+    <input type="text" id="file-name" [(ngModel)]="fileName" placeholder="sketch" />
+    <label for="file-format">Формат:</label>
+    <select id="file-format" [(ngModel)]="downloadFormat">
+      <option value="image/png">PNG</option>
+      <option value="image/jpeg">JPEG</option>
+    </select>
+  </div>
+
+  <div class="sketch-actions">
+    <button *ngIf="history.length > 0" (click)="undo()">Скасувати</button>
+    <button (click)="saveSketch()">Зберегти</button>
+  </div>
+</div>

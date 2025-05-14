@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-root',
@@ -9,7 +10,8 @@ import { RouterModule } from '@angular/router';
   imports: [
     NavbarComponent, 
     RouterModule, 
-    FooterComponent
+    FooterComponent,
+    FormsModule
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']

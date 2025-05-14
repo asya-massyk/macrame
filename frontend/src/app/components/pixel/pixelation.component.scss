@@ -1,414 +1,423 @@
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.pixelation-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: calc(100vh - 195px);
+  background-color: #000;
+  padding: 20px;
+  padding-bottom: 220px;
+  font-family: 'Poppins', sans-serif;
+  overflow-y: auto;
+  position: relative;
+  z-index: 10;
+}
+
+
+.pixelation-decor-left,
+.pixelation-decor-right {
+  position: fixed;
+  top: 10%; /* Зміщено ближче до верху */
+  width: 210px; 
+  height: 80%; 
+  background-image: url('/assets/picture.svg');
+  background-repeat: no-repeat;
+  background-size: 210px auto;
+  z-index: 5;
+}
+
+.pixelation-decor-left {
+  left: 0;
+  background-position: left top 0;
+}
+
+.pixelation-decor-right {
+  right: 0;
+  background-position: right top 0;
+  transform: scaleX(-1);
+}
+
+.pixelation-welcome {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  animation: fadeIn 1s ease-in-out;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 20px;
+  border-radius: 12px;
+}
+
+.pixelation-title {
+  font-size: 48px;
+  font-weight: bold;
+  color: #3344dc;
+  margin-bottom: 15px;
+  animation: slideInLeft 1s ease-in-out;
+}
+
+.pixelation-subtitle {
+  font-size: 20px;
+  color: #585E83;
+  margin-bottom: 30px;
+  max-width: 600px;
+  animation: fadeIn 1s ease-in-out;
+}
+
+.pixelation-upload-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 15px 30px;
+  background-color: #3344dc;
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 500;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  animation: fadeIn 1s ease-in-out;
+}
+
+.pixelation-upload-button:hover {
+  background-color: #2233b0;
+  transform: scale(1.05);
+}
+
+.pixelation-upload-icon {
+  margin-right: 10px;
+  font-size: 24px;
+}
+
+.pixelation-input-hidden {
+  display: none;
+}
+
+.pixelation-input {
+  padding: 10px;
+  border: 2px solid #585e83;
+  border-radius: 10px;
+  background-color: #fff;
+  margin-bottom: 20px;
+  transition: border-color 0.3s ease;
+}
+
+.pixelation-input:hover {
+  border-color: #3344dc;
+}
+
+.pixelation-input--filename,
+.pixelation-input--format {
+  width: 200px;
+  margin-right: 10px;
+}
+
+.pixelation-canvas {
+  top: 10%;
+  max-width: 500px; /* Фіксований максимум */
+  max-height: 300px; /* Фіксований максимум */
+  border-radius: 10px;
+  margin-bottom: 20px;
+  object-fit: contain;
+  animation: slideInRight 1s ease-in-out;
+  cursor: crosshair;
+  z-index: 15;
+  display: block;
+}
+
+.pixelation-slider-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 500px;
+  margin-bottom: 20px;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 10px;
+  border-radius: 12px;
+}
+
+.pixelation-slider-label {
+  font-size: 18px;
+  color: #ffffff;
+  margin-bottom: 10px;
+  animation: fadeIn 1s ease-in-out;
+}
+
+.pixelation-slider {
+  width: 100%;
+  height: 8px;
+  background-color: #585e83;
+  border-radius: 5px;
+  outline: none;
+  transition: background-color 0.3s ease;
+}
+
+.pixelation-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background-color: #3344dc;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.pixelation-slider::-webkit-slider-thumb:hover {
+  background-color: #2233b0;
+}
+
+.pixelation-download-options {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 10px;
+  border-radius: 12px;
+}
+
+.pixelation-download-label {
+  font-size: 16px;
+  color: #ffffff;
+  animation: fadeIn 1s ease-in-out;
+}
+
+.pixelation-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 10px;
+  border-radius: 12px;
+  position: sticky;
+  bottom: 20px;
+  z-index: 20;
+}
+
+.pixelation-button {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  animation: fadeIn 1s ease-in-out;
+}
+
+.pixelation-button--crop {
+  background-color: #6633dc;
+}
+
+.pixelation-button--crop:hover {
+  background-color: #4d26a8;
+  transform: scale(1.05);
+}
+
+.pixelation-button--download {
+  background-color: #d657c1;
+}
+
+.pixelation-button--download:hover {
+  background-color: #963e87;
+  transform: scale(1.05);
+}
+
+.pixelation-button--rotate {
+  background-color: #803ca0;
+}
+
+.pixelation-button--rotate:hover {
+  background-color: #4a235c;
+  transform: scale(1.05);
+}
+
+.pixelation-button--undo {
+  background-color: #3344dc;
+}
+
+.pixelation-button--undo:hover {
+  background-color: #2233b0;
+  transform: scale(1.05);
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
   }
-  
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media screen and (max-width: 1024px) {
+  .pixelation-decor-left,
+  .pixelation-decor-right {
+    width: 120px;
+    background-size: 120px auto;
+  }
+
   .pixelation-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: calc(100vh - 195px);
-    max-height: 100%;
-    background-color: #000;
-    background-image: 
-      url('/assets/picture.svg');
-    background-position: 
-      left 0px top 100%,
-      right 0px top 100%;
-    background-repeat: no-repeat;
-    background-size: 200px auto;
-    padding: 0px;
-    font-family: 'Poppins', sans-serif;
-    overflow-y: auto;
-    position: relative;
-    z-index: 10;
+    padding: 15px;
+    padding-bottom: 220px;
   }
-  
-  /* Відзеркалення правого зображення */
-  .pixelation-container::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 10px;
-    width: 200px;
-    height: 100%;
-    background-image: url('/assets/picture.svg');
-    background-position: right top 50%;
-    background-repeat: no-repeat;
-    background-size: 200px auto;
-    transform: scaleX(-1);
-    z-index: 5;
-  }
-  
-  .pixelation-welcome {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    animation: fadeIn 1s ease-in-out;
-    background-color: rgba(0, 0, 0, 0.7); /* Напівпрозорий фон для читабельності */
-    padding: 20px;
-    border-radius: 12px;
-  }
-  
+
   .pixelation-title {
-    font-size: 48px;
-    font-weight: bold;
-    color: #3344dc;
-    margin-bottom: 15px;
-    animation: slideInLeft 1s ease-in-out;
+    font-size: 36px;
   }
-  
+
   .pixelation-subtitle {
-    font-size: 20px;
-    color: #585E83;
-    margin-bottom: 30px;
-    max-width: 600px;
-    animation: fadeIn 1s ease-in-out;
-  }
-  
-  .pixelation-upload-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 15px 30px;
-    background-color: #3344dc;
-    color: #000000;
     font-size: 18px;
-    font-weight: 500;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-    animation: fadeIn 1s ease-in-out;
   }
-  
-  .pixelation-upload-button:hover {
-    background-color: #2233b0;
-    transform: scale(1.05);
+
+  .pixelation-upload-button {
+    padding: 12px 25px;
+    font-size: 16px;
   }
-  
-  .pixelation-upload-icon {
-    margin-right: 10px;
-    font-size: 24px;
+
+  .pixelation-canvas {
+    max-width: 700px;
+    max-height: 550px;
   }
-  
-  .pixelation-input-hidden {
-    display: none;
+
+  .pixelation-slider-container {
+    max-width: 400px;
   }
-  
-  .pixelation-input {
-    padding: 10px;
-    border: 2px solid #585e83;
-    border-radius: 10px;
-    background-color: #fff;
-    margin-bottom: 20px;
-    transition: border-color 0.3s ease;
+
+  .pixelation-button {
+    padding: 10px 20px;
+    font-size: 14px;
   }
-  
-  .pixelation-input:hover {
-    border-color: #3344dc;
-  }
-  
+
   .pixelation-input--filename,
   .pixelation-input--format {
-    width: 200px;
-    margin-right: 10px;
+    width: 150px;
   }
-  
-  .pixelation-canvas {
-    max-width: 95%;
-    max-height: calc(100vh - 195px);
-    border: 2px solid #585e83;
-    border-radius: 10px;
-    margin-bottom: 20px;
-    object-fit: contain;
-    animation: slideInRight 1s ease-in-out;
-    cursor: crosshair;
-    z-index: 15;
-    background-color: rgba(0, 0, 0, 0.7); /* Напівпрозорий фон для canvas */
+}
+
+@media screen and (max-width: 632px) {
+  .pixelation-decor-left,
+  .pixelation-decor-right {
+    width: 100px;
+    background-size: 100px auto;
   }
-  
-  .pixelation-slider-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    max-width: 500px;
-    margin-bottom: 20px;
-    background-color: rgba(0, 0, 0, 0.7); /* Напівпрозорий фон */
+
+  .pixelation-container {
     padding: 10px;
-    border-radius: 12px;
+    padding-bottom: 220px;
   }
-  
-  .pixelation-slider-label {
-    font-size: 18px;
-    color: #ffffff;
+
+  .pixelation-title {
+    font-size: 28px;
     margin-bottom: 10px;
-    animation: fadeIn 1s ease-in-out;
   }
-  
-  .pixelation-slider {
-    width: 100%;
-    height: 8px;
-    background-color: #585e83;
-    border-radius: 5px;
-    outline: none;
-    transition: background-color 0.3s ease;
-  }
-  
-  .pixelation-slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 20px;
-    height: 20px;
-    background-color: #3344dc;
-    border-radius: 50%;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .pixelation-slider::-webkit-slider-thumb:hover {
-    background-color: #2233b0;
-  }
-  
-  .pixelation-download-options {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+
+  .pixelation-subtitle {
+    font-size: 16px;
     margin-bottom: 20px;
-    background-color: rgba(0, 0, 0, 0.7); /* Напівпрозорий фон */
-    padding: 10px;
-    border-radius: 12px;
   }
-  
-  .pixelation-download-label {
-    font-size: 16px;
-    color: #ffffff;
-    animation: fadeIn 1s ease-in-out;
+
+  .pixelation-upload-button {
+    padding: 10px 20px;
+    font-size: 14px;
   }
-  
-  .pixelation-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    flex-wrap: wrap;
-    background-color: rgba(0, 0, 0, 0.7); /* Напівпрозорий фон */
-    padding: 10px;
-    border-radius: 12px;
+
+  .pixelation-canvas {
+    max-width: 600px;
+    max-height: 450px;
   }
-  
+
+  .pixelation-slider-container {
+    max-width: 300px;
+  }
+
   .pixelation-button {
-    padding: 12px 24px;
-    border: none;
-    border-radius: 10px;
-    font-size: 16px;
-    color: #fff;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-    animation: fadeIn 1s ease-in-out;
+    padding: 8px 16px;
+    font-size: 12px;
   }
-  
-  .pixelation-button--crop {
-    background-color: #6633dc;
+
+  .pixelation-download-options {
+    flex-direction: column;
+    align-items: flex-start;
   }
-  
-  .pixelation-button--crop:hover {
-    background-color: #4d26a8;
-    transform: scale(1.05);
+}
+
+@media screen and (max-width: 500px) {
+  .pixelation-decor-left,
+  .pixelation-decor-right {
+    width: 80px;
+    background-size: 80px auto;
   }
-  
-  .pixelation-button--download {
-    background-color: #d657c1;
+
+  .pixelation-container {
+    padding: 5px;
+    padding-bottom: 220px;
   }
-  
-  .pixelation-button--download:hover {
-    background-color: #963e87;
-    transform: scale(1.05);
+
+  .pixelation-title {
+    font-size: 24px;
+    margin-bottom: 10px;
   }
-  
-  .pixelation-button--rotate {
-    background-color: #803ca0;
+
+  .pixelation-subtitle {
+    font-size: 14px;
+    margin-bottom: 15px;
   }
-  
-  .pixelation-button--rotate:hover {
-    background-color: #4a235c;
-    transform: scale(1.05);
+
+  .pixelation-upload-button {
+    padding: 8px 16px;
+    font-size: 12px;
   }
-  
-  .pixelation-button--undo {
-    background-color: #3344dc;
+
+  .pixelation-canvas {
+    max-width: 400px;
+    max-height: 300px;
   }
-  
-  .pixelation-button--undo:hover {
-    background-color: #2233b0;
-    transform: scale(1.05);
+
+  .pixelation-buttons {
+    flex-direction: column;
+    gap: 10px;
   }
-  
-  @keyframes slideInLeft {
-    from {
-      opacity: 0;
-      transform: translateX(-20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
+
+  .pixelation-button {
+    width: 100%;
+    padding: 10px;
   }
-  
-  @keyframes slideInRight {
-    from {
-      opacity: 0;
-      transform: translateX(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
+
+  .pixelation-input--filename,
+  .pixelation-input--format {
+    width: 100%;
   }
-  
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(-10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  
-  @media screen and (max-width: 1024px) {
-    .pixelation-container {
-      padding: 15px;
-      background-size: 150px auto;
-    }
-  
-    .pixelation-container::after {
-      background-size: 150px auto;
-      right: 5px;
-    }
-  
-    .pixelation-title {
-      font-size: 36px;
-    }
-  
-    .pixelation-subtitle {
-      font-size: 18px;
-    }
-  
-    .pixelation-upload-button {
-      padding: 12px 25px;
-      font-size: 16px;
-    }
-  
-    .pixelation-canvas {
-      max-width: 90%;
-      max-height: calc(100vh - 195px);
-    }
-  
-    .pixelation-slider-container {
-      max-width: 400px;
-    }
-  
-    .pixelation-button {
-      padding: 10px 20px;
-      font-size: 14px;
-    }
-  
-    .pixelation-input--filename,
-    .pixelation-input--format {
-      width: 150px;
-    }
-  }
-  
-  @media screen and (max-width: 632px) {
-    .pixelation-container {
-      padding: 10px;
-      background-size: 100px auto;
-    }
-  
-    .pixelation-container::after {
-      background-size: 100px auto;
-      right: 5px;
-    }
-  
-    .pixelation-title {
-      font-size: 28px;
-      margin-bottom: 10px;
-    }
-  
-    .pixelation-subtitle {
-      font-size: 16px;
-      margin-bottom: 20px;
-    }
-  
-    .pixelation-upload-button {
-      padding: 10px 20px;
-      font-size: 14px;
-    }
-  
-    .pixelation-canvas {
-      max-height: calc(100vh - 195px);
-    }
-  
-    .pixelation-slider-container {
-      max-width: 300px;
-    }
-  
-    .pixelation-button {
-      padding: 8px 16px;
-      font-size: 12px;
-    }
-  
-    .pixelation-download-options {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-  }
-  
-  @media screen and (max-width: 500px) {
-    .pixelation-container {
-      padding: 5px;
-      background-size: 80px auto;
-      background-position: 
-        left 5px top 50%,
-        right 5px top 50%;
-    }
-  
-    .pixelation-container::after {
-      background-size: 80px auto;
-      right: 5px;
-    }
-  
-    .pixelation-title {
-      font-size: 24px;
-      margin-bottom: 10px;
-    }
-  
-    .pixelation-subtitle {
-      font-size: 14px;
-      margin-bottom: 15px;
-    }
-  
-    .pixelation-upload-button {
-      padding: 8px 16px;
-      font-size: 12px;
-    }
-  
-    .pixelation-buttons {
-      flex-direction: column;
-      gap: 10px;
-    }
-  
-    .pixelation-button {
-      width: 100%;
-      padding: 10px;
-    }
-  
-    .pixelation-input--filename,
-    .pixelation-input--format {
-      width: 100%;
-    }
-  }
+}

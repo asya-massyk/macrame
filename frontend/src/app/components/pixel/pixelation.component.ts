@@ -29,6 +29,7 @@ export class PixelationComponent implements AfterViewInit {
   public history: { imageSrc: string; pixelCount: number; imageWidth: number; imageHeight: number }[] = [];
 
   ngAfterViewInit(): void {
+    window.addEventListener('resize', () => this.adjustCanvasSize());
     this.adjustCanvasSize();
   }
 
@@ -64,12 +65,17 @@ export class PixelationComponent implements AfterViewInit {
 
     const canvas = this.canvasRef.nativeElement;
     const aspectRatio = this.originalImage.width / this.originalImage.height;
-    let newHeight = Math.min(this.maxHeight, this.originalImage.height);
-    let newWidth = newHeight * aspectRatio;
+    let newWidth = Math.min(800, this.originalImage.width); // Фіксований максимум 800px
+    let newHeight = newWidth / aspectRatio;
 
-    const parentWidth = canvas.parentElement?.clientWidth ?? canvas.width;
-    if (newWidth > parentWidth * 0.95) {
-      newWidth = parentWidth * 0.95;
+    if (newHeight > 600) { // Фіксований максимум 600px
+      newHeight = 600;
+      newWidth = newHeight * aspectRatio;
+    }
+
+    const parentWidth = window.innerWidth * 0.95;
+    if (newWidth > parentWidth) {
+      newWidth = parentWidth;
       newHeight = newWidth / aspectRatio;
     }
 
@@ -77,8 +83,9 @@ export class PixelationComponent implements AfterViewInit {
     canvas.height = Math.round(newHeight);
     canvas.style.width = `${newWidth}px`;
     canvas.style.height = `${newHeight}px`;
+    canvas.style.margin = '0 auto'; // Центрування canvas
 
-    console.log('adjustCanvasSize:', { width: canvas.width, height: canvas.height, parentWidth });
+    console.log('adjustCanvasSize:', { width: canvas.width, height: canvas.height, parentWidth, aspectRatio });
     this.renderImage();
   }
 
@@ -86,13 +93,42 @@ export class PixelationComponent implements AfterViewInit {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        this.history = [];
-        this.imageSrc = reader.result as string;
-        this.loadImage(this.imageSrc);
+      if (file.size > 5 * 1024 * 1024) {
+        console.error('Image too large (max 5MB)');
+        alert('Зображення занадто велике (максимум 5MB)');
+        return;
+      }
+      if (!['image/jpeg', 'image/png'].includes(file.type)) {
+        console.error('Invalid format (JPEG/PNG only)');
+        alert('Непідтримуваний формат (тільки JPEG або PNG)');
+        return;
+      }
+
+      const img = new Image();
+      const url = URL.createObjectURL(file);
+      img.src = url;
+      img.onload = () => {
+        URL.revokeObjectURL(url);
+        const maxWidth = 3000;
+        const maxHeight = 3000;
+        if (img.width > maxWidth || img.height > maxHeight) {
+          console.error(`Image dimensions too large (max ${maxWidth}x${maxHeight})`);
+          alert(`Розмір зображення занадто великий (максимум ${maxWidth}x${maxHeight} пікселів)`);
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = () => {
+          this.history = [];
+          this.imageSrc = reader.result as string;
+          this.loadImage(this.imageSrc);
+        };
+        reader.readAsDataURL(file);
       };
-      reader.readAsDataURL(file);
+      img.onerror = () => {
+        URL.revokeObjectURL(url);
+        console.error('Failed to load image for validation');
+        alert('Не вдалося завантажити зображення');
+      };
     }
   }
 
@@ -128,7 +164,6 @@ export class PixelationComponent implements AfterViewInit {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Тимчасовий canvas для пікселізації
     const tempCanvas = document.createElement('canvas');
     const tempCtx = tempCanvas.getContext('2d');
     if (!tempCtx) return;
@@ -137,7 +172,6 @@ export class PixelationComponent implements AfterViewInit {
     tempCanvas.height = this.originalImage.height;
     tempCtx.drawImage(this.originalImage, 0, 0, tempCanvas.width, tempCanvas.height);
 
-    // Обчислюємо розмір квадратного пікселя
     const pixelSize = Math.min(tempCanvas.width, tempCanvas.height) / this.pixelCount;
     const imageData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
     const data = imageData.data;
@@ -155,11 +189,13 @@ export class PixelationComponent implements AfterViewInit {
       }
     }
 
-    // Масштабуємо на основний canvas
-    const scale = Math.min(canvas.width / this.originalImage.width, canvas.height / this.originalImage.height);
-    const drawWidth = this.originalImage.width * scale;
-    const drawHeight = this.originalImage.height * scale;
-    ctx.drawImage(tempCanvas, 0, 0, drawWidth, drawHeight);
+    const scale = Math.min(canvas.width / tempCanvas.width, canvas.height / tempCanvas.height);
+    const drawWidth = tempCanvas.width * scale;
+    const drawHeight = tempCanvas.height * scale;
+    const offsetX = (canvas.width - drawWidth) / 2;
+    const offsetY = (canvas.height - drawHeight) / 2;
+
+    ctx.drawImage(tempCanvas, offsetX, offsetY, drawWidth, drawHeight);
 
     if (this.isCropping && this.cropStart && this.cropEnd && this.isMouseDown) {
       let cropX = Math.min(this.cropStart.x, this.cropEnd.x);
@@ -197,7 +233,8 @@ export class PixelationComponent implements AfterViewInit {
       pixelCount: this.pixelCount,
       pixelSize: pixelSize,
       canvasSize: { width: canvas.width, height: canvas.height },
-      drawSize: { width: drawWidth, height: drawHeight }
+      drawSize: { width: drawWidth, height: drawHeight },
+      offset: { x: offsetX, y: offsetY }
     });
   }
 
@@ -226,8 +263,8 @@ export class PixelationComponent implements AfterViewInit {
     const scaleX = canvas.width / rect.width;
     const scaleY = canvas.height / rect.height;
     this.cropStart = {
-      x: (event.clientX - rect.left) * scaleX,
-      y: (event.clientY - rect.top) * scaleY,
+      x: Math.max(0, Math.min((event.clientX - rect.left) * scaleX, canvas.width)),
+      y: Math.max(0, Math.min((event.clientY - rect.top) * scaleY, canvas.height)),
     };
     this.cropEnd = { ...this.cropStart };
     this.isMouseDown = true;
@@ -248,16 +285,29 @@ export class PixelationComponent implements AfterViewInit {
     x = Math.max(0, Math.min(x, canvas.width));
     y = Math.max(0, Math.min(y, canvas.height));
 
+    let cropWidth = Math.abs(x - this.cropStart.x);
+    let cropHeight = Math.abs(y - this.cropStart.y);
+
+    cropWidth = Math.max(cropWidth, this.minCropSize);
+    cropHeight = Math.max(cropHeight, this.minCropSize);
+
     if (this.aspectRatio) {
-      let cropWidth = Math.abs(x - this.cropStart.x);
-      let cropHeight = Math.abs(y - this.cropStart.y);
       if (cropWidth / cropHeight > this.aspectRatio) {
         cropWidth = cropHeight * this.aspectRatio;
       } else {
         cropHeight = cropWidth / this.aspectRatio;
       }
-      x = this.cropStart.x + (x > this.cropStart.x ? cropWidth : -cropWidth);
-      y = this.cropStart.y + (y > this.cropStart.y ? cropHeight : -cropHeight);
+    }
+
+    if (x < this.cropStart.x) {
+      x = Math.max(0, this.cropStart.x - cropWidth);
+    } else {
+      x = Math.min(canvas.width, this.cropStart.x + cropWidth);
+    }
+    if (y < this.cropStart.y) {
+      y = Math.max(0, this.cropStart.y - cropHeight);
+    } else {
+      y = Math.min(canvas.height, this.cropStart.y + cropHeight);
     }
 
     this.cropEnd = { x, y };
@@ -300,7 +350,6 @@ export class PixelationComponent implements AfterViewInit {
 
     this.saveState();
 
-    // Обчислюємо координати в просторі originalImage
     const scaleX = this.originalImage.width / canvas.width;
     const scaleY = this.originalImage.height / canvas.height;
     const origCropX = Math.round(cropX * scaleX);
@@ -308,7 +357,6 @@ export class PixelationComponent implements AfterViewInit {
     const origCropWidth = Math.round(cropWidth * scaleX);
     const origCropHeight = Math.round(cropHeight * scaleY);
 
-    // Тимчасовий canvas для обрізки та пікселізації
     const tempCanvas = document.createElement('canvas');
     const tempCtx = tempCanvas.getContext('2d');
     if (!tempCtx) return;
@@ -316,7 +364,6 @@ export class PixelationComponent implements AfterViewInit {
     tempCanvas.width = origCropWidth;
     tempCanvas.height = origCropHeight;
 
-    // Обрізаємо зображення
     tempCtx.drawImage(
       this.originalImage,
       origCropX,
@@ -329,7 +376,6 @@ export class PixelationComponent implements AfterViewInit {
       origCropHeight
     );
 
-    // Застосовуємо пікселізацію
     const pixelSize = Math.min(origCropWidth, origCropHeight) / this.pixelCount;
     const imageData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
     const data = imageData.data;
@@ -374,10 +420,7 @@ export class PixelationComponent implements AfterViewInit {
 
     const tempCanvas = document.createElement('canvas');
     const tempCtx = tempCanvas.getContext('2d');
-    if (!tempCtx) {
-      console.error('Failed to get 2D context for temporary canvas');
-      return;
-    }
+    if (!tempCtx) return;
 
     tempCanvas.width = this.originalImage.height;
     tempCanvas.height = this.originalImage.width;
