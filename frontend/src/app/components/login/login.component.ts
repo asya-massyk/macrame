@@ -12,8 +12,10 @@ import { FormsModule } from '@angular/forms';
 })
 export class LoginComponent {
     user = { identifier: '', password: '' };
+    forgotPasswordEmail: string = '';
     error: string | null = null;
     message: string | null = null;
+    showForgotPassword: boolean = false;
 
     constructor(
         private router: Router,
@@ -28,7 +30,7 @@ export class LoginComponent {
             this.cdr.detectChanges();
             return;
         }
-        console.log('Attempting login with:', this.user);
+        console.log('Attempting login with identifier:', this.user.identifier);
         this.authService.login(this.user).subscribe({
             next: (response) => {
                 console.log('Login response in LoginComponent:', response);
@@ -48,6 +50,39 @@ export class LoginComponent {
                 } else {
                     this.message = null;
                 }
+                this.cdr.detectChanges();
+            }
+        });
+    }
+
+    showForgotPasswordForm(event: Event) {
+        event.preventDefault();
+        this.showForgotPassword = !this.showForgotPassword;
+        this.error = null;
+        this.message = null;
+        this.forgotPasswordEmail = '';
+        this.cdr.detectChanges();
+    }
+
+    onForgotPasswordSubmit(event: Event) {
+        event.preventDefault();
+        if (!this.forgotPasswordEmail) {
+            this.error = 'Введіть ваш email';
+            this.cdr.detectChanges();
+            return;
+        }
+        console.log('Forgot password email before sending:', this.forgotPasswordEmail);
+        const normalizedEmail = this.forgotPasswordEmail.trim().toLowerCase();
+        console.log('Normalized email:', normalizedEmail);
+        this.authService.requestPasswordReset(normalizedEmail).subscribe({
+            next: (response) => {
+                this.message = 'Посилання для відновлення пароля надіслано на ваш email';
+                this.error = null;
+                this.cdr.detectChanges();
+            },
+            error: (err) => {
+                this.error = err.message || 'Помилка: email не знайдено';
+                this.message = null;
                 this.cdr.detectChanges();
             }
         });

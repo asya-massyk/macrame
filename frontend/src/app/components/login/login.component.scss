@@ -1,6 +1,6 @@
 $primary-color: #D95DB0;
 $secondary-color: #3344DC;
-$placeholder-color: #aaa; // Сірий колір для placeholder
+$placeholder-color: #aaa;
 
 body {
     font-family: Arial, sans-serif;
@@ -45,11 +45,10 @@ body {
   text-align: center;
 }
 
-
 h1 {
     font-size: 26px;
-    margin-top: -20px; // Піднімаємо заголовок вище
-    margin-bottom: 50px; // Відступ після заголовка
+    margin-top: -20px;
+    margin-bottom: 50px;
     color: black;
 }
 
@@ -60,6 +59,7 @@ h1 {
     align-items: center;
 }
 
+input[type="text"],
 input[type="email"],
 input[type="password"] {
     width: 333px;
@@ -107,6 +107,7 @@ a {
 a:hover {
     text-decoration: underline;
 }
+
 .input-group {
   position: relative;
   display: flex;

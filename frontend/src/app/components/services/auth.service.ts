@@ -53,8 +53,6 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/register/`, user);
   }
 
-  showWelcomeMessage = true;
-
   login(user: { identifier: string; password: string }): Observable<LoginResponse> {
     console.log('Sending login request to:', `${this.apiUrl}/login/`, JSON.stringify(user));
     return this.http.post<LoginResponse>(`${this.apiUrl}/login/`, user, {
@@ -73,11 +71,8 @@ export class AuthService {
               token: response.token,
               refresh: response.refresh
             });
-          } else {
-            console.error('localStorage is not available');
           }
           this.isLoggedInSubject.next(true);
-          console.log('Login successful, isLoggedIn set to true');
           this.router.navigate(['/home']);
         }
       }),
@@ -93,18 +88,6 @@ export class AuthService {
         return throwError(() => new Error(errorMessage));
       })
     );
-  }
-
-  private checkInitialAuthState() {
-    const token = this.getToken();
-    if (token) {
-      // Тимчасово вважаємо токен валідним, якщо він є (обхід /api/validate-token)
-      this.isLoggedInSubject.next(true);
-      console.log('Initial auth state (based on token): true');
-    } else {
-      this.isLoggedInSubject.next(false);
-      console.log('Initial auth state: false');
-    }
   }
 
   verifyEmail(token: string): Observable<VerifyEmailResponse> {
@@ -130,8 +113,6 @@ export class AuthService {
     if (!token) {
       return of(false);
     }
-
-    // Тимчасово повертаємо true, якщо токен є (оскільки /api/validate-token не працює)
     return of(true).pipe(
       tap(() => console.log('Token assumed valid (localStorage check)')),
       catchError(error => {
@@ -142,13 +123,71 @@ export class AuthService {
   }
 
   logout() {
-    this.showWelcomeMessage = false;
     if (this.isLocalStorageAvailable()) {
       localStorage.removeItem('token');
       localStorage.removeItem('refresh');
     }
     this.isLoggedInSubject.next(false);
-    console.log('Logged out, isLoggedIn set to false');
     this.router.navigate(['/login']);
+  }
+
+  requestPasswordReset(email: string): Observable<any> {
+    console.log('Sending password reset request for:', email);
+    if (!this.isLocalStorageAvailable()) {
+      return throwError(() => new Error('localStorage is not available'));
+    }
+
+    const url = `${this.apiUrl}/forgot-password/`;
+    return this.http.post(url, { email }, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json; charset=utf-8'
+      }
+    }).pipe(
+      tap(response => {
+        console.log('Password reset response:', response);
+        localStorage.setItem('resetRequested', email);
+      }),
+      catchError(err => {
+        console.error('Password reset error:', err);
+        let errorMessage = 'Помилка: email не знайдено';
+        if (err.error && err.error.error) {
+          errorMessage = String(err.error.error);
+        }
+        return throwError(() => new Error(errorMessage));
+      })
+    );
+  }
+
+  resetPassword(data: { token: string; new_password: string; confirm_password: string }): Observable<any> {
+  console.log('Sending reset password request:', data);
+  const url = `${this.apiUrl}/reset-password/`;
+  return this.http.post(url, data, {
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json; charset=utf-8'
+    }
+  }).pipe(
+    tap(response => console.log('Reset password response:', response)),
+    catchError(err => {
+      console.error('Reset password error:', err);
+      let errorMessage = 'Помилка скидання пароля';
+      if (err.error && err.error.error) {
+        errorMessage = String(err.error.error);
+      }
+      return throwError(() => new Error(errorMessage));
+    })
+  );
+}
+
+  private checkInitialAuthState() {
+    const token = this.getToken();
+    if (token) {
+      this.isLoggedInSubject.next(true);
+      console.log('Initial auth state (based on token): true');
+    } else {
+      this.isLoggedInSubject.next(false);
+      console.log('Initial auth state: false');
+    }
   }
 }
