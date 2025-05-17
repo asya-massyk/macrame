@@ -1,9 +1,7 @@
 <div class="pixelation-container">
-  <!-- Декоративні зображення -->
   <div class="pixelation-decor-left"></div>
   <div class="pixelation-decor-right"></div>
 
-  <!-- Початковий екран -->
   <div *ngIf="!imageSrc" class="pixelation-welcome">
     <h1 class="pixelation-title">Створіть власну схему!</h1>
     <p class="pixelation-subtitle">Завантажте зображення, щоб перетворити його на піксельну картину</p>
@@ -20,7 +18,6 @@
     />
   </div>
 
-  <!-- Відображення canvas -->
   <canvas
     *ngIf="imageSrc"
     #pixelationCanvas
@@ -30,7 +27,6 @@
     (mouseup)="endCrop()"
   ></canvas>
 
-  <!-- Повзунок для пікселізації -->
   <div *ngIf="imageSrc && !isCropping" class="pixelation-slider-container">
     <input
       type="range"
@@ -43,7 +39,6 @@
     />
   </div>
 
-  <!-- Вибір формату та назви файлу -->
   <div *ngIf="imageSrc" class="pixelation-download-options">
     <label class="pixelation-download-label">Назва файлу:</label>
     <input
@@ -63,7 +58,6 @@
     </select>
   </div>
 
-  <!-- Кнопки -->
   <div *ngIf="imageSrc" class="pixelation-buttons">
     <button
       *ngIf="history.length > 0"

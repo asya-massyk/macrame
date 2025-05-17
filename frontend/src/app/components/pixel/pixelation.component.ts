@@ -26,6 +26,7 @@ export class PixelationComponent implements AfterViewInit {
   private minCropSize: number = 10;
   private aspectRatio: number | null = null;
   private maxHeight: number = window.innerHeight - 195;
+  private preservePixelCount: number | null = null;
   public history: { imageSrc: string; pixelCount: number; imageWidth: number; imageHeight: number }[] = [];
 
   ngAfterViewInit(): void {
@@ -49,7 +50,17 @@ export class PixelationComponent implements AfterViewInit {
   }
 
   undo(): void {
-    if (this.history.length === 0) return;
+    if (this.history.length === 0) {
+      this.imageSrc = null;
+      this.originalImage = null;
+      this.pixelCount = 20;
+      this.isCropping = false;
+      this.cropStart = null;
+      this.cropEnd = null;
+      this.isMouseDown = false;
+      console.log('Undo: Reverted to initial state');
+      return;
+    }
 
     const lastState = this.history.pop();
     if (lastState) {
@@ -65,10 +76,10 @@ export class PixelationComponent implements AfterViewInit {
 
     const canvas = this.canvasRef.nativeElement;
     const aspectRatio = this.originalImage.width / this.originalImage.height;
-    let newWidth = Math.min(800, this.originalImage.width); // Фіксований максимум 800px
+    let newWidth = Math.min(800, this.originalImage.width);
     let newHeight = newWidth / aspectRatio;
 
-    if (newHeight > 600) { // Фіксований максимум 600px
+    if (newHeight > 600) {
       newHeight = 600;
       newWidth = newHeight * aspectRatio;
     }
@@ -83,7 +94,7 @@ export class PixelationComponent implements AfterViewInit {
     canvas.height = Math.round(newHeight);
     canvas.style.width = `${newWidth}px`;
     canvas.style.height = `${newHeight}px`;
-    canvas.style.margin = '0 auto'; // Центрування canvas
+    canvas.style.margin = '0 auto';
 
     console.log('adjustCanvasSize:', { width: canvas.width, height: canvas.height, parentWidth, aspectRatio });
     this.renderImage();
@@ -121,6 +132,7 @@ export class PixelationComponent implements AfterViewInit {
           this.history = [];
           this.imageSrc = reader.result as string;
           this.loadImage(this.imageSrc);
+          this.saveState(); // Зберігаємо початковий стан
         };
         reader.readAsDataURL(file);
       };
@@ -138,7 +150,12 @@ export class PixelationComponent implements AfterViewInit {
     img.onload = () => {
       this.originalImage = img;
       this.maxPixelCount = Math.max(100, Math.floor(Math.min(img.width, img.height) / 5));
-      this.pixelCount = Math.min(this.maxPixelCount, Math.max(this.minPixelCount, 20));
+      if (this.preservePixelCount !== null) {
+        this.pixelCount = Math.min(this.maxPixelCount, Math.max(this.minPixelCount, this.preservePixelCount));
+        this.preservePixelCount = null;
+      } else {
+        this.pixelCount = Math.min(this.maxPixelCount, Math.max(this.minPixelCount, 20));
+      }
       console.log('loadImage:', { 
         width: img.width, 
         height: img.height, 
@@ -349,6 +366,7 @@ export class PixelationComponent implements AfterViewInit {
     }
 
     this.saveState();
+    this.preservePixelCount = this.pixelCount;
 
     const scaleX = this.originalImage.width / canvas.width;
     const scaleY = this.originalImage.height / canvas.height;
@@ -376,22 +394,6 @@ export class PixelationComponent implements AfterViewInit {
       origCropHeight
     );
 
-    const pixelSize = Math.min(origCropWidth, origCropHeight) / this.pixelCount;
-    const imageData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
-    const data = imageData.data;
-    tempCtx.clearRect(0, 0, tempCanvas.width, tempCanvas.height);
-    for (let y = 0; y < tempCanvas.height; y += pixelSize) {
-      for (let x = 0; x < tempCanvas.width; x += pixelSize) {
-        const pixelIndex = (Math.floor(y) * tempCanvas.width + Math.floor(x)) * 4;
-        const r = data[pixelIndex];
-        const g = data[pixelIndex + 1];
-        const b = data[pixelIndex + 2];
-        const a = data[pixelIndex + 3];
-        tempCtx.fillStyle = `rgba(${r}, ${g}, ${b}, ${a / 255})`;
-        tempCtx.fillRect(x, y, pixelSize, pixelSize);
-      }
-    }
-
     this.imageSrc = tempCanvas.toDataURL('image/png');
     this.isCropping = false;
     this.cropStart = null;
@@ -399,7 +401,7 @@ export class PixelationComponent implements AfterViewInit {
     this.isMouseDown = false;
 
     this.loadImage(this.imageSrc);
-    console.log('endCrop:', { origCropX, origCropY, origCropWidth, origCropHeight, pixelSize });
+    console.log('endCrop:', { origCropX, origCropY, origCropWidth, origCropHeight });
   }
 
   downloadImage(): void {
@@ -417,6 +419,7 @@ export class PixelationComponent implements AfterViewInit {
     if (!this.originalImage || !this.canvasRef?.nativeElement) return;
 
     this.saveState();
+    this.preservePixelCount = this.pixelCount;
 
     const tempCanvas = document.createElement('canvas');
     const tempCtx = tempCanvas.getContext('2d');

@@ -11,20 +11,18 @@
   min-height: calc(100vh - 195px);
   background-color: #000;
   padding: 20px;
-  padding-bottom: 220px;
   font-family: 'Poppins', sans-serif;
   overflow-y: auto;
   position: relative;
   z-index: 10;
 }
 
-
 .pixelation-decor-left,
 .pixelation-decor-right {
   position: fixed;
-  top: 10%; /* Зміщено ближче до верху */
-  width: 210px; 
-  height: 80%; 
+  top: 10%;
+  width: 210px;
+  height: 80%;
   background-image: url('/assets/picture.svg');
   background-repeat: no-repeat;
   background-size: 210px auto;
@@ -119,8 +117,8 @@
 
 .pixelation-canvas {
   top: 10%;
-  max-width: 500px; /* Фіксований максимум */
-  max-height: 300px; /* Фіксований максимум */
+  max-width: 500px;
+  max-height: 300px;
   border-radius: 10px;
   margin-bottom: 20px;
   object-fit: contain;
@@ -291,7 +289,6 @@
 
   .pixelation-container {
     padding: 15px;
-    padding-bottom: 220px;
   }
 
   .pixelation-title {
@@ -336,7 +333,6 @@
 
   .pixelation-container {
     padding: 10px;
-    padding-bottom: 220px;
   }
 
   .pixelation-title {
@@ -383,7 +379,6 @@
 
   .pixelation-container {
     padding: 5px;
-    padding-bottom: 220px;
   }
 
   .pixelation-title {
