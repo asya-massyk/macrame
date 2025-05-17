@@ -1,40 +1,134 @@
-<div class="add-post-container">
-  <div class="add-post-form">
-    <h2 class="pixelation-title">Додати ескіз</h2>
-    <div *ngIf="errorMessage" class="error-message">
-      {{ errorMessage }}
+<div class="edit-container">
+  <h2 class="pixelation-title">Редагувати полотно</h2>
+
+  <!-- Canvas Size Inputs -->
+  <div class="size-controls">
+    <div class="control-group inline">
+      <label for="canvasWidth">Ширина:</label>
+      <input
+        type="number"
+        id="canvasWidth"
+        [(ngModel)]="pixelWidth"
+        (ngModelChange)="updateCanvasSize()"
+        name="canvasWidth"
+        min="1"
+        max="50"
+        class="control-input"
+      />
     </div>
-    <form (ngSubmit)="saveSketch()" class="space-y-4">
-      <div>
-        <label for="sketch-image">Зображення:</label>
-        <div class="file-input-wrapper">
+    <div class="control-group inline">
+      <label for="canvasHeight">Висота:</label>
+      <input
+        type="number"
+        id="canvasHeight"
+        [(ngModel)]="pixelHeight"
+        (ngModelChange)="updateCanvasSize()"
+        name="canvasHeight"
+        min="1"
+        max="50"
+        class="control-input"
+      />
+    </div>
+  </div>
+
+  <!-- Palette -->
+  <div class="palette">
+    <label for="colorPicker">Колір:</label>
+    <input
+      type="color"
+      id="colorPicker"
+      [(ngModel)]="selectedColor"
+      name="selectedColor"
+    />
+  </div>
+
+  <!-- Canvas for Drawing -->
+  <div class="canvas-wrapper">
+    <canvas
+      #sketchCanvas
+      class="sketch-canvas"
+      (mousedown)="startPainting($event)"
+      (mousemove)="paintPixel($event)"
+      (mouseup)="stopPainting()"
+      (mouseleave)="stopPainting()"
+    ></canvas>
+  </div>
+
+  <!-- Controls for Scale, Rows, and Columns -->
+  <div class="controls">
+    <div class="control-row">
+      <div class="control-group">
+        <label for="scale">Масштаб:</label>
+        <input
+          type="range"
+          id="scale"
+          min="0.5"
+          max="2"
+          step="0.1"
+          [(ngModel)]="scale"
+          (ngModelChange)="adjustScale()"
+          name="scale"
+        />
+      </div>
+    </div>
+    <div class="control-row">
+      <div class="control-group">
+        <label>Рядки ({{ rows }}):</label>
+        <div class="flex gap-2">
           <input
-            type="file"
-            (change)="onPostImageChange($event)"
-            id="sketch-image"
-            name="image"
-            accept="image/*"
+            type="number"
+            [(ngModel)]="rowIndex"
+            [min]="1"
+            [max]="rows + 1"
+            class="control-input small-input"
+            placeholder="Індекс"
           />
-          <span class="file-input-label">Вибрати зображення</span>
-        </div>
-        <!-- Image Preview -->
-        <div class="image-preview" *ngIf="imagePreview">
-          <img [src]="imagePreview" alt="Selected sketch preview" />
+          <button type="button" (click)="addRow()" class="pixelation-button pixelation-button--small">+ Рядок</button>
+          <button type="button" (click)="removeRow()" class="pixelation-button pixelation-button--small">− Рядок</button>
         </div>
       </div>
-      <div>
-        <label for="caption">Опис:</label>
-        <textarea
-          [(ngModel)]="newSketch.caption"
-          id="caption"
-          name="caption"
-          placeholder="Введіть опис"
-        ></textarea>
+      <div class="control-group">
+        <label>Стовпці ({{ columns }}):</label>
+        <div class="flex gap-2">
+          <input
+            type="number"
+            [(ngModel)]="columnIndex"
+            [min]="1"
+            [max]="columns + 1"
+            class="control-input small-input"
+            placeholder="Індекс"
+          />
+          <button type="button" (click)="addColumn()" class="pixelation-button pixelation-button--small">+ Стовпець</button>
+          <button type="button" (click)="removeColumn()" class="pixelation-button pixelation-button--small">− Стовпець</button>
+        </div>
       </div>
-      <div class="flex">
-        <button type="submit" class="pixelation-button pixelation-button--download">Опублікувати</button>
-        <button type="button" (click)="navigateBack()" class="pixelation-button pixelation-button--undo">Назад</button>
-      </div>
-    </form>
+    </div>
+  </div>
+
+  <!-- Save Options -->
+  <div class="save-controls">
+    <div class="control-group">
+      <label for="fileName">Назва файлу:</label>
+      <input
+        type="text"
+        id="fileName"
+        [(ngModel)]="fileName"
+        name="fileName"
+        placeholder="Введіть назву файлу"
+        class="control-input"
+      />
+    </div>
+    <div class="control-group">
+      <label for="fileFormat">Формат:</label>
+      <select id="fileFormat" [(ngModel)]="fileFormat" name="fileFormat" class="control-input">
+        <option value="png">PNG</option>
+        <option value="jpeg">JPEG</option>
+      </select>
+    </div>
+    <button type="button" (click)="saveCanvas()" class="pixelation-button pixelation-button--download">Зберегти</button>
+  </div>
+
+  <div class="flex">
+    <button type="button" (click)="undoLastAction()" [disabled]="!canUndo" class="pixelation-button pixelation-button--undo">Назад</button>
   </div>
 </div>
