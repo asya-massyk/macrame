@@ -16,7 +16,6 @@ import { isPlatformBrowser } from '@angular/common';
 export class EditProfileComponent implements OnInit, OnDestroy {
   editForm: { name: string; bio: string; password: string; avatar?: File } = { name: '', bio: '', password: '' };
   errorMessage: string | null = null;
-  selectedAvatarName: string | null = null;
   avatarPreview: string | null = null;
   imageTransform: string = 'translate(0px, 0px) scale(1)';
   private isBrowser: boolean;
@@ -86,27 +85,33 @@ export class EditProfileComponent implements OnInit, OnDestroy {
 
   onAvatarChange(event: any) {
     const file = event.target.files[0];
+    console.log('EditProfileComponent: onAvatarChange triggered', file);
+
     if (file) {
-      console.log('EditProfileComponent: File selected:', file.name, 'Size:', file.size);
+      console.log('EditProfileComponent: File selected:', file.name, 'Size:', file.size, 'Type:', file.type);
+
       if (file.size > 5 * 1024 * 1024) {
         this.errorMessage = 'Зображення занадто велике (макс. 5 МБ)';
         this.resetImageState();
-      } else if (!['image/jpeg', 'image/png'].includes(file.type)) {
+        return;
+      }
+
+      if (!['image/jpeg', 'image/png'].includes(file.type)) {
         this.errorMessage = 'Дозволені формати: JPEG, PNG';
         this.resetImageState();
-      } else {
-        this.editForm.avatar = file;
-        this.selectedAvatarName = file.name;
-        this.errorMessage = null;
-
-        const reader = new FileReader();
-        reader.onload = () => {
-          this.avatarPreview = reader.result as string;
-          this.resetImageState();
-          console.log('EditProfileComponent: Avatar preview generated');
-        };
-        reader.readAsDataURL(file);
+        return;
       }
+
+      this.editForm.avatar = file;
+      this.errorMessage = null;
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.avatarPreview = reader.result as string;
+        this.resetImageTransform();
+        console.log('EditProfileComponent: Avatar preview generated', this.avatarPreview);
+      };
+      reader.readAsDataURL(file);
     } else {
       console.log('EditProfileComponent: No file selected');
       this.resetImageState();
@@ -116,8 +121,14 @@ export class EditProfileComponent implements OnInit, OnDestroy {
 
   private resetImageState() {
     this.editForm.avatar = undefined;
-    this.selectedAvatarName = null;
     this.avatarPreview = null;
+    this.translateX = 0;
+    this.translateY = 0;
+    this.scale = 1;
+    this.imageTransform = 'translate(0px, 0px) scale(1)';
+  }
+
+  private resetImageTransform() {
     this.translateX = 0;
     this.translateY = 0;
     this.scale = 1;
@@ -152,7 +163,7 @@ export class EditProfileComponent implements OnInit, OnDestroy {
   private translateImage(clientX: number, clientY: number) {
     this.translateX = clientX - this.startX;
     this.translateY = clientY - this.startY;
-    const maxTranslate = 100 * this.scale; // Adjust based on scale
+    const maxTranslate = 100 * this.scale;
     this.translateX = Math.max(-maxTranslate, Math.min(maxTranslate, this.translateX));
     this.translateY = Math.max(-maxTranslate, Math.min(maxTranslate, this.translateY));
     this.updateTransform();
@@ -165,7 +176,7 @@ export class EditProfileComponent implements OnInit, OnDestroy {
   zoom(event: WheelEvent) {
     if (!this.isBrowser || !this.avatarPreview) return;
     event.preventDefault();
-    const delta = event.deltaY > 0 ? -0.1 : 0.1; // Scroll down: zoom out, up: zoom in
+    const delta = event.deltaY > 0 ? -0.1 : 0.1;
     this.adjustScale(delta);
   }
 
@@ -179,7 +190,6 @@ export class EditProfileComponent implements OnInit, OnDestroy {
 
   private adjustScale(delta: number) {
     this.scale = Math.max(this.minScale, Math.min(this.maxScale, this.scale + delta));
-    // Adjust translation to keep image centered
     const maxTranslate = 100 * this.scale;
     this.translateX = Math.max(-maxTranslate, Math.min(maxTranslate, this.translateX));
     this.translateY = Math.max(-maxTranslate, Math.min(maxTranslate, this.translateY));
