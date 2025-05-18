@@ -7,6 +7,7 @@ import { PixelationComponent } from './components/pixel/pixelation.component';
 import { ProfileComponent } from './components/profile/profile.component';
 import { EditProfileComponent } from './components/edit-profile/edit-profile.component';
 import { EditSketchComponent } from './components/sketch/sketch.component';
+import { AddSketchComponent } from './components/add-sketch/add-sketch.component';
 import { AuthGuard } from './auth.guard';
 import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
 
@@ -20,7 +21,7 @@ export const routes: Routes = [
   { path: 'pixel', component: PixelationComponent, canActivate: [AuthGuard] },
   { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard] },
   { path: 'edit-profile', component: EditProfileComponent, canActivate: [AuthGuard] },
-  { path: 'add-sketch', component: EditSketchComponent, canActivate: [AuthGuard] }, 
+  { path: 'add-sketch', component: AddSketchComponent, canActivate: [AuthGuard] }, 
   { path: 'edit-sketch', component: EditSketchComponent, canActivate: [AuthGuard] }, 
   { path: '**', redirectTo: '/home' }
 ];

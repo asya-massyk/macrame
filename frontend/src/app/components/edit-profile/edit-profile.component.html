@@ -17,9 +17,10 @@
         <label for="avatar">Аватар:</label>
         <div class="file-input-wrapper">
           <input type="file" (change)="onAvatarChange($event)" id="avatar" name="avatar" accept="image/*">
-          <span class="file-input-label">
-            {{ selectedAvatarName || 'Вибрати файл' }}
-          </span>
+          <div class="avatar-preview-container">
+            <img *ngIf="avatarPreview" [src]="avatarPreview" class="avatar-preview-img" alt="Selected Avatar" />
+            <span *ngIf="!avatarPreview" class="avatar-placeholder">Вибрати аватар</span>
+          </div>
         </div>
         <div class="avatar-cropper" *ngIf="avatarPreview">
           <div class="cropper-overlay" (mousedown)="startDragging($event)" (touchstart)="startDragging($event)" (wheel)="zoom($event)">
@@ -27,7 +28,6 @@
               <img [src]="avatarPreview" [style.transform]="imageTransform" alt="Avatar Preview" draggable="false" />
             </div>
           </div>
-
         </div>
       </div>
       <div>
