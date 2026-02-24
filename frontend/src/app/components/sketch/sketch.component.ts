@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
+import { jsPDF } from 'jspdf';
 
 @Component({
   selector: 'app-edit-sketch',
@@ -23,7 +24,7 @@ export class EditSketchComponent implements AfterViewInit {
   pixelHeight: number = 10;
   private pixelSize: number = 20;
   private drawingData: string | null = null;
-  selectedColor: string = '#ff0000';
+  selectedColor: string = '#D95DB0';
   fileName: string = 'sketch';
   fileFormat: string = 'png';
   rowIndex: number = 1;
@@ -39,6 +40,11 @@ export class EditSketchComponent implements AfterViewInit {
     private cdr: ChangeDetectorRef
   ) {
     this.isBrowser = isPlatformBrowser(this.platformId);
+  }
+  ngOnInit() {
+  this.pixelWidth = 50;
+  this.pixelHeight = 25;
+  this.updateCanvasSize();  // твій метод, який перемальовує canvas
   }
 
   ngAfterViewInit(): void {
@@ -403,13 +409,30 @@ export class EditSketchComponent implements AfterViewInit {
     }
 
     const canvas = this.canvasRef.nativeElement;
-    const format = this.fileFormat === 'jpeg' ? 'image/jpeg' : 'image/png';
-    const fileName = this.fileName || 'sketch';
-    const dataUrl = canvas.toDataURL(format);
-    const link = document.createElement('a');
-    link.download = `${fileName}.${this.fileFormat}`;
-    link.href = dataUrl;
-    link.click();
-    console.log('Canvas saved:', { fileName: link.download, format });
+    let finalFileName = this.fileName.trim() || 'sketch';
+
+    if (this.fileFormat === 'pdf') {
+      finalFileName += '.pdf';
+
+      const doc = new jsPDF({
+        orientation: canvas.width > canvas.height ? 'landscape' : 'portrait',
+        unit: 'px',
+        format: [canvas.width, canvas.height]
+      });
+
+      const imgData = canvas.toDataURL('image/png');
+      doc.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+      doc.save(finalFileName);
+      console.log('PDF saved:', finalFileName);
+    } else {
+      const format = this.fileFormat === 'jpeg' ? 'image/jpeg' : 'image/png';
+      finalFileName += `.${this.fileFormat}`;
+      const dataUrl = canvas.toDataURL(format);
+      const link = document.createElement('a');
+      link.download = finalFileName;
+      link.href = dataUrl;
+      link.click();
+      console.log('Image saved:', { fileName: finalFileName, format });
+    }
   }
 }

@@ -110,7 +110,8 @@
 }
 
 .pixelation-input--filename,
-.pixelation-input--format {
+.pixelation-input--format,
+.pixelation-input--material {
   width: 200px;
   margin-right: 10px;
 }
@@ -138,13 +139,6 @@
   background-color: rgba(0, 0, 0, 0.7);
   padding: 10px;
   border-radius: 12px;
-}
-
-.pixelation-slider-label {
-  font-size: 18px;
-  color: #ffffff;
-  margin-bottom: 10px;
-  animation: fadeIn 1s ease-in-out;
 }
 
 .pixelation-slider {
@@ -247,6 +241,63 @@
   transform: scale(1.05);
 }
 
+.pixelation-button--scheme {
+  background-color: #ffcc00;
+  color: #000;
+}
+
+.pixelation-button--scheme:hover {
+  background-color: #e6b800;
+  transform: scale(1.05);
+}
+
+.pixelation-button--materials {
+  background-color: #33cc99;
+}
+
+.pixelation-button--materials:hover {
+  background-color: #26997a;
+  transform: scale(1.05);
+}
+
+.pixelation-material-list {
+  width: 100%;
+  max-width: 600px;
+  margin-top: 20px;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 20px;
+  border-radius: 12px;
+  color: #ffffff;
+}
+
+.pixelation-material-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #3344dc;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.pixelation-material-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.pixelation-material-table th,
+.pixelation-material-table td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #585e83;
+}
+
+.pixelation-material-color {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  vertical-align: middle;
+}
+
 @keyframes slideInLeft {
   from {
     opacity: 0;
@@ -319,7 +370,8 @@
   }
 
   .pixelation-input--filename,
-  .pixelation-input--format {
+  .pixelation-input--format,
+  .pixelation-input--material {
     width: 150px;
   }
 }
@@ -412,7 +464,8 @@
   }
 
   .pixelation-input--filename,
-  .pixelation-input--format {
+  .pixelation-input--format,
+  .pixelation-input--material {
     width: 100%;
   }
 }

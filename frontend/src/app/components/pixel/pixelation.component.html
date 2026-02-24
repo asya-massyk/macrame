@@ -56,6 +56,16 @@
       <option value="image/png">PNG</option>
       <option value="image/jpeg">JPEG</option>
     </select>
+
+    <label class="pixelation-download-label">Тип матеріалів:</label>
+    <select
+      [(ngModel)]="materialType"
+      class="pixelation-input pixelation-input--material"
+      (ngModelChange)="onMaterialTypeChange()"
+    >
+      <option value="beads">Бісер</option>
+      <option value="threads">Нитки</option>
+    </select>
   </div>
 
   <div *ngIf="imageSrc" class="pixelation-buttons">
@@ -85,5 +95,39 @@
     >
       Завантажити
     </button>
+    <button
+      (click)="generateNumberedScheme()"
+      class="pixelation-button pixelation-button--scheme"
+    >
+      Перетворити на схему
+    </button>
+    <button
+      *ngIf="numberedColors.length > 0"
+      (click)="findMaterials()"
+      class="pixelation-button pixelation-button--materials"
+    >
+      Знайти матеріали
+    </button>
+  </div>
+
+  <div *ngIf="materialList.length > 0" class="pixelation-material-list">
+    <h2 class="pixelation-material-title">Список матеріалів</h2>
+    <div *ngFor="let numberedMaterial of materialList">
+      <h3>Для кольору №{{ numberedMaterial.number }} ({{ numberedMaterial.color.r }}, {{ numberedMaterial.color.g }}, {{ numberedMaterial.color.b }}):</h3>
+      <table class="pixelation-material-table">
+        <thead>
+          <tr>
+            <th>Бренд</th>
+            <th>Номер</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let material of numberedMaterial.materials">
+            <td>{{ material.brand }}</td>
+            <td>{{ material.number }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
