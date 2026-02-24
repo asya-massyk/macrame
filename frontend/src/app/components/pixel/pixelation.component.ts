@@ -1,13 +1,21 @@
-import { Component, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
-import { NgIf } from '@angular/common';
+import { Component, ViewChild, ElementRef, AfterViewInit, Inject, PLATFORM_ID } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { isPlatformBrowser } from '@angular/common';
+
+interface MaterialResponse {
+  number: string;
+  color: { r: string; g: string; b: string };
+  materials: Array<{ brand: string; number: string }>;
+}
 
 @Component({
   selector: 'app-pixelation',
   templateUrl: './pixelation.component.html',
-  standalone: true,
   styleUrls: ['./pixelation.component.scss'],
-  imports: [NgIf, FormsModule],
+  standalone: true,
+  imports: [CommonModule, FormsModule],
 })
 export class PixelationComponent implements AfterViewInit {
   @ViewChild('pixelationCanvas') canvasRef!: ElementRef<HTMLCanvasElement>;
@@ -19,18 +27,36 @@ export class PixelationComponent implements AfterViewInit {
   isCropping: boolean = false;
   fileName: string = 'pixelated_image';
   downloadFormat: string = 'image/png';
+  materialType: string = 'beads';
+  materialList: Array<{
+    number: number;
+    color: { r: number; g: number; b: number };
+    materials: Array<{ brand: string; number: string }>;
+  }> = [];
+  numberedColors: Array<{ number: number; color: { r: number; g: number; b: number } }> = [];
   private cropStart: { x: number; y: number } | null = null;
   private cropEnd: { x: number; y: number } | null = null;
   private originalImage: HTMLImageElement | null = null;
   private isMouseDown: boolean = false;
   private minCropSize: number = 10;
   private aspectRatio: number | null = null;
-  private maxHeight: number = window.innerHeight - 195;
   private preservePixelCount: number | null = null;
   public history: { imageSrc: string; pixelCount: number; imageWidth: number; imageHeight: number }[] = [];
 
+  constructor(
+    private http: HttpClient,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {}
+
   ngAfterViewInit(): void {
-    window.addEventListener('resize', () => this.adjustCanvasSize());
+    if (isPlatformBrowser(this.platformId)) {
+      window.addEventListener('resize', () => this.adjustCanvasSize());
+      const canvas = this.canvasRef.nativeElement;
+      canvas.addEventListener('mousedown', (e) => this.startCrop(e));
+      canvas.addEventListener('mousemove', (e) => this.updateCrop(e));
+      canvas.addEventListener('mouseup', () => this.endCrop());
+      canvas.addEventListener('mouseleave', () => this.endCrop());
+    }
     this.adjustCanvasSize();
   }
 
@@ -45,20 +71,12 @@ export class PixelationComponent implements AfterViewInit {
         imageWidth: this.originalImage.width,
         imageHeight: this.originalImage.height,
       });
-      console.log('State saved:', { historyLength: this.history.length });
     }
   }
 
   undo(): void {
     if (this.history.length === 0) {
-      this.imageSrc = null;
-      this.originalImage = null;
-      this.pixelCount = 20;
-      this.isCropping = false;
-      this.cropStart = null;
-      this.cropEnd = null;
-      this.isMouseDown = false;
-      console.log('Undo: Reverted to initial state');
+      this.resetState();
       return;
     }
 
@@ -66,9 +84,25 @@ export class PixelationComponent implements AfterViewInit {
     if (lastState) {
       this.imageSrc = lastState.imageSrc;
       this.pixelCount = lastState.pixelCount;
+      this.resetDerivedState();
       this.loadImage(this.imageSrc);
-      console.log('Undo:', { pixelCount: this.pixelCount, historyLength: this.history.length });
     }
+  }
+
+  private resetState(): void {
+    this.imageSrc = null;
+    this.originalImage = null;
+    this.pixelCount = 20;
+    this.isCropping = false;
+    this.cropStart = null;
+    this.cropEnd = null;
+    this.isMouseDown = false;
+    this.resetDerivedState();
+  }
+
+  private resetDerivedState(): void {
+    this.materialList = [];
+    this.numberedColors = [];
   }
 
   private adjustCanvasSize(): void {
@@ -84,10 +118,12 @@ export class PixelationComponent implements AfterViewInit {
       newWidth = newHeight * aspectRatio;
     }
 
-    const parentWidth = window.innerWidth * 0.95;
-    if (newWidth > parentWidth) {
-      newWidth = parentWidth;
-      newHeight = newWidth / aspectRatio;
+    if (isPlatformBrowser(this.platformId)) {
+      const parentWidth = window.innerWidth * 0.95;
+      if (newWidth > parentWidth) {
+        newWidth = parentWidth;
+        newHeight = newWidth / aspectRatio;
+      }
     }
 
     canvas.width = Math.round(newWidth);
@@ -96,52 +132,46 @@ export class PixelationComponent implements AfterViewInit {
     canvas.style.height = `${newHeight}px`;
     canvas.style.margin = '0 auto';
 
-    console.log('adjustCanvasSize:', { width: canvas.width, height: canvas.height, parentWidth, aspectRatio });
     this.renderImage();
   }
 
   onImageUpload(event: Event): void {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
-    if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        console.error('Image too large (max 5MB)');
-        alert('Зображення занадто велике (максимум 5MB)');
-        return;
-      }
-      if (!['image/jpeg', 'image/png'].includes(file.type)) {
-        console.error('Invalid format (JPEG/PNG only)');
-        alert('Непідтримуваний формат (тільки JPEG або PNG)');
-        return;
-      }
+    if (!file) return;
 
-      const img = new Image();
-      const url = URL.createObjectURL(file);
-      img.src = url;
-      img.onload = () => {
-        URL.revokeObjectURL(url);
-        const maxWidth = 3000;
-        const maxHeight = 3000;
-        if (img.width > maxWidth || img.height > maxHeight) {
-          console.error(`Image dimensions too large (max ${maxWidth}x${maxHeight})`);
-          alert(`Розмір зображення занадто великий (максимум ${maxWidth}x${maxHeight} пікселів)`);
-          return;
-        }
-        const reader = new FileReader();
-        reader.onload = () => {
-          this.history = [];
-          this.imageSrc = reader.result as string;
-          this.loadImage(this.imageSrc);
-          this.saveState(); // Зберігаємо початковий стан
-        };
-        reader.readAsDataURL(file);
-      };
-      img.onerror = () => {
-        URL.revokeObjectURL(url);
-        console.error('Failed to load image for validation');
-        alert('Не вдалося завантажити зображення');
-      };
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Зображення занадто велике (максимум 5MB)');
+      return;
     }
+    if (!['image/jpeg', 'image/png'].includes(file.type)) {
+      alert('Непідтримуваний формат (тільки JPEG або PNG)');
+      return;
+    }
+
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.src = url;
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      if (img.width > 3000 || img.height > 3000) {
+        alert('Розмір зображення занадто великий (максимум 3000x3000 пікселів)');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.history = [];
+        this.imageSrc = reader.result as string;
+        this.resetDerivedState();
+        this.loadImage(this.imageSrc);
+        this.saveState();
+      };
+      reader.readAsDataURL(file);
+    };
+    img.onerror = () => {
+      URL.revokeObjectURL(url);
+      alert('Не вдалося завантажити зображення');
+    };
   }
 
   private loadImage(src: string): void {
@@ -150,75 +180,153 @@ export class PixelationComponent implements AfterViewInit {
     img.onload = () => {
       this.originalImage = img;
       this.maxPixelCount = Math.max(100, Math.floor(Math.min(img.width, img.height) / 5));
-      if (this.preservePixelCount !== null) {
-        this.pixelCount = Math.min(this.maxPixelCount, Math.max(this.minPixelCount, this.preservePixelCount));
-        this.preservePixelCount = null;
-      } else {
-        this.pixelCount = Math.min(this.maxPixelCount, Math.max(this.minPixelCount, 20));
-      }
-      console.log('loadImage:', { 
-        width: img.width, 
-        height: img.height, 
-        maxPixelCount: this.maxPixelCount, 
-        pixelCount: this.pixelCount 
-      });
+      this.pixelCount = this.preservePixelCount 
+        ? Math.min(this.maxPixelCount, Math.max(this.minPixelCount, this.preservePixelCount))
+        : Math.min(this.maxPixelCount, Math.max(this.minPixelCount, 20));
+      this.preservePixelCount = null;
       this.adjustCanvasSize();
       this.renderImage();
     };
     img.onerror = () => {
-      console.error('Failed to load image');
-      this.imageSrc = null;
-      this.originalImage = null;
+      this.resetState();
     };
+  }
+
+  private getBlockInfo(side: number, numBlocks: number): { starts: number[]; sizes: number[] } {
+    const blockSize = Math.floor(side / numBlocks);
+    const remainder = side % numBlocks;
+    const starts: number[] = [];
+    const sizes: number[] = [];
+    let current = 0;
+    for (let i = 0; i < numBlocks; i++) {
+      const size = i < remainder ? blockSize + 1 : blockSize;
+      starts.push(current);
+      sizes.push(size);
+      current += size;
+    }
+    return { starts, sizes };
   }
 
   private renderImage(): void {
     if (!this.canvasRef?.nativeElement || !this.imageSrc || !this.originalImage) return;
 
     const canvas = this.canvasRef.nativeElement;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
     if (!ctx) return;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     const tempCanvas = document.createElement('canvas');
-    const tempCtx = tempCanvas.getContext('2d');
+    const tempCtx = tempCanvas.getContext('2d', { willReadFrequently: true });
     if (!tempCtx) return;
 
     tempCanvas.width = this.originalImage.width;
     tempCanvas.height = this.originalImage.height;
     tempCtx.drawImage(this.originalImage, 0, 0, tempCanvas.width, tempCanvas.height);
 
-    const pixelSize = Math.min(tempCanvas.width, tempCanvas.height) / this.pixelCount;
     const imageData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
     const data = imageData.data;
 
-    tempCtx.clearRect(0, 0, tempCanvas.width, tempCanvas.height);
-    for (let y = 0; y < tempCanvas.height; y += pixelSize) {
-      for (let x = 0; x < tempCanvas.width; x += pixelSize) {
-        const pixelIndex = (Math.floor(y) * tempCanvas.width + Math.floor(x)) * 4;
-        const r = data[pixelIndex];
-        const g = data[pixelIndex + 1];
-        const b = data[pixelIndex + 2];
-        const a = data[pixelIndex + 3];
-        tempCtx.fillStyle = `rgba(${r}, ${g}, ${b}, ${a / 255})`;
-        tempCtx.fillRect(x, y, pixelSize, pixelSize);
+    const width = tempCanvas.width;
+    const height = tempCanvas.height;
+    const minSide = Math.min(width, height);
+    const maxSide = Math.max(width, height);
+    const isWidthMin = width <= height;
+    const numMin = this.pixelCount;
+    const pixelSizeApprox = minSide / numMin;
+    const numMax = Math.ceil(maxSide / pixelSizeApprox);
+    const numCols = isWidthMin ? numMin : numMax;
+    const numRows = isWidthMin ? numMax : numMin;
+
+    const colInfo = this.getBlockInfo(width, numCols);
+    const rowInfo = this.getBlockInfo(height, numRows);
+
+    tempCtx.clearRect(0, 0, width, height);
+
+    for (let row = 0; row < numRows; row++) {
+      const py = rowInfo.starts[row];
+      const blockH = rowInfo.sizes[row];
+      for (let col = 0; col < numCols; col++) {
+        const px = colInfo.starts[col];
+        const blockW = colInfo.sizes[col];
+
+        let sumR = 0, sumG = 0, sumB = 0, sumA = 0;
+        const count = blockW * blockH;
+        for (let iy = py; iy < py + blockH; iy++) {
+          for (let ix = px; ix < px + blockW; ix++) {
+            const idx = (iy * width + ix) * 4;
+            sumR += data[idx];
+            sumG += data[idx + 1];
+            sumB += data[idx + 2];
+            sumA += data[idx + 3];
+          }
+        }
+        const avgR = count > 0 ? Math.round(sumR / count) : 0;
+        const avgG = count > 0 ? Math.round(sumG / count) : 0;
+        const avgB = count > 0 ? Math.round(sumB / count) : 0;
+        const avgA = count > 0 ? sumA / count / 255 : 0;
+
+        tempCtx.fillStyle = `rgba(${avgR}, ${avgG}, ${avgB}, ${avgA})`;
+        tempCtx.fillRect(px, py, blockW, blockH);
       }
     }
 
-    const scale = Math.min(canvas.width / tempCanvas.width, canvas.height / tempCanvas.height);
-    const drawWidth = tempCanvas.width * scale;
-    const drawHeight = tempCanvas.height * scale;
+    const scaleX = canvas.width / width;
+    const scaleY = canvas.height / height;
+    const scale = Math.min(scaleX, scaleY);
+    const drawWidth = width * scale;
+    const drawHeight = height * scale;
     const offsetX = (canvas.width - drawWidth) / 2;
     const offsetY = (canvas.height - drawHeight) / 2;
 
     ctx.drawImage(tempCanvas, offsetX, offsetY, drawWidth, drawHeight);
 
+    if (this.numberedColors.length > 0) {
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+
+      for (let row = 0; row < numRows; row++) {
+        const py = rowInfo.starts[row];
+        const blockH = rowInfo.sizes[row];
+        for (let col = 0; col < numCols; col++) {
+          const px = colInfo.starts[col];
+          const blockW = colInfo.sizes[col];
+
+          let sumR = 0, sumG = 0, sumB = 0;
+          const count = blockW * blockH;
+          for (let iy = py; iy < py + blockH; iy++) {
+            for (let ix = px; ix < px + blockW; ix++) {
+              const idx = (iy * width + ix) * 4;
+              sumR += data[idx];
+              sumG += data[idx + 1];
+              sumB += data[idx + 2];
+            }
+          }
+          const avgR = count > 0 ? Math.round(sumR / count) : 0;
+          const avgG = count > 0 ? Math.round(sumG / count) : 0;
+          const avgB = count > 0 ? Math.round(sumB / count) : 0;
+
+          const colorInfo = this.numberedColors.find(c => c.color.r === avgR && c.color.g === avgG && c.color.b === avgB);
+          if (colorInfo) {
+            const displayedBlockW = blockW * scale;
+            const displayedBlockH = blockH * scale;
+            const fontSize = Math.max(4, Math.min(20, Math.min(displayedBlockW, displayedBlockH) * 0.7));
+            ctx.font = `bold ${fontSize}px Arial`;
+            const luminance = 0.299 * avgR + 0.587 * avgG + 0.114 * avgB;
+            ctx.fillStyle = luminance < 140 ? '#fff' : '#000';
+            const centerX = offsetX + (px + blockW / 2) * scale;
+            const centerY = offsetY + (py + blockH / 2) * scale;
+            ctx.fillText(colorInfo.number.toString(), centerX, centerY);
+          }
+        }
+      }
+    }
+
     if (this.isCropping && this.cropStart && this.cropEnd && this.isMouseDown) {
       let cropX = Math.min(this.cropStart.x, this.cropEnd.x);
       let cropY = Math.min(this.cropStart.y, this.cropEnd.y);
       let cropWidth = Math.abs(this.cropEnd.x - this.cropStart.x);
-      let cropHeight = Math.abs(this.cropEnd.y - this.cropStart.y);
+      let cropHeight = Math.abs(this.cropEnd.y - this.cropEnd.y);
 
       cropWidth = Math.max(cropWidth, this.minCropSize);
       cropHeight = Math.max(cropHeight, this.minCropSize);
@@ -245,21 +353,13 @@ export class PixelationComponent implements AfterViewInit {
       ctx.fillRect(cropX, cropY, cropWidth, cropHeight);
       ctx.globalCompositeOperation = 'source-over';
     }
-
-    console.log('renderImage:', { 
-      pixelCount: this.pixelCount,
-      pixelSize: pixelSize,
-      canvasSize: { width: canvas.width, height: canvas.height },
-      drawSize: { width: drawWidth, height: drawHeight },
-      offset: { x: offsetX, y: offsetY }
-    });
   }
 
   updatePixelation(): void {
     if (this.imageSrc && !this.isCropping) {
       this.saveState();
       this.pixelCount = Math.min(this.maxPixelCount, Math.max(this.minPixelCount, Math.round(this.pixelCount)));
-      console.log('updatePixelation:', { pixelCount: this.pixelCount });
+      this.resetDerivedState();
       this.renderImage();
     }
   }
@@ -269,6 +369,7 @@ export class PixelationComponent implements AfterViewInit {
     this.cropStart = null;
     this.cropEnd = null;
     this.isMouseDown = false;
+    this.resetDerivedState();
     this.renderImage();
   }
 
@@ -361,6 +462,7 @@ export class PixelationComponent implements AfterViewInit {
       this.cropStart = null;
       this.cropEnd = null;
       this.isMouseDown = false;
+      this.resetDerivedState();
       this.renderImage();
       return;
     }
@@ -376,7 +478,7 @@ export class PixelationComponent implements AfterViewInit {
     const origCropHeight = Math.round(cropHeight * scaleY);
 
     const tempCanvas = document.createElement('canvas');
-    const tempCtx = tempCanvas.getContext('2d');
+    const tempCtx = tempCanvas.getContext('2d', { willReadFrequently: true });
     if (!tempCtx) return;
 
     tempCanvas.width = origCropWidth;
@@ -399,9 +501,9 @@ export class PixelationComponent implements AfterViewInit {
     this.cropStart = null;
     this.cropEnd = null;
     this.isMouseDown = false;
+    this.resetDerivedState();
 
     this.loadImage(this.imageSrc);
-    console.log('endCrop:', { origCropX, origCropY, origCropWidth, origCropHeight });
   }
 
   downloadImage(): void {
@@ -420,9 +522,10 @@ export class PixelationComponent implements AfterViewInit {
 
     this.saveState();
     this.preservePixelCount = this.pixelCount;
+    this.resetDerivedState();
 
     const tempCanvas = document.createElement('canvas');
-    const tempCtx = tempCanvas.getContext('2d');
+    const tempCtx = tempCanvas.getContext('2d', { willReadFrequently: true });
     if (!tempCtx) return;
 
     tempCanvas.width = this.originalImage.height;
@@ -432,13 +535,144 @@ export class PixelationComponent implements AfterViewInit {
     tempCtx.rotate(Math.PI / 2);
     tempCtx.drawImage(this.originalImage, -this.originalImage.width / 2, -this.originalImage.height / 2);
 
-    this.originalImage = new Image();
-    this.originalImage.src = tempCanvas.toDataURL('image/png');
-    this.originalImage.onload = () => {
-      this.imageSrc = this.originalImage?.src || null;
-      if (this.imageSrc) {
-        this.loadImage(this.imageSrc);
+    this.imageSrc = tempCanvas.toDataURL('image/png');
+    this.loadImage(this.imageSrc);
+  }
+
+  onMaterialTypeChange(): void {
+    this.resetDerivedState();
+  }
+
+  generateNumberedScheme(): void {
+    if (!this.originalImage) return;
+
+    const tempCanvas = document.createElement('canvas');
+    const tempCtx = tempCanvas.getContext('2d', { willReadFrequently: true });
+    if (!tempCtx) return;
+
+    tempCanvas.width = this.originalImage.width;
+    tempCanvas.height = this.originalImage.height;
+    tempCtx.drawImage(this.originalImage, 0, 0, tempCanvas.width, tempCanvas.height);
+
+    const imageData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+    const data = imageData.data;
+
+    const width = tempCanvas.width;
+    const height = tempCanvas.height;
+    const minSide = Math.min(width, height);
+    const maxSide = Math.max(width, height);
+    const isWidthMin = width <= height;
+    const numMin = this.pixelCount;
+    const pixelSizeApprox = minSide / numMin;
+    const numMax = Math.ceil(maxSide / pixelSizeApprox);
+    const numCols = isWidthMin ? numMin : numMax;
+    const numRows = isWidthMin ? numMax : numMin;
+
+    const colInfo = this.getBlockInfo(width, numCols);
+    const rowInfo = this.getBlockInfo(height, numRows);
+
+    const colorCounts: { [key: string]: { r: number; g: number; b: number; count: number } } = {};
+
+    for (let row = 0; row < numRows; row++) {
+      const py = rowInfo.starts[row];
+      const blockH = rowInfo.sizes[row];
+      for (let col = 0; col < numCols; col++) {
+        const px = colInfo.starts[col];
+        const blockW = colInfo.sizes[col];
+
+        let sumR = 0, sumG = 0, sumB = 0;
+        const count = blockW * blockH;
+        for (let iy = py; iy < py + blockH; iy++) {
+          for (let ix = px; ix < px + blockW; ix++) {
+            const idx = (iy * width + ix) * 4;
+            sumR += data[idx];
+            sumG += data[idx + 1];
+            sumB += data[idx + 2];
+          }
+        }
+        const avgR = count > 0 ? Math.round(sumR / count) : 0;
+        const avgG = count > 0 ? Math.round(sumG / count) : 0;
+        const avgB = count > 0 ? Math.round(sumB / count) : 0;
+        const key = `${avgR},${avgG},${avgB}`;
+        if (!colorCounts[key]) {
+          colorCounts[key] = { r: avgR, g: avgG, b: avgB, count: 0 };
+        }
+        colorCounts[key].count++;
       }
+    }
+
+    const sortedColors = Object.values(colorCounts).sort((a, b) => b.count - a.count);
+    this.numberedColors = sortedColors.map((color, index) => ({ number: index + 1, color: { r: color.r, g: color.g, b: color.b } }));
+    this.renderImage();
+  }
+
+  findMaterials(): void {
+    if (this.numberedColors.length === 0) {
+      alert('Спочатку створіть схему з номерами кольорів');
+      return;
+    }
+
+    const colorList = this.numberedColors.map(colorInfo => ({
+      number: colorInfo.number.toString(),
+      r: colorInfo.color.r.toString(),
+      g: colorInfo.color.g.toString(),
+      b: colorInfo.color.b.toString()
+    }));
+
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'X-CSRFToken': this.getCsrfToken(),
+      ...(isPlatformBrowser(this.platformId) && localStorage.getItem('token')
+        ? { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+        : {})
+    });
+
+    this.http.post<{ materials: MaterialResponse[] }>('http://localhost:8000/accounts/materials/', { colors: colorList, materialType: this.materialType }, { headers }).subscribe({
+      next: (response) => {
+        this.materialList = response.materials.map((m: MaterialResponse) => ({
+          number: parseInt(m.number),
+          color: { r: parseInt(m.color.r), g: parseInt(m.color.g), b: parseInt(m.color.b) },
+          materials: m.materials
+        }));
+      },
+      error: (error) => {
+        alert('Не вдалося знайти матеріали: ' + (error.error?.error || error.message));
+      }
+    });
+  }
+
+  saveSketch(): void {
+    if (!this.canvasRef?.nativeElement) return;
+    const canvas = this.canvasRef.nativeElement;
+    const sketchData = {
+      image: canvas.toDataURL('image/png'),
+      caption: this.fileName,
+      materialList: this.materialList
     };
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'X-CSRFToken': this.getCsrfToken(),
+      ...(isPlatformBrowser(this.platformId) && localStorage.getItem('token')
+        ? { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+        : {})
+    });
+    this.http.post('http://localhost:8000/accounts/sketches/', sketchData, { headers }).subscribe({
+      next: (response) => console.log('Sketch saved:', response),
+      error: (error) => console.error('Failed to save sketch:', error)
+    });
+  }
+
+  private getCsrfToken(): string {
+    if (!isPlatformBrowser(this.platformId)) return '';
+    const name = 'csrftoken=';
+    const decodedCookie = decodeURIComponent(document.cookie);
+    const cookies = decodedCookie.split(';');
+    for (let cookie of cookies) {
+      cookie = cookie.trim();
+      if (cookie.indexOf(name) === 0) {
+        return cookie.substring(name.length, cookie.length);
+      }
+    }
+    return '';
   }
 }

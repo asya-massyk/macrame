@@ -1,5 +1,6 @@
 from django.urls import path
 from .views import RegisterView, SketchAPIView, VerifyEmailView, LoginView, ProfileAPIView, complete_profile, EditProfileAPIView, ForgotPasswordView, ResetPasswordView
+from .materials import MaterialsAPIView
 
 urlpatterns = [
     path('register/', RegisterView.as_view(), name='register'),
@@ -11,5 +12,6 @@ urlpatterns = [
     path('complete-profile/', complete_profile, name='complete_profile'),
     path('edit-profile/', EditProfileAPIView.as_view(), name='edit_profile'),
     path('sketches/', SketchAPIView.as_view(), name='sketches'),
-    path('sketches/<int:sketch_id>/', SketchAPIView.as_view(), name='delete_sketch')
+    path('sketches/<int:sketch_id>/', SketchAPIView.as_view(), name='delete_sketch'),
+    path('materials/', MaterialsAPIView.as_view(), name='materials')
 ]
