@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { isPlatformBrowser } from '@angular/common';
+import jsPDF from 'jspdf';
 
 interface MaterialResponse {
   number: string;
@@ -29,11 +30,11 @@ export class PixelationComponent implements AfterViewInit {
   downloadFormat: string = 'image/png';
   materialType: string = 'beads';
   materialList: Array<{
-    number: number;
+    number: string;
     color: { r: number; g: number; b: number };
     materials: Array<{ brand: string; number: string }>;
   }> = [];
-  numberedColors: Array<{ number: number; color: { r: number; g: number; b: number } }> = [];
+  symbolColors: Array<{ symbol: string; color: { r: number; g: number; b: number } }> = [];
   private cropStart: { x: number; y: number } | null = null;
   private cropEnd: { x: number; y: number } | null = null;
   private originalImage: HTMLImageElement | null = null;
@@ -42,6 +43,11 @@ export class PixelationComponent implements AfterViewInit {
   private aspectRatio: number | null = null;
   private preservePixelCount: number | null = null;
   public history: { imageSrc: string; pixelCount: number; imageWidth: number; imageHeight: number }[] = [];
+
+  private symbolPool: string[] = [
+    '●', '○', '■', '□', '▲', '▼', '◆', '◇', '★', '☆',
+    '♠', '♥', '♦', '♣', '✚', '✖'
+  ];
 
   constructor(
     private http: HttpClient,
@@ -102,7 +108,7 @@ export class PixelationComponent implements AfterViewInit {
 
   private resetDerivedState(): void {
     this.materialList = [];
-    this.numberedColors = [];
+    this.symbolColors = [];
   }
 
   private adjustCanvasSize(): void {
@@ -207,6 +213,10 @@ export class PixelationComponent implements AfterViewInit {
     return { starts, sizes };
   }
 
+  private getSymbolFromIndex(index: number): string {
+    return this.symbolPool[index % this.symbolPool.length];
+  }
+
   private renderImage(): void {
     if (!this.canvasRef?.nativeElement || !this.imageSrc || !this.originalImage) return;
 
@@ -281,7 +291,7 @@ export class PixelationComponent implements AfterViewInit {
 
     ctx.drawImage(tempCanvas, offsetX, offsetY, drawWidth, drawHeight);
 
-    if (this.numberedColors.length > 0) {
+    if (this.symbolColors.length > 0) {
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
 
@@ -306,17 +316,24 @@ export class PixelationComponent implements AfterViewInit {
           const avgG = count > 0 ? Math.round(sumG / count) : 0;
           const avgB = count > 0 ? Math.round(sumB / count) : 0;
 
-          const colorInfo = this.numberedColors.find(c => c.color.r === avgR && c.color.g === avgG && c.color.b === avgB);
+          const colorInfo = this.symbolColors.find(c => c.color.r === avgR && c.color.g === avgG && c.color.b === avgB);
           if (colorInfo) {
             const displayedBlockW = blockW * scale;
             const displayedBlockH = blockH * scale;
-            const fontSize = Math.max(4, Math.min(20, Math.min(displayedBlockW, displayedBlockH) * 0.7));
+            const fontSize = Math.max(6, Math.min(32, Math.min(displayedBlockW, displayedBlockH) * 0.9));
             ctx.font = `bold ${fontSize}px Arial`;
+
             const luminance = 0.299 * avgR + 0.587 * avgG + 0.114 * avgB;
-            ctx.fillStyle = luminance < 140 ? '#fff' : '#000';
+            ctx.fillStyle = luminance < 140 ? '#ffffff' : '#000000';
+
             const centerX = offsetX + (px + blockW / 2) * scale;
             const centerY = offsetY + (py + blockH / 2) * scale;
-            ctx.fillText(colorInfo.number.toString(), centerX, centerY);
+
+            // Обводка для кращої видимості
+            ctx.strokeStyle = luminance < 140 ? '#000000' : '#ffffff';
+            ctx.lineWidth = 1.5;
+            ctx.strokeText(colorInfo.symbol, centerX, centerY);
+            ctx.fillText(colorInfo.symbol, centerX, centerY);
           }
         }
       }
@@ -326,7 +343,7 @@ export class PixelationComponent implements AfterViewInit {
       let cropX = Math.min(this.cropStart.x, this.cropEnd.x);
       let cropY = Math.min(this.cropStart.y, this.cropEnd.y);
       let cropWidth = Math.abs(this.cropEnd.x - this.cropStart.x);
-      let cropHeight = Math.abs(this.cropEnd.y - this.cropEnd.y);
+      let cropHeight = Math.abs(this.cropEnd.y - this.cropStart.y);
 
       cropWidth = Math.max(cropWidth, this.minCropSize);
       cropHeight = Math.max(cropHeight, this.minCropSize);
@@ -509,12 +526,49 @@ export class PixelationComponent implements AfterViewInit {
   downloadImage(): void {
     if (!this.canvasRef?.nativeElement) return;
 
-    const canvas = this.canvasRef.nativeElement;
+    const originalCanvas = this.canvasRef.nativeElement;
     const safeFileName = (this.fileName || 'pixelated_image').replace(/[^a-zA-Z0-9_-]/g, '');
-    const link = document.createElement('a');
-    link.href = canvas.toDataURL(this.downloadFormat, this.downloadFormat === 'image/jpeg' ? 0.8 : 1);
-    link.download = `${safeFileName}.${this.downloadFormat === 'image/jpeg' ? 'jpg' : 'png'}`;
-    link.click();
+
+    let scaleFactor = 2;
+    if (this.pixelCount > 80) scaleFactor = 3;
+    if (this.pixelCount > 150) scaleFactor = 4;
+
+    const tempCanvas = document.createElement('canvas');
+    tempCanvas.width = originalCanvas.width * scaleFactor;
+    tempCanvas.height = originalCanvas.height * scaleFactor;
+
+    const tempCtx = tempCanvas.getContext('2d');
+    if (!tempCtx) return;
+
+    tempCtx.imageSmoothingEnabled = false;
+    tempCtx.drawImage(originalCanvas, 0, 0, tempCanvas.width, tempCanvas.height);
+
+    if (this.downloadFormat === 'application/pdf') {
+      const pdf = new jsPDF({
+        orientation: tempCanvas.width > tempCanvas.height ? 'landscape' : 'portrait',
+        unit: 'px',
+        format: [tempCanvas.width, tempCanvas.height],
+        compress: false
+      });
+
+      const imgData = tempCanvas.toDataURL('image/png', 1.0);
+      pdf.addImage(imgData, 'PNG', 0, 0, tempCanvas.width, tempCanvas.height);
+
+      pdf.save(`${safeFileName}.pdf`);
+    } else {
+      const mimeType = this.downloadFormat;
+      const extension = mimeType === 'image/jpeg' ? 'jpg' : 'png';
+      const quality = mimeType === 'image/jpeg' ? 0.92 : 1.0;
+
+      const dataUrl = tempCanvas.toDataURL(mimeType, quality);
+
+      const link = document.createElement('a');
+      link.href = dataUrl;
+      link.download = `${safeFileName}.${extension}`;
+      link.click();
+    }
+
+    tempCanvas.remove();
   }
 
   rotateImage(): void {
@@ -602,18 +656,23 @@ export class PixelationComponent implements AfterViewInit {
     }
 
     const sortedColors = Object.values(colorCounts).sort((a, b) => b.count - a.count);
-    this.numberedColors = sortedColors.map((color, index) => ({ number: index + 1, color: { r: color.r, g: color.g, b: color.b } }));
+
+    this.symbolColors = sortedColors.map((color, index) => ({
+      symbol: this.getSymbolFromIndex(index),
+      color: { r: color.r, g: color.g, b: color.b }
+    }));
+
     this.renderImage();
   }
 
   findMaterials(): void {
-    if (this.numberedColors.length === 0) {
-      alert('Спочатку створіть схему з номерами кольорів');
+    if (this.symbolColors.length === 0) {
+      alert('Спочатку створіть схему з позначками кольорів');
       return;
     }
 
-    const colorList = this.numberedColors.map(colorInfo => ({
-      number: colorInfo.number.toString(),
+    const colorList = this.symbolColors.map(colorInfo => ({
+      number: colorInfo.symbol,
       r: colorInfo.color.r.toString(),
       g: colorInfo.color.g.toString(),
       b: colorInfo.color.b.toString()
@@ -627,10 +686,13 @@ export class PixelationComponent implements AfterViewInit {
         : {})
     });
 
-    this.http.post<{ materials: MaterialResponse[] }>('http://localhost:8000/accounts/materials/', { colors: colorList, materialType: this.materialType }, { headers }).subscribe({
+    this.http.post<{ materials: MaterialResponse[] }>('http://localhost:8000/accounts/materials/', 
+      { colors: colorList, materialType: this.materialType }, 
+      { headers }
+    ).subscribe({
       next: (response) => {
         this.materialList = response.materials.map((m: MaterialResponse) => ({
-          number: parseInt(m.number),
+          number: m.number,
           color: { r: parseInt(m.color.r), g: parseInt(m.color.g), b: parseInt(m.color.b) },
           materials: m.materials
         }));

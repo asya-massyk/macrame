@@ -1,3 +1,6 @@
+$primary-color: #D95DB0;
+$secondary-color: #3344DC;
+
 * {
   margin: 0;
   padding: 0;
@@ -215,12 +218,11 @@
 }
 
 .pixelation-button--download {
-  background-color: #d657c1;
+  background: linear-gradient(to right, #D95DB0, #3344DC) !important;
 }
 
 .pixelation-button--download:hover {
-  background-color: #963e87;
-  transform: scale(1.05);
+  background: linear-gradient(to right, #b84c96, #2233b0) !important;  // darken приблизно на 12%
 }
 
 .pixelation-button--rotate {
@@ -242,21 +244,21 @@
 }
 
 .pixelation-button--scheme {
-  background-color: #ffcc00;
-  color: #000;
+  background-color: #d657c1;
+  color: #ffffff;
 }
 
 .pixelation-button--scheme:hover {
-  background-color: #e6b800;
+  background-color: #963e87;
   transform: scale(1.05);
 }
 
 .pixelation-button--materials {
-  background-color: #33cc99;
+  background: linear-gradient(to right, #D95DB0, #3344DC) !important;
 }
 
 .pixelation-button--materials:hover {
-  background-color: #26997a;
+  background: linear-gradient(to right, #b84c96, #2233b0) !important;  // darken приблизно на 12%
   transform: scale(1.05);
 }
 
@@ -468,4 +470,11 @@
   .pixelation-input--material {
     width: 100%;
   }
+}
+
+.button-break {
+  flex-basis: 100%;
+  height: 0;
+  margin: 0;
+  padding: 0;
 }

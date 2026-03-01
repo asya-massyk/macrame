@@ -53,8 +53,9 @@
       [(ngModel)]="downloadFormat"
       class="pixelation-input pixelation-input--format"
     >
-      <option value="image/png">PNG</option>
-      <option value="image/jpeg">JPEG</option>
+      <option value="application/pdf">.pdf</option>
+      <option value="image/png">.png</option>
+      <option value="image/jpeg">.jpeg</option>
     </select>
 
     <label class="pixelation-download-label">Тип матеріалів:</label>
@@ -90,19 +91,23 @@
       Повернути
     </button>
     <button
-      (click)="downloadImage()"
-      class="pixelation-button pixelation-button--download"
-    >
-      Завантажити
-    </button>
-    <button
       (click)="generateNumberedScheme()"
       class="pixelation-button pixelation-button--scheme"
     >
       Перетворити на схему
     </button>
+
+    <div class="button-break"></div>
+
     <button
-      *ngIf="numberedColors.length > 0"
+      (click)="downloadImage()"
+      class="pixelation-button pixelation-button--download"
+    >
+      Завантажити
+    </button>
+
+    <button
+      *ngIf="symbolColors.length > 0"
       (click)="findMaterials()"
       class="pixelation-button pixelation-button--materials"
     >
@@ -112,8 +117,8 @@
 
   <div *ngIf="materialList.length > 0" class="pixelation-material-list">
     <h2 class="pixelation-material-title">Список матеріалів</h2>
-    <div *ngFor="let numberedMaterial of materialList">
-      <h3>Для кольору №{{ numberedMaterial.number }} ({{ numberedMaterial.color.r }}, {{ numberedMaterial.color.g }}, {{ numberedMaterial.color.b }}):</h3>
+    <div *ngFor="let item of materialList">
+      <h3>Для позначки {{ item.number }} ({{ item.color.r }}, {{ item.color.g }}, {{ item.color.b }}):</h3>
       <table class="pixelation-material-table">
         <thead>
           <tr>
@@ -122,7 +127,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let material of numberedMaterial.materials">
+          <tr *ngFor="let material of item.materials">
             <td>{{ material.brand }}</td>
             <td>{{ material.number }}</td>
           </tr>
