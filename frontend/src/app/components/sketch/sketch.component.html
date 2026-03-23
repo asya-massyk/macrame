@@ -33,9 +33,9 @@
 
       <!-- Рядки -->
       <div class="control-group row-col-group">
-        <label>Рядки:</label>  <!-- прибрали ({{ rows }}) -->
+        <label>Рядки:</label>
         <input type="number" [(ngModel)]="rowIndex" [min]="1" [max]="rows + 1" class="control-input small-input index-input" placeholder="Індекс" />
-        <div class="button-group" style="gap: 24px;">  <!-- збільшили відстань між кнопками -->
+        <div class="button-group">
           <button (click)="addRow()" class="pixelation-button pixelation-button--small">Додати</button>
           <button (click)="removeRow()" class="pixelation-button pixelation-button--small">Видалити</button>
         </div>
@@ -43,12 +43,17 @@
 
       <!-- Стовпці -->
       <div class="control-group row-col-group">
-        <label>Стовпці:</label>  <!-- прибрали ({{ columns }}) -->
+        <label>Стовпці:</label>
         <input type="number" [(ngModel)]="columnIndex" [min]="1" [max]="columns + 1" class="control-input small-input index-input" placeholder="Індекс" />
-        <div class="button-group" style="gap: 24px;">
+        <div class="button-group">
           <button (click)="addColumn()" class="pixelation-button pixelation-button--small">Додати</button>
           <button (click)="removeColumn()" class="pixelation-button pixelation-button--small">Видалити</button>
         </div>
+      </div>
+
+      <!-- Кнопка "Назад" тепер внизу бічної панелі -->
+      <div class="sidebar-bottom-actions">
+        <button (click)="undoLastAction()" [disabled]="!canUndo" class="pixelation-button pixelation-button--undo">Назад</button>
       </div>
 
     </aside>
@@ -64,33 +69,30 @@
 
   </div>
 
-  <!-- Блок збереження – компактний, кнопки поруч -->
-   
+  <!-- Блок збереження — тепер тільки назва, формат і кнопка "Зберегти" -->
   <div class="save-section">
-    <div class="save-controls horizontal-save">
-      
-      <div class="labels-row">
-        <label for="fileName">Назва файлу</label>
-        <label for="fileFormat">Формат</label>
-      </div>
-      <div class="save-row">
-        <div class="control-group">
+    <div class="save-controls">
+
+
+      <div class="save-form">
+        <div class="save-field">
+          <label for="fileName">Назва файлу</label>
           <input type="text" id="fileName" [(ngModel)]="fileName" placeholder="Введіть назву файлу" class="control-input" />
         </div>
-        <div class="control-group">
+
+        <div class="save-field">
+          <label for="fileFormat">Формат</label>
           <select id="fileFormat" [(ngModel)]="fileFormat" class="control-input">
             <option value="pdf">.pdf</option>
             <option value="png">.png</option>
             <option value="jpeg">.jpeg</option>
           </select>
         </div>
-        <div class="flex" style="gap: 10px; margin-top: 10px;">  <!-- збільшили відстань між "Зберегти" і "Назад" -->
-      <button (click)="undoLastAction()" [disabled]="!canUndo" class="pixelation-button pixelation-button--undo">Назад</button>
-    </div>
-        <button (click)="saveCanvas()" class="pixelation-button pixelation-button--download">Зберегти</button>
       </div>
 
-
+      <div class="save-actions">
+        <button (click)="saveCanvas()" class="pixelation-button pixelation-button--download">Зберегти</button>
+      </div>
     </div>
   </div>
 

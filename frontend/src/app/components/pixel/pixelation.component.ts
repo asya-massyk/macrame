@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { isPlatformBrowser } from '@angular/common';
+import jsPDF from 'jspdf';
 
 interface MaterialResponse {
   number: string;
@@ -21,19 +22,42 @@ export class PixelationComponent implements AfterViewInit {
   @ViewChild('pixelationCanvas') canvasRef!: ElementRef<HTMLCanvasElement>;
 
   imageSrc: string | null = null;
-  pixelCount: number = 20;
-  minPixelCount: number = 5;
-  maxPixelCount: number = 100;
+  pixelCount: number = 25;
+  minPixelCount: number = 8;
+  maxPixelCount: number = 50;
   isCropping: boolean = false;
   fileName: string = 'pixelated_image';
   downloadFormat: string = 'image/png';
+  sliderValue: number = 25;
   materialType: string = 'beads';
   materialList: Array<{
-    number: number;
+    number: string;
     color: { r: number; g: number; b: number };
     materials: Array<{ brand: string; number: string }>;
   }> = [];
-  numberedColors: Array<{ number: number; color: { r: number; g: number; b: number } }> = [];
+  symbolColors: Array<{
+    symbol: string;
+    color: { r: number; g: number; b: number };
+    fillColor: string;           // ← ДОДАЙ це поле
+  }> = [];
+  // ====================== ВЕЛИКИЙ ПУЛ СИМВОЛІВ ======================
+  private symbolPool: string[] = [
+    '■', '□', '●', '○', '▲', '▼', '▶', '◀', '★', '☆', '◆', '◇', '✚', '✖', '◼', '◻', '⬛', '⬜',
+    '▣', '▤', '▥', '▦', '▧', '▨', '▩', '◎', '◉', '✦', '✧', '◐', '◑', '◒', '◓', '◔', '◕', '◖', '◗',
+    '▌', '▍', '░', '▒', '▓', '◢', '◣', '◤', '◥', '▰', '▱', '◈', '⬘', '⬙', '◬', '◭', '◮',
+    '▚', '▞', '▙', '▛', '▜', '▝', '▟', '◴', '◵', '◶', '◷', '◸', '◹', '◺', '◼', '◽', '◾', '◿',
+    '▀', '▁', '▂', '▃', '▄', '▅', '▆', '▇', '█', '╱', '╲', '╳', '▔', '▕',
+    '◰', '◱', '◲', '◳', '✸', '✹', '✺', '✻', '✼', '✢', '✣', '✤', '✥', '⊕', '⊖',
+    '⬒', '⬓', '◐', '◑', '◒', '◓', '◔', '◕', '◖', '◗', '▰', '▱', '◬', '◭', '◮'
+  ];
+
+  // ====================== ПАЛІТРА КОЛЬОРІВ ДЛЯ СИМВОЛІВ ======================
+  // Коли символ повторюється — беремо наступний колір з цієї палітри
+  private symbolFillPalette: string[] = [
+    '#FFFFFF', '#000000', '#333333', '#666666', '#999999',
+    '#FFEE00', '#00FFCC', '#FF00AA', '#00AAFF', '#FF8800'
+  ];
+
   private cropStart: { x: number; y: number } | null = null;
   private cropEnd: { x: number; y: number } | null = null;
   private originalImage: HTMLImageElement | null = null;
@@ -42,11 +66,12 @@ export class PixelationComponent implements AfterViewInit {
   private aspectRatio: number | null = null;
   private preservePixelCount: number | null = null;
   public history: { imageSrc: string; pixelCount: number; imageWidth: number; imageHeight: number }[] = [];
+  private minCellSize = 20;
 
   constructor(
     private http: HttpClient,
     @Inject(PLATFORM_ID) private platformId: Object
-  ) {}
+  ) { }
 
   ngAfterViewInit(): void {
     if (isPlatformBrowser(this.platformId)) {
@@ -102,7 +127,7 @@ export class PixelationComponent implements AfterViewInit {
 
   private resetDerivedState(): void {
     this.materialList = [];
-    this.numberedColors = [];
+    this.symbolColors = [];
   }
 
   private adjustCanvasSize(): void {
@@ -177,19 +202,23 @@ export class PixelationComponent implements AfterViewInit {
   private loadImage(src: string): void {
     const img = new Image();
     img.src = src;
+    this.sliderValue = this.pixelCount;
     img.onload = () => {
       this.originalImage = img;
-      this.maxPixelCount = Math.max(100, Math.floor(Math.min(img.width, img.height) / 5));
-      this.pixelCount = this.preservePixelCount 
+      const minSide = Math.min(img.width, img.height);
+
+      this.maxPixelCount = Math.min(50, Math.floor(minSide / this.minCellSize));
+      this.maxPixelCount = Math.max(this.maxPixelCount, this.minPixelCount);
+
+      this.pixelCount = this.preservePixelCount
         ? Math.min(this.maxPixelCount, Math.max(this.minPixelCount, this.preservePixelCount))
-        : Math.min(this.maxPixelCount, Math.max(this.minPixelCount, 20));
+        : 25;
+
       this.preservePixelCount = null;
       this.adjustCanvasSize();
       this.renderImage();
     };
-    img.onerror = () => {
-      this.resetState();
-    };
+    img.onerror = () => this.resetState();
   }
 
   private getBlockInfo(side: number, numBlocks: number): { starts: number[]; sizes: number[] } {
@@ -206,6 +235,7 @@ export class PixelationComponent implements AfterViewInit {
     }
     return { starts, sizes };
   }
+
 
   private renderImage(): void {
     if (!this.canvasRef?.nativeElement || !this.imageSrc || !this.originalImage) return;
@@ -274,14 +304,12 @@ export class PixelationComponent implements AfterViewInit {
     const scaleX = canvas.width / width;
     const scaleY = canvas.height / height;
     const scale = Math.min(scaleX, scaleY);
-    const drawWidth = width * scale;
-    const drawHeight = height * scale;
-    const offsetX = (canvas.width - drawWidth) / 2;
-    const offsetY = (canvas.height - drawHeight) / 2;
+    const offsetX = (canvas.width - width * scale) / 2;
+    const offsetY = (canvas.height - height * scale) / 2;
 
-    ctx.drawImage(tempCanvas, offsetX, offsetY, drawWidth, drawHeight);
+    ctx.drawImage(tempCanvas, offsetX, offsetY, width * scale, height * scale);
 
-    if (this.numberedColors.length > 0) {
+    if (this.symbolColors.length > 0) {
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
 
@@ -306,27 +334,40 @@ export class PixelationComponent implements AfterViewInit {
           const avgG = count > 0 ? Math.round(sumG / count) : 0;
           const avgB = count > 0 ? Math.round(sumB / count) : 0;
 
-          const colorInfo = this.numberedColors.find(c => c.color.r === avgR && c.color.g === avgG && c.color.b === avgB);
+          const colorInfo = this.symbolColors.find(c =>
+            c.color.r === avgR && c.color.g === avgG && c.color.b === avgB
+          );
+
           if (colorInfo) {
-            const displayedBlockW = blockW * scale;
-            const displayedBlockH = blockH * scale;
-            const fontSize = Math.max(4, Math.min(20, Math.min(displayedBlockW, displayedBlockH) * 0.7));
-            ctx.font = `bold ${fontSize}px Arial`;
-            const luminance = 0.299 * avgR + 0.587 * avgG + 0.114 * avgB;
-            ctx.fillStyle = luminance < 140 ? '#fff' : '#000';
-            const centerX = offsetX + (px + blockW / 2) * scale;
-            const centerY = offsetY + (py + blockH / 2) * scale;
-            ctx.fillText(colorInfo.number.toString(), centerX, centerY);
+            const displayedW = blockW * scale;
+            const displayedH = blockH * scale;
+            const fontSize = Math.min(displayedW, displayedH) * 0.78;
+
+            ctx.font = `bold ${fontSize}px Arial, Helvetica, "Segoe UI Symbol", sans-serif`;
+
+            const centerX = Math.round(offsetX + (px + blockW / 2) * scale);
+            const centerY = Math.round(offsetY + (py + blockH / 2) * scale);
+
+            // Обводка
+            ctx.strokeStyle = '#000000';
+            ctx.lineWidth = Math.max(3.5, fontSize * 0.16);
+            ctx.strokeText(colorInfo.symbol, centerX, centerY);
+
+            // Заповнення — використовуємо заздалегідь збережений колір
+            ctx.fillStyle = colorInfo.fillColor || '#000000';
+            ctx.fillText(colorInfo.symbol, centerX, centerY);
           }
         }
       }
     }
-
+    // ────────────────────────────────────────────────
+    //               Обрізка (crop) — без змін
+    // ────────────────────────────────────────────────
     if (this.isCropping && this.cropStart && this.cropEnd && this.isMouseDown) {
       let cropX = Math.min(this.cropStart.x, this.cropEnd.x);
       let cropY = Math.min(this.cropStart.y, this.cropEnd.y);
       let cropWidth = Math.abs(this.cropEnd.x - this.cropStart.x);
-      let cropHeight = Math.abs(this.cropEnd.y - this.cropEnd.y);
+      let cropHeight = Math.abs(this.cropEnd.y - this.cropStart.y);
 
       cropWidth = Math.max(cropWidth, this.minCropSize);
       cropHeight = Math.max(cropHeight, this.minCropSize);
@@ -355,10 +396,25 @@ export class PixelationComponent implements AfterViewInit {
     }
   }
 
+  private mapSliderToPixelCount(value: number): number {
+    const normalized = (value - this.minPixelCount) / (this.maxPixelCount - this.minPixelCount);
+    const adjusted = Math.pow(normalized, 2.8);
+    const maxEffective = 48;
+
+    return Math.round(this.minPixelCount + adjusted * (maxEffective - this.minPixelCount));
+  }
+
   updatePixelation(): void {
     if (this.imageSrc && !this.isCropping) {
       this.saveState();
-      this.pixelCount = Math.min(this.maxPixelCount, Math.max(this.minPixelCount, Math.round(this.pixelCount)));
+
+      const mappedValue = this.mapSliderToPixelCount(this.sliderValue);
+
+      this.pixelCount = Math.min(
+        this.maxPixelCount,
+        Math.max(this.minPixelCount, mappedValue)
+      );
+
       this.resetDerivedState();
       this.renderImage();
     }
@@ -509,12 +565,49 @@ export class PixelationComponent implements AfterViewInit {
   downloadImage(): void {
     if (!this.canvasRef?.nativeElement) return;
 
-    const canvas = this.canvasRef.nativeElement;
+    const originalCanvas = this.canvasRef.nativeElement;
     const safeFileName = (this.fileName || 'pixelated_image').replace(/[^a-zA-Z0-9_-]/g, '');
-    const link = document.createElement('a');
-    link.href = canvas.toDataURL(this.downloadFormat, this.downloadFormat === 'image/jpeg' ? 0.8 : 1);
-    link.download = `${safeFileName}.${this.downloadFormat === 'image/jpeg' ? 'jpg' : 'png'}`;
-    link.click();
+
+    let scaleFactor = 2;
+    if (this.pixelCount > 80) scaleFactor = 3;
+    if (this.pixelCount > 150) scaleFactor = 4;
+
+    const tempCanvas = document.createElement('canvas');
+    tempCanvas.width = originalCanvas.width * scaleFactor;
+    tempCanvas.height = originalCanvas.height * scaleFactor;
+
+    const tempCtx = tempCanvas.getContext('2d');
+    if (!tempCtx) return;
+
+    tempCtx.imageSmoothingEnabled = false;
+    tempCtx.drawImage(originalCanvas, 0, 0, tempCanvas.width, tempCanvas.height);
+
+    if (this.downloadFormat === 'application/pdf') {
+      const pdf = new jsPDF({
+        orientation: tempCanvas.width > tempCanvas.height ? 'landscape' : 'portrait',
+        unit: 'px',
+        format: [tempCanvas.width, tempCanvas.height],
+        compress: false
+      });
+
+      const imgData = tempCanvas.toDataURL('image/png', 1.0);
+      pdf.addImage(imgData, 'PNG', 0, 0, tempCanvas.width, tempCanvas.height);
+
+      pdf.save(`${safeFileName}.pdf`);
+    } else {
+      const mimeType = this.downloadFormat;
+      const extension = mimeType === 'image/jpeg' ? 'jpg' : 'png';
+      const quality = mimeType === 'image/jpeg' ? 0.92 : 1.0;
+
+      const dataUrl = tempCanvas.toDataURL(mimeType, quality);
+
+      const link = document.createElement('a');
+      link.href = dataUrl;
+      link.download = `${safeFileName}.${extension}`;
+      link.click();
+    }
+
+    tempCanvas.remove();
   }
 
   rotateImage(): void {
@@ -602,18 +695,49 @@ export class PixelationComponent implements AfterViewInit {
     }
 
     const sortedColors = Object.values(colorCounts).sort((a, b) => b.count - a.count);
-    this.numberedColors = sortedColors.map((color, index) => ({ number: index + 1, color: { r: color.r, g: color.g, b: color.b } }));
+
+    // === НОВА ЛОГІКА ===
+    const baseSymbols = this.symbolPool.slice(0, 18);           // перші 18 — "базові" (чорно-білі)
+    const extraSymbols = this.symbolPool.slice(18);
+
+    this.symbolColors = sortedColors.map((color, index) => {
+      let symbol: string;
+      let fillColor: string = '#000000';   // за замовчуванням чорний
+
+      if (index < baseSymbols.length) {
+        // Перші N кольорів — тільки базові символи + чорний/білий
+        symbol = baseSymbols[index];
+
+        const luminance = 0.299 * color.r + 0.587 * color.g + 0.114 * color.b;
+        fillColor = luminance < 130 ? '#FFFFFF' : '#000000';
+      }
+      else {
+        // Коли символів не вистачає — починаємо повторювати + використовувати кольорову палітру
+        const extraIndex = index - baseSymbols.length;
+        symbol = extraSymbols[extraIndex % extraSymbols.length];
+
+        // Колір з палітри (циклічно)
+        fillColor = this.symbolFillPalette[extraIndex % this.symbolFillPalette.length];
+      }
+
+      return {
+        symbol,
+        color: { r: color.r, g: color.g, b: color.b },
+        fillColor   // зберігаємо колір заливки в об'єкті
+      };
+    });
+
     this.renderImage();
   }
 
   findMaterials(): void {
-    if (this.numberedColors.length === 0) {
-      alert('Спочатку створіть схему з номерами кольорів');
+    if (this.symbolColors.length === 0) {
+      alert('Спочатку створіть схему з позначками кольорів');
       return;
     }
 
-    const colorList = this.numberedColors.map(colorInfo => ({
-      number: colorInfo.number.toString(),
+    const colorList = this.symbolColors.map(colorInfo => ({
+      number: colorInfo.symbol,
       r: colorInfo.color.r.toString(),
       g: colorInfo.color.g.toString(),
       b: colorInfo.color.b.toString()
@@ -627,10 +751,13 @@ export class PixelationComponent implements AfterViewInit {
         : {})
     });
 
-    this.http.post<{ materials: MaterialResponse[] }>('http://localhost:8000/accounts/materials/', { colors: colorList, materialType: this.materialType }, { headers }).subscribe({
+    this.http.post<{ materials: MaterialResponse[] }>('http://localhost:8000/accounts/materials/',
+      { colors: colorList, materialType: this.materialType },
+      { headers }
+    ).subscribe({
       next: (response) => {
         this.materialList = response.materials.map((m: MaterialResponse) => ({
-          number: parseInt(m.number),
+          number: m.number,
           color: { r: parseInt(m.color.r), g: parseInt(m.color.g), b: parseInt(m.color.b) },
           materials: m.materials
         }));
