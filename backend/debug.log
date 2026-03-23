@@ -156,3 +156,173 @@ Returning tokens for user: masya
 Fetching profile for user: masya
 Returning profile data for user: masya
 Watching for file changes with StatReloader
+Login request data: {'identifier': 'massikanastasia@gmail.com', 'password': '73V1n8kh'}
+Attempting login with identifier: massikanastasia@gmail.com
+Validating login data: {'identifier': 'massikanastasia@gmail.com', 'password': '73V1n8kh'}
+Found user: masya
+User email verified: True
+Authenticate result: masya
+User found: masya, email: massikanastasia@gmail.com, nickname: masya
+Returning tokens for user: masya
+Unauthorized: /accounts/profile/
+Login request data: {'identifier': 'massikanastasia@gmail.com', 'password': '73V1n8kh'}
+Attempting login with identifier: massikanastasia@gmail.com
+Validating login data: {'identifier': 'massikanastasia@gmail.com', 'password': '73V1n8kh'}
+Found user: masya
+User email verified: True
+Authenticate result: masya
+User found: masya, email: massikanastasia@gmail.com, nickname: masya
+Returning tokens for user: masya
+Fetching profile for user: masya
+Returning profile data for user: masya
+Fetching profile for user: masya
+Returning profile data for user: masya
+Fetching profile for user: masya
+Returning profile data for user: masya
+Unauthorized: /accounts/profile/
+Login request data: {'identifier': 'massikanastasia@gmail.com', 'password': '73V1n8kh'}
+Attempting login with identifier: massikanastasia@gmail.com
+Validating login data: {'identifier': 'massikanastasia@gmail.com', 'password': '73V1n8kh'}
+Found user: masya
+User email verified: True
+Authenticate result: masya
+User found: masya, email: massikanastasia@gmail.com, nickname: masya
+Returning tokens for user: masya
+Fetching profile for user: masya
+Returning profile data for user: masya
+Unauthorized: /accounts/profile/
+Login request data: {'identifier': 'massikanastasia@gmail.com', 'password': '73V1n8kh'}
+Attempting login with identifier: massikanastasia@gmail.com
+Validating login data: {'identifier': 'massikanastasia@gmail.com', 'password': '73V1n8kh'}
+Found user: masya
+User email verified: True
+Authenticate result: masya
+User found: masya, email: massikanastasia@gmail.com, nickname: masya
+Returning tokens for user: masya
+Unauthorized: /accounts/profile/
+Login request data: {'identifier': 'massikanastasia@gmail.com', 'password': '73V1n8kh'}
+Attempting login with identifier: massikanastasia@gmail.com
+Validating login data: {'identifier': 'massikanastasia@gmail.com', 'password': '73V1n8kh'}
+Found user: masya
+User email verified: True
+Authenticate result: masya
+User found: masya, email: massikanastasia@gmail.com, nickname: masya
+Returning tokens for user: masya
+Unauthorized: /accounts/profile/
+Login request data: {'identifier': 'massikanastasia@gmail.com', 'password': '73V1n8kh'}
+Attempting login with identifier: massikanastasia@gmail.com
+Validating login data: {'identifier': 'massikanastasia@gmail.com', 'password': '73V1n8kh'}
+Found user: masya
+User email verified: True
+Authenticate result: masya
+User found: masya, email: massikanastasia@gmail.com, nickname: masya
+Returning tokens for user: masya
+Unauthorized: /accounts/profile/
+Login request data: {'identifier': 'massikanastasia@gmail.com', 'password': '73V1n8kh'}
+Attempting login with identifier: massikanastasia@gmail.com
+Validating login data: {'identifier': 'massikanastasia@gmail.com', 'password': '73V1n8kh'}
+Found user: masya
+User email verified: True
+Authenticate result: masya
+User found: masya, email: massikanastasia@gmail.com, nickname: masya
+Returning tokens for user: masya
+Fetching profile for user: masya
+Returning profile data for user: masya
+Fetching profile for user: masya
+Returning profile data for user: masya
+Fetching profile for user: masya
+Returning profile data for user: masya
+Fetching profile for user: masya
+Returning profile data for user: masya
+Fetching profile for user: masya
+Returning profile data for user: masya
+Fetching profile for user: masya
+Returning profile data for user: masya
+Fetching profile for user: masya
+Returning profile data for user: masya
+Fetching profile for user: masya
+Returning profile data for user: masya
+Fetching profile for user: masya
+Returning profile data for user: masya
+Fetching profile for user: masya
+Returning profile data for user: masya
+Fetching profile for user: masya
+Returning profile data for user: masya
+Fetching profile for user: masya
+Returning profile data for user: masya
+Unauthorized: /accounts/materials/
+Watching for file changes with StatReloader
+Login request data: {'identifier': 'massikanastasia@gmail.com', 'password': '73V1n8kh'}
+Attempting login with identifier: massikanastasia@gmail.com
+Validating login data: {'identifier': 'massikanastasia@gmail.com', 'password': '73V1n8kh'}
+Found user: masya
+User email verified: True
+Authenticate result: masya
+User found: masya, email: massikanastasia@gmail.com, nickname: masya
+Returning tokens for user: masya
+Unauthorized: /accounts/profile/
+Login request data: {'identifier': 'massikanastasia@gmail.com', 'password': '73V1n8kh'}
+Attempting login with identifier: massikanastasia@gmail.com
+Validating login data: {'identifier': 'massikanastasia@gmail.com', 'password': '73V1n8kh'}
+Found user: masya
+User email verified: True
+Authenticate result: masya
+User found: masya, email: massikanastasia@gmail.com, nickname: masya
+Returning tokens for user: masya
+Processing 613 colors for materialType: beads
+Using placeholder for bead colors
+Returning 613 materials
+Processing 613 colors for materialType: threads
+Loading DMC colors from https://raw.githubusercontent.com/nathantspencer/DMC-ColorCodes/master/DMC_ColorCodes.csv
+Error loading DMC colors: HTTPSConnectionPool(host='raw.githubusercontent.com', port=443): Max retries exceeded with url: /nathantspencer/DMC-ColorCodes/master/DMC_ColorCodes.csv (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x000001811C777B90>: Failed to resolve 'raw.githubusercontent.com' ([Errno 11001] getaddrinfo failed)"))
+Error in MaterialsAPIView: HTTPSConnectionPool(host='raw.githubusercontent.com', port=443): Max retries exceeded with url: /nathantspencer/DMC-ColorCodes/master/DMC_ColorCodes.csv (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x000001811C777B90>: Failed to resolve 'raw.githubusercontent.com' ([Errno 11001] getaddrinfo failed)"))
+Internal Server Error: /accounts/materials/
+Unauthorized: /accounts/profile/
+Login request data: {'identifier': 'massikanastasia@gmail.com', 'password': '73V1n8kh'}
+Attempting login with identifier: massikanastasia@gmail.com
+Validating login data: {'identifier': 'massikanastasia@gmail.com', 'password': '73V1n8kh'}
+Found user: masya
+User email verified: True
+Authenticate result: masya
+User found: masya, email: massikanastasia@gmail.com, nickname: masya
+Returning tokens for user: masya
+Fetching profile for user: masya
+Returning profile data for user: masya
+Fetching profile for user: masya
+Returning profile data for user: masya
+Editing profile for user: masya
+Profile updated successfully for user: masya
+Fetching profile for user: masya
+Returning profile data for user: masya
+Watching for file changes with StatReloader
+Login request data: {'identifier': 'massikanastasia@gmail.com', 'password': '73V1n8kh'}
+Attempting login with identifier: massikanastasia@gmail.com
+Validating login data: {'identifier': 'massikanastasia@gmail.com', 'password': '73V1n8kh'}
+Found user: masya
+User email verified: True
+Authenticate result: masya
+User found: masya, email: massikanastasia@gmail.com, nickname: masya
+Returning tokens for user: masya
+Processing 721 colors for materialType: beads
+Using placeholder for bead colors
+Returning 721 materials
+Watching for file changes with StatReloader
+Login request data: {'identifier': 'massikanastasia@gmail.com', 'password': '73V1n8kh'}
+Attempting login with identifier: massikanastasia@gmail.com
+Validating login data: {'identifier': 'massikanastasia@gmail.com', 'password': '73V1n8kh'}
+Found user: masya
+User email verified: True
+Authenticate result: masya
+User found: masya, email: massikanastasia@gmail.com, nickname: masya
+Returning tokens for user: masya
+Unauthorized: /accounts/profile/
+Login request data: {'identifier': 'massikanastasia@gmail.com', 'password': '73V1n8kh'}
+Attempting login with identifier: massikanastasia@gmail.com
+Validating login data: {'identifier': 'massikanastasia@gmail.com', 'password': '73V1n8kh'}
+Found user: masya
+User email verified: True
+Authenticate result: masya
+User found: masya, email: massikanastasia@gmail.com, nickname: masya
+Returning tokens for user: masya
+Fetching profile for user: masya
+Returning profile data for user: masya
