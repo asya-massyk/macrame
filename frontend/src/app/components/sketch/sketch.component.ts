@@ -33,6 +33,8 @@ export class EditSketchComponent implements AfterViewInit {
   private pixelData: string[][] = [];
   private isPainting: boolean = false;
   canUndo: boolean = false; // Новий стан для кнопки "Назад"
+  private readonly MAX_SIZE = 50;
+Math: any;
 
   constructor(
     private router: Router,
@@ -114,6 +116,45 @@ export class EditSketchComponent implements AfterViewInit {
     }
   }
 
+  onWidthChange(value: number): void {
+  this.pixelWidth = Math.min(50, Math.max(1, value || 1));
+  this.updateCanvasSize();
+}
+
+onHeightChange(value: number): void {
+  this.pixelHeight = Math.min(50, Math.max(1, value || 1));
+  this.updateCanvasSize();
+}
+
+limitDigits(event: Event, type: 'width' | 'height'): void {
+  const input = event.target as HTMLInputElement;
+
+  // залишаємо тільки цифри
+  let value = input.value.replace(/\D/g, '');
+
+  // 🔒 максимум 2 цифри
+  if (value.length > 2) {
+    value = value.slice(0, 2);
+  }
+
+  let numericValue = Number(value);
+
+  // 🔒 обмеження 1–50
+  if (numericValue > 50) numericValue = 50;
+  if (numericValue < 1) numericValue = 1;
+
+  // оновлюємо значення
+  if (type === 'width') {
+    this.pixelWidth = numericValue;
+  } else {
+    this.pixelHeight = numericValue;
+  }
+
+  input.value = numericValue.toString();
+
+  this.updateCanvasSize();
+}
+
   private redrawPixels(): void {
     if (!this.ctx) return;
     const canvas = this.canvasRef.nativeElement;
@@ -159,11 +200,25 @@ export class EditSketchComponent implements AfterViewInit {
   }
 
   updateCanvasSize(): void {
-    this.columns = this.pixelWidth;
-    this.rows = this.pixelHeight;
-    this.adjustCanvasSize();
-    console.log('Canvas size updated:', { width: this.pixelWidth, height: this.pixelHeight });
+
+  // 🔒 Обмеження
+  if (this.pixelWidth > this.MAX_SIZE) {
+    this.pixelWidth = this.MAX_SIZE;
   }
+  if (this.pixelHeight > this.MAX_SIZE) {
+    this.pixelHeight = this.MAX_SIZE;
+  }
+
+  if (this.pixelWidth < 1) this.pixelWidth = 1;
+  if (this.pixelHeight < 1) this.pixelHeight = 1;
+
+  this.columns = this.pixelWidth;
+  this.rows = this.pixelHeight;
+
+  this.adjustCanvasSize();
+
+  console.log('Canvas size updated:', { width: this.pixelWidth, height: this.pixelHeight });
+}
 
   adjustCanvasSize(): void {
     if (!this.canvasRef?.nativeElement || !this.ctx) {
@@ -196,10 +251,11 @@ export class EditSketchComponent implements AfterViewInit {
   }
 
   addRow(): void {
-    if (this.rowIndex < 1 || this.rowIndex > this.rows + 1) {
-      console.error('Invalid row index:', this.rowIndex);
-      return;
-    }
+
+  if (this.rows >= this.MAX_SIZE) {
+    console.warn('Max rows reached');
+    return;
+  }
 
     const oldPixelData = [...this.pixelData.map(row => [...row])];
     this.rows++;
@@ -254,10 +310,11 @@ export class EditSketchComponent implements AfterViewInit {
   }
 
   addColumn(): void {
-    if (this.columnIndex < 1 || this.columnIndex > this.columns + 1) {
-      console.error('Invalid column index:', this.columnIndex);
-      return;
-    }
+
+  if (this.columns >= this.MAX_SIZE) {
+    console.warn('Max columns reached');
+    return;
+  }
 
     const oldPixelData = [...this.pixelData.map(row => [...row])];
     this.columns++;

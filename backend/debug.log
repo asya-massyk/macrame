@@ -326,3 +326,23 @@ User found: masya, email: massikanastasia@gmail.com, nickname: masya
 Returning tokens for user: masya
 Fetching profile for user: masya
 Returning profile data for user: masya
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+Login request data: {'identifier': 'massikanastasia@gmail.com', 'password': '73V1n8kh'}
+Attempting login with identifier: massikanastasia@gmail.com
+Validating login data: {'identifier': 'massikanastasia@gmail.com', 'password': '73V1n8kh'}
+Found user: masya
+User email verified: True
+Authenticate result: masya
+User found: masya, email: massikanastasia@gmail.com, nickname: masya
+Returning tokens for user: masya
+Watching for file changes with StatReloader
+Login request data: {'identifier': 'massikanastasia@gmail.com', 'password': '73V1n8kh'}
+Attempting login with identifier: massikanastasia@gmail.com
+Validating login data: {'identifier': 'massikanastasia@gmail.com', 'password': '73V1n8kh'}
+Found user: masya
+User email verified: True
+Authenticate result: masya
+User found: masya, email: massikanastasia@gmail.com, nickname: masya
+Returning tokens for user: masya
