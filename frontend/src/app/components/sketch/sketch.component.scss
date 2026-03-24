@@ -5,22 +5,21 @@ $secondary-color: #3344DC;
 // Основний контейнер сторінки
 
 .edit-container {
-  padding-left: 80px !important;
-  padding-right: 80px !important;
+  padding: 0 24px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  
+
   width: 100%;
   min-height: calc(100vh - 195px);
   margin: 0 auto;
-  
+
   background-color: #000;
   color: #fff;
-  
+
   font-family: 'Poppins', sans-serif;
   box-sizing: border-box;
-  
+
   overflow-x: hidden;
   overflow-y: auto;
   position: relative;
@@ -42,14 +41,16 @@ $secondary-color: #3344DC;
 .canvas-wrapper {
   flex: 1;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  
+  justify-content: flex-start;
+  align-items: flex-start;
+
+  overflow: auto;
+
   width: 100%;
   min-height: 50vh;
   margin: 24px auto;
   padding: 24px;
-  
+
   background: #111;
   border-radius: 16px;
   border: 1px solid #333;
@@ -59,13 +60,13 @@ $secondary-color: #3344DC;
 .sketch-canvas {
   width: auto;
   height: auto;
-  max-width: 100%;
-  max-height: 80vh;
+  display: block;
   border: 2px solid #444;
   border-radius: 10px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
   background-color: #686464;
   image-rendering: pixelated;
+  image-rendering: crisp-edges;
   cursor: crosshair;
 }
 
@@ -79,8 +80,8 @@ $secondary-color: #3344DC;
   .sidebar-controls {
     width: 340px;
     flex: 0 0 340px;
-    padding: 20px 16px;           // компактніше
-    gap: 24px;                    // зменшено відстань між групами
+    padding: 20px 16px;
+    gap: 24px;
   }
 
   .canvas-wrapper {
@@ -95,7 +96,7 @@ $secondary-color: #3344DC;
   .sidebar-controls {
     order: -1;
   }
-  
+
   .canvas-wrapper {
     min-height: 60vh;
   }
@@ -117,7 +118,7 @@ $secondary-color: #3344DC;
   border-radius: 16px;
   display: flex;
   flex-direction: column;
-  gap: 24px;                       // зменшено вертикальні відстані
+  gap: 24px;
   align-items: center;
   background: #111;
 }
@@ -209,7 +210,7 @@ $secondary-color: #3344DC;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;                       // зменшено
+  gap: 12px;
 }
 
 .button-group {
@@ -233,7 +234,7 @@ $secondary-color: #3344DC;
   cursor: pointer;
   font-size: 14px;
   transition: background 0.3s ease;
-  
+
   &:hover {
     background: linear-gradient(to right, darken($primary-color, 12%), darken($secondary-color, 12%));
   }
@@ -265,7 +266,7 @@ $secondary-color: #3344DC;
   background: #fff;
   color: #000;
   box-sizing: border-box;
-  
+
   &.small-input {
     max-width: 90px;
     height: 36px;
@@ -306,7 +307,7 @@ $secondary-color: #3344DC;
 }
 
 .save-field label {
-  font-size: 15px;                 // однакова висота з бічною панеллю
+  font-size: 15px;
   color: #585E83;
   margin-bottom: 6px;
 }
@@ -330,45 +331,59 @@ $secondary-color: #3344DC;
   .edit-container {
     padding: 20px 20px 80px;
   }
-  
+
   .save-form {
     flex-direction: column;
     gap: 32px;
   }
-  
+
   .save-field .control-input {
     max-width: 100%;
   }
 }
 
-// Фікс навбару — знімаємо жорстке обмеження 1600px і робимо на всю ширину без скролу
-:host ::ng-deep app-navbar,
+// ────────────────────────────────────────────────
+// NAVBAR — ФІНАЛЬНИЙ ЖОРСТКИЙ OVERRIDE (тільки на цій сторінці)
+:host ::ng-deep html body .navbar,
+:host ::ng-deep html .navbar,
+:host ::ng-deep body .navbar,
 :host ::ng-deep .navbar {
-  width: 100% !important;
-  max-width: none !important;           // знімаємо 1600px
-  min-width: 100% !important;
-  margin-left: -80px !important;        // компенсуємо padding батьківського контейнера
-  margin-right: -80px !important;
-  padding: 0 80px !important;           // внутрішні відступи як на головній
+  width: 900px !important;           /* фіксована ширина замість 100vw */
+  max-width: 900px !important;
+  margin: 20px auto !important;      /* центрування */
+  padding: 0 20px 0 16px !important;
   box-sizing: border-box !important;
+  overflow: hidden !important;
   border-radius: 30px !important;
+  height: 50px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  background-color: #3344DC !important;
+  position: relative !important;
 }
 
-// Вміст меню — на всю ширину без обмежень
+:host ::ng-deep html body .navbar ul,
+:host ::ng-deep html .navbar ul,
+:host ::ng-deep body .navbar ul,
 :host ::ng-deep .navbar ul {
+  display: flex !important;
+  flex-grow: 1 !important;
+  justify-content: space-between !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  list-style-type: none !important;
   width: 100% !important;
-  max-width: none !important;
-  margin: 0 auto !important;
-  justify-content: space-between !important; // або space-around, якщо хочеш більше повітря
 }
 
-// Блокуємо скрол на всіх контейнерах, які можуть його викликати
+// Блокуємо скрол
 .edit-container,
-.main-layout,
-.canvas-wrapper,
 body,
 html {
   overflow-x: hidden !important;
-  max-width: 100vw !important;
 }
 
+.main-layout,
+.canvas-wrapper {
+  overflow-x: auto !important;
+}

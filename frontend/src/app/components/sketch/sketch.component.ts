@@ -34,7 +34,7 @@ export class EditSketchComponent implements AfterViewInit {
   private isPainting: boolean = false;
   canUndo: boolean = false; // Новий стан для кнопки "Назад"
   private readonly MAX_SIZE = 50;
-Math: any;
+  Math: any;
 
   constructor(
     private router: Router,
@@ -44,9 +44,9 @@ Math: any;
     this.isBrowser = isPlatformBrowser(this.platformId);
   }
   ngOnInit() {
-  this.pixelWidth = 50;
-  this.pixelHeight = 25;
-  this.updateCanvasSize();  // твій метод, який перемальовує canvas
+    this.pixelWidth = 50;
+    this.pixelHeight = 25;
+    this.updateCanvasSize();  // твій метод, який перемальовує canvas
   }
 
   ngAfterViewInit(): void {
@@ -117,43 +117,43 @@ Math: any;
   }
 
   onWidthChange(value: number): void {
-  this.pixelWidth = Math.min(50, Math.max(1, value || 1));
-  this.updateCanvasSize();
-}
-
-onHeightChange(value: number): void {
-  this.pixelHeight = Math.min(50, Math.max(1, value || 1));
-  this.updateCanvasSize();
-}
-
-limitDigits(event: Event, type: 'width' | 'height'): void {
-  const input = event.target as HTMLInputElement;
-
-  // залишаємо тільки цифри
-  let value = input.value.replace(/\D/g, '');
-
-  // 🔒 максимум 2 цифри
-  if (value.length > 2) {
-    value = value.slice(0, 2);
+    this.pixelWidth = Math.min(50, Math.max(1, value || 1));
+    this.updateCanvasSize();
   }
 
-  let numericValue = Number(value);
-
-  // 🔒 обмеження 1–50
-  if (numericValue > 50) numericValue = 50;
-  if (numericValue < 1) numericValue = 1;
-
-  // оновлюємо значення
-  if (type === 'width') {
-    this.pixelWidth = numericValue;
-  } else {
-    this.pixelHeight = numericValue;
+  onHeightChange(value: number): void {
+    this.pixelHeight = Math.min(50, Math.max(1, value || 1));
+    this.updateCanvasSize();
   }
 
-  input.value = numericValue.toString();
+  limitDigits(event: Event, type: 'width' | 'height'): void {
+    const input = event.target as HTMLInputElement;
 
-  this.updateCanvasSize();
-}
+    // залишаємо тільки цифри
+    let value = input.value.replace(/\D/g, '');
+
+    // 🔒 максимум 2 цифри
+    if (value.length > 2) {
+      value = value.slice(0, 2);
+    }
+
+    let numericValue = Number(value);
+
+    // 🔒 обмеження 1–50
+    if (numericValue > 50) numericValue = 50;
+    if (numericValue < 1) numericValue = 1;
+
+    // оновлюємо значення
+    if (type === 'width') {
+      this.pixelWidth = numericValue;
+    } else {
+      this.pixelHeight = numericValue;
+    }
+
+    input.value = numericValue.toString();
+
+    this.updateCanvasSize();
+  }
 
   private redrawPixels(): void {
     if (!this.ctx) return;
@@ -201,24 +201,24 @@ limitDigits(event: Event, type: 'width' | 'height'): void {
 
   updateCanvasSize(): void {
 
-  // 🔒 Обмеження
-  if (this.pixelWidth > this.MAX_SIZE) {
-    this.pixelWidth = this.MAX_SIZE;
+    // 🔒 Обмеження
+    if (this.pixelWidth > this.MAX_SIZE) {
+      this.pixelWidth = this.MAX_SIZE;
+    }
+    if (this.pixelHeight > this.MAX_SIZE) {
+      this.pixelHeight = this.MAX_SIZE;
+    }
+
+    if (this.pixelWidth < 1) this.pixelWidth = 1;
+    if (this.pixelHeight < 1) this.pixelHeight = 1;
+
+    this.columns = this.pixelWidth;
+    this.rows = this.pixelHeight;
+
+    this.adjustCanvasSize();
+
+    console.log('Canvas size updated:', { width: this.pixelWidth, height: this.pixelHeight });
   }
-  if (this.pixelHeight > this.MAX_SIZE) {
-    this.pixelHeight = this.MAX_SIZE;
-  }
-
-  if (this.pixelWidth < 1) this.pixelWidth = 1;
-  if (this.pixelHeight < 1) this.pixelHeight = 1;
-
-  this.columns = this.pixelWidth;
-  this.rows = this.pixelHeight;
-
-  this.adjustCanvasSize();
-
-  console.log('Canvas size updated:', { width: this.pixelWidth, height: this.pixelHeight });
-}
 
   adjustCanvasSize(): void {
     if (!this.canvasRef?.nativeElement || !this.ctx) {
@@ -229,9 +229,13 @@ limitDigits(event: Event, type: 'width' | 'height'): void {
     const canvas = this.canvasRef.nativeElement;
     canvas.width = this.pixelWidth * this.pixelSize;
     canvas.height = this.pixelHeight * this.pixelSize;
+    this.scale = Math.round(this.scale * 10) / 10;
 
-    canvas.style.width = `${canvas.width * this.scale}px`;
-    canvas.style.height = `${canvas.height * this.scale}px`;
+    canvas.style.width = `${canvas.width}px`;
+    canvas.style.height = `${canvas.height}px`;
+
+    canvas.style.transform = `scale(${this.scale})`;
+    canvas.style.transformOrigin = 'center';
 
     const newPixelData: string[][] = Array(this.rows).fill(null).map(() => Array(this.columns).fill('#ffffff'));
     for (let row = 0; row < Math.min(this.rows, this.pixelData.length); row++) {
@@ -252,10 +256,10 @@ limitDigits(event: Event, type: 'width' | 'height'): void {
 
   addRow(): void {
 
-  if (this.rows >= this.MAX_SIZE) {
-    console.warn('Max rows reached');
-    return;
-  }
+    if (this.rows >= this.MAX_SIZE) {
+      console.warn('Max rows reached');
+      return;
+    }
 
     const oldPixelData = [...this.pixelData.map(row => [...row])];
     this.rows++;
@@ -311,10 +315,10 @@ limitDigits(event: Event, type: 'width' | 'height'): void {
 
   addColumn(): void {
 
-  if (this.columns >= this.MAX_SIZE) {
-    console.warn('Max columns reached');
-    return;
-  }
+    if (this.columns >= this.MAX_SIZE) {
+      console.warn('Max columns reached');
+      return;
+    }
 
     const oldPixelData = [...this.pixelData.map(row => [...row])];
     this.columns++;
@@ -384,8 +388,12 @@ limitDigits(event: Event, type: 'width' | 'height'): void {
 
     const canvas = this.canvasRef.nativeElement;
     const rect = canvas.getBoundingClientRect();
-    const x = (event.clientX - rect.left) / this.scale;
-    const y = (event.clientY - rect.top) / this.scale;
+
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+
+    const x = (event.clientX - rect.left) * scaleX;
+    const y = (event.clientY - rect.top) * scaleY;
 
     const col = Math.floor(x / this.pixelSize);
     const row = Math.floor(y / this.pixelSize);
