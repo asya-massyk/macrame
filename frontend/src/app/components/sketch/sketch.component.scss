@@ -387,3 +387,50 @@ html {
 .canvas-wrapper {
   overflow-x: auto !important;
 }
+
+.sidebar-bottom-actions {
+  margin-top: auto;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.sidebar-bottom-actions .button-group {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+
+  width: 100%;
+  max-width: 240px; // щоб виглядало компактно
+}
+
+.color-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.color-picker-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.tools-row {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.tools-row button {
+  flex: 1; // всі кнопки однакові
+  max-width: 90px;
+}
+
+.palette label {
+  display: block;
+  text-align: center;
+  width: 100%;
+}

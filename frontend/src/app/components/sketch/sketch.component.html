@@ -21,10 +21,30 @@
         </div>
       </div>
 
-      <!-- Колір -->
       <div class="palette">
         <label for="colorPicker">Колір:</label>
-        <input type="color" id="colorPicker" [(ngModel)]="selectedColor" name="selectedColor" />
+
+        <!-- Колір -->
+        <div class="color-picker-wrapper">
+          <input type="color" id="colorPicker" [(ngModel)]="selectedColor" name="selectedColor" />
+        </div>
+
+        <!-- Кнопки -->
+        <div class="tools-row">
+          <button (click)="fillCanvas()" class="pixelation-button pixelation-button--small">
+            Залити
+          </button>
+
+          <button (click)="setTool('eraser')" [class.active]="currentTool === 'eraser'"
+            class="pixelation-button pixelation-button--small">
+            Ластик
+          </button>
+
+          <button (click)="setTool('brush')" [class.active]="currentTool === 'brush'"
+            class="pixelation-button pixelation-button--small">
+            Пензель
+          </button>
+        </div>
       </div>
 
       <!-- Масштаб -->
@@ -58,8 +78,15 @@
 
       <!-- Кнопка "Назад" тепер внизу бічної панелі -->
       <div class="sidebar-bottom-actions">
-        <button (click)="undoLastAction()" [disabled]="!canUndo"
-          class="pixelation-button pixelation-button--undo">Назад</button>
+        <div class="button-group">
+          <button (click)="undoLastAction()" [disabled]="!canUndo" class="pixelation-button pixelation-button--undo">
+            Скасувати
+          </button>
+
+          <button (click)="clearCanvas()" class="pixelation-button">
+            Очистити
+          </button>
+        </div>
       </div>
 
     </aside>
