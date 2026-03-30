@@ -635,22 +635,22 @@ export class PixelationComponent implements AfterViewInit {
   }
 
   onSchemeModeChange(): void {
-  this.saveState();
-  this.resetDerivedState();
-  this.renderImage();
-}
+    this.saveState();
+    this.resetDerivedState();
+    this.renderImage();
+  }
 
-onColorCountChange(): void {
-  this.saveState();
+  onColorCountChange(): void {
+    this.saveState();
 
-  this.colorCount = Math.max(
-    this.minColorCount,
-    Math.min(this.maxColorCount, this.colorCount)
-  );
+    this.colorCount = Math.max(
+      this.minColorCount,
+      Math.min(this.maxColorCount, this.colorCount)
+    );
 
-  this.resetDerivedState();
-  this.renderImage();
-}
+    this.resetDerivedState();
+    this.renderImage();
+  }
 
   startCropping(): void {
     this.isCropping = true;
@@ -876,9 +876,14 @@ onColorCountChange(): void {
     return this.canvasRef.nativeElement;
   }
   onGenerateScheme(): void {
-  this.saveState();
-  this.generateNumberedScheme();
-}
+    if (!this.imageSrc) return;
+
+    // зберігаємо поточний стан для можливості undo
+    this.saveState();
+
+    // тут йде твоя логіка перетворення в схему
+    this.generateNumberedScheme();
+  }
 
   generateNumberedScheme(): void {
     if (!this.originalImage) return;

@@ -15,7 +15,7 @@ $secondary-color: #3344DC;
   background-color: #000;
   padding: 20px;
   font-family: 'Poppins', sans-serif;
-  overflow-y: auto;
+
   position: relative;
   z-index: 10;
 }
@@ -209,7 +209,8 @@ $secondary-color: #3344DC;
 }
 
 .pixelation-button {
-  padding: 12px 24px;
+  height: 52px;              /* однакова висота */
+  padding: 0 20px;  
   border: none;
   border-radius: 10px;
   font-size: 16px;
@@ -229,11 +230,35 @@ $secondary-color: #3344DC;
 }
 
 .pixelation-button--download {
-  background: linear-gradient(to right, #D95DB0, #3344DC) !important;
+  width: 100%;
+  max-width: 280px;
+  height: 56px;
+
+  background: linear-gradient(135deg, #D95DB0, #3344DC);
+  border-radius: 14px;
+
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-shadow: 0 8px 20px rgba(217, 93, 176, 0.35);
+  transition: all 0.25s ease;
+}
+.pixelation-button--download:hover {
+  transform: translateY(-2px) scale(1.02);
+
+  box-shadow: 0 12px 28px rgba(217, 93, 176, 0.5);
+
+  background: linear-gradient(135deg, #e96bc0, #3d4df0);
 }
 
-.pixelation-button--download:hover {
-  background: linear-gradient(to right, #b84c96, #2233b0) !important;  // darken приблизно на 12%
+.pixelation-button--download:active {
+  transform: scale(0.98);
+  box-shadow: 0 4px 12px rgba(217, 93, 176, 0.3);
 }
 
 .pixelation-button--rotate {
@@ -490,3 +515,191 @@ $secondary-color: #3344DC;
   padding: 0;
 }
 
+/* ====================== ВИПРАВЛЕНИЙ ЛЕЙАУТ ====================== */
+
+.edit-container {
+  width: 100%;
+  min-height: calc(100vh - 195px);
+  background-color: #000;
+  padding: 10px 24px 60px;
+  box-sizing: border-box;
+}
+
+/* Центруємо назву сторінки */
+.centered-title {
+  text-align: center;
+  margin: 15px 15px 0;
+}
+
+/* Головний лейаут */
+.main-layout {
+  display: flex;
+  gap: 25px;                    /* зменшили повітря між canvas і панеллю */
+  max-width: 1550px;
+  margin: 0 auto 25px;
+  align-items: flex-start;
+}
+
+.canvas-wrapper {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  background: transparent;
+  min-height: 540px;
+}
+
+.pixelation-canvas {
+  max-width: 720px;             /* значно збільшили зображення */
+  max-height: 540px;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
+}
+
+.sidebar-controls {
+  width: 260px;                 /* зробили панель ширшою */
+  flex-shrink: 0;
+  background: #111;
+  padding: 30px 26px;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+}
+
+/* Блок збереження */
+.save-section {
+  max-width: 1550px;
+  margin: 0 auto;
+  background-color: rgba(0, 0, 0, 0.75);
+  padding: 18px 30px;
+  border-radius: 16px;
+}
+
+.pixelation-download-options {
+  display: flex;
+  gap: 40px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.save-field {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 210px;
+}
+
+.save-field label {
+  font-size: 15px;
+  color: #ffffff;
+  margin-bottom: 9px;
+}
+
+.bottom-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 22px;
+  flex-wrap: wrap;
+  margin-top: 25px;
+}
+
+/* Адаптивність */
+@media (max-width: 1200px) {
+  .main-layout {
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+  }
+  .sidebar-controls {
+    width: 100%;
+    max-width: 680px;
+  }
+  .pixelation-canvas {
+    max-width: 95%;
+    max-height: 500px;
+  }
+}
+
+@media (max-width: 768px) {
+  .pixelation-download-options {
+    flex-direction: column;
+    gap: 28px;
+  }
+}
+
+/* ====================== ВИПРАВЛЕНИЙ ЛЕЙАУТ + РІВНІ ВІДСТАНІ ====================== */
+
+.sidebar-controls {
+  width: 260px;
+  flex-shrink: 0;
+  background: #111;
+  padding: 30px 26px;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;                    /* загальний відступ між секціями */
+}
+
+.control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.color-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Кнопки редагування — РІВНІ відстані */
+.tools-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;                    /* однакова відстань між усіма кнопками */
+}
+
+.generate-btn {
+  margin-top: 0;
+  width: 100%;
+}
+
+
+/* Блок збереження (залишаємо як є, але з рівними відступами) */
+.save-section {
+  max-width: 1550px;
+  margin: 0 auto;
+  background-color: rgba(0, 0, 0, 0.75);
+  padding: 28px 30px;
+  border-radius: 16px;
+}
+
+.pixelation-download-options {
+  display: flex;
+  gap: 40px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.save-field {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 210px;
+}
+
+.save-field label {
+  font-size: 15px;
+  color: #ffffff;
+  margin-bottom: 9px;
+}
+
+.bottom-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 22px;
+  flex-wrap: wrap;
+  margin-top: 25px;
+}
