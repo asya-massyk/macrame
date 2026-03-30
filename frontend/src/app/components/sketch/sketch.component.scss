@@ -223,21 +223,40 @@ $secondary-color: #3344DC;
 
 // ────────────────────────────────────────────────
 // Кнопки
-.pixelation-button,
-.pixelation-button--download,
-.pixelation-button--undo:not(:disabled) {
-  background: linear-gradient(to right, $primary-color, $secondary-color);
-  color: white;
-  padding: 10px 20px;
+.pixelation-button {
+  height: 48px;
+  padding: 0 18px;
   border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background 0.3s ease;
+  border-radius: 12px;
 
-  &:hover {
-    background: linear-gradient(to right, darken($primary-color, 12%), darken($secondary-color, 12%));
-  }
+  font-size: 14px;
+  font-weight: 500;
+  color: #fff;
+
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  transition: all 0.25s ease;
+
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+
+.pixelation-button:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.6);
+}
+
+.pixelation-button.active {
+  background: linear-gradient(135deg, #D95DB0, #3344DC);
+  box-shadow:
+    0 0 0 2px rgba(255,255,255,0.15),
+    0 0 12px rgba(217, 93, 176, 0.6),
+    0 0 20px rgba(51, 68, 220, 0.6);
+
+  transform: scale(1.05);
 }
 
 .pixelation-button--small {
@@ -251,6 +270,60 @@ $secondary-color: #3344DC;
   background: #666 !important;
   cursor: not-allowed;
   opacity: 0.6;
+}
+
+.tools-row button:nth-child(1) {
+  background-color: #6633dc; // Залити
+}
+
+.tools-row button:nth-child(2) {
+  background-color: #d657c1; // Ластик
+}
+
+.tools-row button:nth-child(3) {
+  background-color: #3344dc; // Пензель
+}
+
+.button-group button:first-child {
+  background-color: #3344dc; // Додати
+}
+
+.button-group button:last-child {
+  background-color: #803ca0; // Видалити
+}
+
+.pixelation-button--undo:not(:disabled) {
+  background-color: #3344dc;
+}
+
+.sidebar-bottom-actions button:last-child {
+  background-color: #d657c1; // Очистити
+}
+
+.tools-row button.active {
+  outline: 2px solid #fff;
+  transform: scale(1.05);
+  box-shadow: 0 0 12px rgba(255,255,255,0.6);
+}
+
+.pixelation-button--download {
+  width: 100%;
+  max-width: 260px;
+  height: 56px;
+
+  background: linear-gradient(135deg, #D95DB0, #3344DC);
+  border-radius: 14px;
+
+  font-size: 16px;
+  font-weight: 600;
+
+  box-shadow: 0 8px 20px rgba(217, 93, 176, 0.35);
+}
+
+.pixelation-button--download:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 12px 28px rgba(217, 93, 176, 0.5);
+  background: linear-gradient(135deg, #e96bc0, #3d4df0);
 }
 
 // ────────────────────────────────────────────────
