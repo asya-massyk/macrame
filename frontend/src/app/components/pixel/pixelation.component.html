@@ -7,93 +7,83 @@
   <!-- Welcome сторінка -->
   <div *ngIf="!imageSrc" class="pixelation-welcome">
     <h1 class="pixelation-title">Створіть власну схему!</h1>
-    <p class="pixelation-subtitle">Завантажте зображення, щоб перетворити його на піксельну картину</p>
+    <p class="pixelation-subtitle">
+      Завантажте зображення, щоб перетворити його на піксельну картину
+    </p>
+
     <label for="file-upload" class="pixelation-upload-button">
       <span class="pixelation-upload-icon">📷</span>
       Виберіть зображення
     </label>
+
     <input id="file-upload" type="file" accept="image/*" (change)="onImageUpload($event)"
       class="pixelation-input-hidden" />
   </div>
 
-  <!-- Сторінка з зображенням -->
+  <!-- Основна сторінка -->
   <div *ngIf="imageSrc" class="edit-container">
-
-    <h1 class="pixelation-title centered-title">Пікселізація зображення</h1>
 
     <div class="main-layout">
 
-      <!-- Canvas — ширше -->
-      <main class="canvas-wrapper">
-        <canvas #pixelationCanvas class="pixelation-canvas"
-          (mousedown)="startCrop($event)"
-          (mousemove)="updateCrop($event)"
-          (mouseup)="endCrop()">
-        </canvas>
-      </main>
-
-      <!-- Панель інструментів — ширше -->
+      <!-- 🔹 ЛІВА ПАНЕЛЬ (ІНСТРУМЕНТИ) -->
       <aside class="sidebar-controls">
 
         <div class="control-group">
-          <label>Кількість пікселів:</label>
-          <input type="range" [min]="minPixelCount" [max]="maxPixelCount" step="1" 
-                 [(ngModel)]="sliderValue" (ngModelChange)="updatePixelation()" 
-                 class="pixelation-slider" />
+          <label>Кількість пікселів ({{ pixelGridLabel }}):</label>
+          <input type="range" [min]="minPixelCount" [max]="maxPixelCount" step="1" [(ngModel)]="sliderValue"
+            (ngModelChange)="updatePixelation()" class="pixelation-slider" />
         </div>
 
         <div class="control-group">
           <label>Кількість кольорів:</label>
           <div class="color-row">
-            <input type="range" [min]="minColorCount" [max]="maxColorCount" step="1" 
-                   [(ngModel)]="colorCount" (ngModelChange)="onColorCountChange()" 
-                   class="pixelation-slider" />
-            <input type="number" [min]="minColorCount" [max]="maxColorCount" 
-                   [(ngModel)]="colorCount" (ngModelChange)="onColorCountChange()" 
-                   class="pixelation-input small-input" />
+            <input type="range" [min]="minColorCount" [max]="maxColorCount" [(ngModel)]="colorCount"
+              (ngModelChange)="onColorCountChange()" class="pixelation-slider" />
+            <input type="number" [(ngModel)]="colorCount" (ngModelChange)="onColorCountChange()"
+              class="pixelation-input small-input" />
           </div>
         </div>
 
         <div class="control-group">
           <label>Тип зображення:</label>
-          <select [(ngModel)]="schemeMode" (ngModelChange)="onSchemeModeChange()" 
-                  class="pixelation-input">
+          <select [(ngModel)]="schemeMode" (ngModelChange)="onSchemeModeChange()" class="pixelation-input">
             <option value="color">Кольорове</option>
             <option value="bw">Чорно-біле</option>
           </select>
         </div>
 
         <div class="tools-buttons">
-          <button *ngIf="history.length > 1" (click)="undo()" 
-                  class="pixelation-button pixelation-button--undo">Скасувати</button>
-          <button *ngIf="!isCropping" (click)="startCropping()" 
-                  class="pixelation-button pixelation-button--crop">Обрізати</button>
-          <button (click)="rotateImage()" 
-                  class="pixelation-button pixelation-button--rotate">Повернути</button>
+          <button *ngIf="history.length > 1" (click)="undo()" class="pixelation-button pixelation-button--undo">
+            Скасувати
+          </button>
+
+          <button (click)="startCropping()" [disabled]="isCropping" class="pixelation-button pixelation-button--crop">
+            Обрізати
+          </button>
+
+          <button (click)="rotateImage()" class="pixelation-button pixelation-button--rotate">
+            Повернути
+          </button>
         </div>
 
-        <button (click)="onGenerateScheme()" 
-                class="pixelation-button pixelation-button--scheme generate-btn">
+        <button (click)="onGenerateScheme()" class="pixelation-button pixelation-button--scheme generate-btn">
           Перетворити на схему
         </button>
 
       </aside>
 
-    </div>
+      <!-- 🔹 ЦЕНТР (CANVAS) -->
+      <main class="canvas-wrapper">
+        <canvas #pixelationCanvas class="pixelation-canvas" (mousedown)="startCrop($event)"
+          (mousemove)="updateCrop($event)" (mouseup)="endCrop()"></canvas>
+      </main>
 
-    <!-- Нижня панель збереження -->
-    <div class="save-section">
-      <div class="pixelation-download-options">
-
-        <div class="save-field">
-          <label>Назва файлу:</label>
-          <input type="text" [(ngModel)]="fileName" placeholder="pixelated_image"
-                 class="pixelation-input pixelation-input--filename" />
-        </div>
+      <!-- 🔹 ПРАВА ПАНЕЛЬ (ЗБЕРЕЖЕННЯ) -->
+      <aside class="save-sidebar">
 
         <div class="save-field">
           <label>Формат:</label>
-          <select [(ngModel)]="downloadFormat" class="pixelation-input pixelation-input--format">
+          <select [(ngModel)]="downloadFormat" class="pixelation-input">
             <option value="application/pdf">.pdf</option>
             <option value="image/png">.png</option>
             <option value="image/jpeg">.jpeg</option>
@@ -102,25 +92,28 @@
 
         <div class="save-field">
           <label>Тип матеріалів:</label>
-          <select [(ngModel)]="materialType" class="pixelation-input pixelation-input--material"
-                  (ngModelChange)="onMaterialTypeChange()">
+          <select [(ngModel)]="materialType" (ngModelChange)="onMaterialTypeChange()" class="pixelation-input">
             <option value="beads">Бісер</option>
             <option value="threads">Нитки</option>
           </select>
         </div>
 
-      </div>
+        <div class="save-field">
+          <label>Назва файлу:</label>
+          <input type="text" [(ngModel)]="fileName" placeholder="pixelated_image" class="pixelation-input" />
+        </div>
 
-      <div class="bottom-buttons">
-        <button *ngIf="symbolColors.length > 0" (click)="findMaterials()"
-                class="pixelation-button pixelation-button--materials">
+        <button (click)="findMaterials()" [disabled]="symbolColors.length === 0"
+          class="pixelation-button pixelation-button--materials">
           Знайти матеріали
         </button>
-        <button (click)="downloadImage()" 
-                class="pixelation-button pixelation-button--download">
+
+        <button (click)="downloadImage()" class="pixelation-button pixelation-button--download">
           Зберегти
         </button>
-      </div>
+
+      </aside>
+
     </div>
 
   </div>

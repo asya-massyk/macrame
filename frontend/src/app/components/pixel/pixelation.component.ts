@@ -41,21 +41,20 @@ export class PixelationComponent implements AfterViewInit {
   symbolColors: Array<{
     symbol: string;
     color: { r: number; g: number; b: number };
-    fillColor: string;           // ← ДОДАЙ це поле
+    fillColor: string;
   }> = [];
-  // ====================== ВЕЛИКИЙ ПУЛ СИМВОЛІВ ======================
+
   private symbolPool: string[] = [
     '■', '□', '●', '○', '▲', '▼', '▶', '◀', '★', '☆', '◆', '◇', '✚', '✖', '◼', '◻', '⬛', '⬜',
     '▣', '▤', '▥', '▦', '▧', '▨', '▩', '◎', '◉', '✦', '✧', '◐', '◑', '◒', '◓', '◔', '◕', '◖', '◗',
-    '▌', '▍', '░', '▒', '▓', '◢', '◣', '◤', '◥', '▰', '▱', '◈', '⬘', '⬙', '◬', '◭', '◮',
+    '▌', '▍', '◢', '◣', '◤', '◥', '▰', '▱', '◈', '⬘', '⬙', '◬', '◭', '◮',
     '▚', '▞', '▙', '▛', '▜', '▝', '▟', '◴', '◵', '◶', '◷', '◸', '◹', '◺', '◼', '◽', '◾', '◿',
     '▀', '▁', '▂', '▃', '▄', '▅', '▆', '▇', '█', '╱', '╲', '╳', '▔', '▕',
     '◰', '◱', '◲', '◳', '✸', '✹', '✺', '✻', '✼', '✢', '✣', '✤', '✥', '⊕', '⊖',
     '⬒', '⬓', '◐', '◑', '◒', '◓', '◔', '◕', '◖', '◗', '▰', '▱', '◬', '◭', '◮'
   ];
 
-  // ====================== ПАЛІТРА КОЛЬОРІВ ДЛЯ СИМВОЛІВ ======================
-  // Коли символ повторюється — беремо наступний колір з цієї палітри
+
   private symbolFillPalette: string[] = [
     '#FFFFFF', '#000000', '#333333', '#666666', '#999999',
     '#FFEE00', '#00FFCC', '#FF00AA', '#00AAFF', '#FF8800'
@@ -71,7 +70,17 @@ export class PixelationComponent implements AfterViewInit {
   private preservePixelCount: number | null = null;
   public history: any[] = [];
   private minCellSize = 20;
+  private currentNumCols: number = 0;
+  private currentNumRows: number = 0;
+  private pixelatedCanvas: HTMLCanvasElement | null = null;
+  private lastPixelParams: string = '';
 
+  get pixelGridLabel(): string {
+    if (this.currentNumCols === 0 || this.currentNumRows === 0) {
+      return `${this.pixelCount}×${this.pixelCount}`;
+    }
+    return `${this.currentNumCols}×${this.currentNumRows}`;
+  }
 
   constructor(
     private http: HttpClient,
@@ -95,7 +104,7 @@ export class PixelationComponent implements AfterViewInit {
     el.addEventListener('mousedown', (e) => this.startCrop(e));
     el.addEventListener('mousemove', (e) => this.updateCrop(e));
     el.addEventListener('mouseup', () => this.endCrop());
-    el.addEventListener('mouseleave', () => this.endCrop());
+
 
     this.adjustCanvasSize();
   }
@@ -187,15 +196,23 @@ export class PixelationComponent implements AfterViewInit {
     const state = {
       imageSrc: this.imageSrc,
       pixelCount: this.pixelCount,
+      sliderValue: this.sliderValue,
       schemeMode: this.schemeMode,
       colorCount: this.colorCount,
-      symbolColors: JSON.parse(JSON.stringify(this.symbolColors)),
-      materialList: JSON.parse(JSON.stringify(this.materialList))
+      symbolColors: JSON.parse(JSON.stringify(this.symbolColors || [])),
+      materialList: JSON.parse(JSON.stringify(this.materialList || [])),
+      currentNumCols: this.currentNumCols,
+      currentNumRows: this.currentNumRows
     };
 
-    // не дублюємо однакові стани
     const last = this.history[this.history.length - 1];
-    if (last && JSON.stringify(last) === JSON.stringify(state)) {
+
+    // ❗ тепер перевірка глибша
+    if (
+      last &&
+      last.imageSrc === state.imageSrc &&
+      last.symbolColors?.length === state.symbolColors?.length
+    ) {
       return;
     }
 
@@ -207,48 +224,29 @@ export class PixelationComponent implements AfterViewInit {
   }
 
   undo(): void {
-    if (this.history.length < 2) {
-      return;
-    }
+    if (this.history.length <= 1) return;
 
-    // видаляємо поточний стан
-    this.history.pop();
+    this.history.pop(); // видаляємо поточний
 
-    // беремо попередній
     const prevState = this.history[this.history.length - 1];
+    if (!prevState) return;
 
     this.imageSrc = prevState.imageSrc;
     this.pixelCount = prevState.pixelCount;
+    this.sliderValue = prevState.sliderValue;
     this.schemeMode = prevState.schemeMode;
     this.colorCount = prevState.colorCount;
 
     this.symbolColors = JSON.parse(JSON.stringify(prevState.symbolColors || []));
     this.materialList = JSON.parse(JSON.stringify(prevState.materialList || []));
+    this.currentNumCols = prevState.currentNumCols;
+    this.currentNumRows = prevState.currentNumRows;
 
+    this.resetDerivedState();
     if (this.imageSrc) {
       this.loadImage(this.imageSrc);
     }
-
-    setTimeout(() => {
-      if (this.symbolColors.length > 0) {
-        this.generateNumberedScheme();
-      } else {
-        this.renderImage();
-      }
-    });
   }
-
-  private resetState(): void {
-    this.imageSrc = null;
-    this.originalImage = null;
-    this.pixelCount = 20;
-    this.isCropping = false;
-    this.cropStart = null;
-    this.cropEnd = null;
-    this.isMouseDown = false;
-    this.resetDerivedState();
-  }
-
   private resetDerivedState(): void {
     this.materialList = [];
     this.symbolColors = [];
@@ -259,16 +257,17 @@ export class PixelationComponent implements AfterViewInit {
 
     const canvas = this.canvasRef.nativeElement;
     const aspectRatio = this.originalImage.width / this.originalImage.height;
-    let newWidth = Math.min(800, this.originalImage.width);
+
+    let newWidth = Math.min(820, this.originalImage.width);   // трохи збільшив максимум
     let newHeight = newWidth / aspectRatio;
 
-    if (newHeight > 600) {
-      newHeight = 600;
+    if (newHeight > 620) {
+      newHeight = 620;
       newWidth = newHeight * aspectRatio;
     }
 
     if (isPlatformBrowser(this.platformId)) {
-      const parentWidth = window.innerWidth * 0.95;
+      const parentWidth = window.innerWidth * 0.92;
       if (newWidth > parentWidth) {
         newWidth = parentWidth;
         newHeight = newWidth / aspectRatio;
@@ -280,8 +279,6 @@ export class PixelationComponent implements AfterViewInit {
     canvas.style.width = `${newWidth}px`;
     canvas.style.height = `${newHeight}px`;
     canvas.style.margin = '0 auto';
-
-    this.renderImage();
   }
 
   onImageUpload(event: Event): void {
@@ -326,23 +323,37 @@ export class PixelationComponent implements AfterViewInit {
   private loadImage(src: string): void {
     const img = new Image();
     img.src = src;
-    this.sliderValue = this.pixelCount;
+
     img.onload = () => {
       this.originalImage = img;
-      const minSide = Math.min(img.width, img.height);
 
+      const minSide = Math.min(img.width, img.height);
       this.maxPixelCount = Math.min(50, Math.floor(minSide / this.minCellSize));
       this.maxPixelCount = Math.max(this.maxPixelCount, this.minPixelCount);
 
-      this.pixelCount = this.preservePixelCount
-        ? Math.min(this.maxPixelCount, Math.max(this.minPixelCount, this.preservePixelCount))
-        : 25;
+      if (this.preservePixelCount !== null) {
+        this.pixelCount = Math.min(this.maxPixelCount, Math.max(this.minPixelCount, this.preservePixelCount));
+        this.preservePixelCount = null;
+      } else {
+        this.pixelCount = Math.max(this.minPixelCount, Math.floor(this.pixelCount * 0.85));
+      }
 
-      this.preservePixelCount = null;
+      this.sliderValue = this.pixelCount;
+      this.currentNumCols = 0;
+      this.currentNumRows = 0;
+
       this.adjustCanvasSize();
-      this.renderImage();
+
+      setTimeout(() => {
+        this.renderImage();
+        // НІЯКОГО saveState(true) тут!!!
+      }, 30);
     };
-    img.onerror = () => this.resetState();
+
+    img.onerror = () => {
+      console.error('Не вдалося завантажити зображення');
+      this.resetCrop();
+    };
   }
 
   private getBlockInfo(side: number, numBlocks: number): { starts: number[]; sizes: number[] } {
@@ -388,171 +399,40 @@ export class PixelationComponent implements AfterViewInit {
     );
   }
 
-  private drawSchemeOnCanvas(
-    ctx: CanvasRenderingContext2D,
-    width: number,
-    height: number,
-    colInfo: any,
-    rowInfo: any,
-    data: Uint8ClampedArray
-  ): void {
 
-    const symbolMap: { [key: string]: any } = {};
+  private renderPixelated(): void {
+    if (!this.originalImage) return;
 
-    this.symbolColors.forEach(sc => {
-      const key = `${sc.color.r},${sc.color.g},${sc.color.b}`;
-      symbolMap[key] = sc;
-    });
+    const key = `${this.pixelCount}_${this.colorCount}_${this.schemeMode}`;
+    if (this.lastPixelParams === key && this.pixelatedCanvas) return;
 
-    for (let row = 0; row < rowInfo.starts.length; row++) {
-      const py = rowInfo.starts[row];
-      const blockH = rowInfo.sizes[row];
-
-      for (let col = 0; col < colInfo.starts.length; col++) {
-        const px = colInfo.starts[col];
-        const blockW = colInfo.sizes[col];
-
-        const avg = this.getBlockColor(px, py, blockW, blockH, data, width);
-
-        const key = `${avg.r},${avg.g},${avg.b}`;
-        const symbolInfo = symbolMap[key];
-
-        // 🎨 ФОН (color або bw)
-        if (this.schemeMode === 'color') {
-          ctx.fillStyle = `rgb(${avg.r}, ${avg.g}, ${avg.b})`;
-        } else {
-          const gray = Math.round(0.299 * avg.r + 0.587 * avg.g + 0.114 * avg.b);
-          ctx.fillStyle = `rgb(${gray}, ${gray}, ${gray})`;
-        }
-
-        ctx.fillRect(px, py, blockW, blockH);
-
-        // 🔲 СІТКА
-        ctx.strokeStyle = 'rgba(0,0,0,0.2)';
-        ctx.strokeRect(px, py, blockW, blockH);
-
-        // 🔤 СИМВОЛ (ЗАВЖДИ, якщо є)
-        if (symbolInfo) {
-          ctx.fillStyle = symbolInfo.fillColor;
-          ctx.font = `${Math.min(blockW, blockH) * 0.6}px monospace`;
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-
-          ctx.fillText(
-            symbolInfo.symbol,
-            px + blockW / 2,
-            py + blockH / 2
-          );
-        }
-      }
-    }
-  }
-
-  private drawScheme(
-    numCols: number,
-    numRows: number,
-    colInfo: any,
-    rowInfo: any,
-    data: Uint8ClampedArray,
-    width: number
-  ) {
-    if (!this.canvasRef) return;
-
-    const canvas = this.canvasRef.nativeElement;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    const cellW = canvas.width / numCols;
-    const cellH = canvas.height / numRows;
-
-    ctx.font = `${Math.min(cellW, cellH) * 0.6}px Arial`;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-
-    for (let row = 0; row < numRows; row++) {
-      for (let col = 0; col < numCols; col++) {
-
-        const px = colInfo.starts[col];
-        const py = rowInfo.starts[row];
-
-        const idx = (py * width + px) * 4;
-
-        const c = this.getClosestColor(
-          data[idx],
-          data[idx + 1],
-          data[idx + 2]
-        );
-
-        const symbolInfo = this.symbolColors.find(s =>
-          s.color.r === c.r &&
-          s.color.g === c.g &&
-          s.color.b === c.b
-        );
-
-        if (!symbolInfo) continue;
-
-        const x = col * cellW;
-        const y = row * cellH;
-
-        ctx.fillStyle = '#FFFFFF';
-        ctx.fillRect(x, y, cellW, cellH);
-
-        ctx.strokeStyle = '#CCCCCC';
-        ctx.strokeRect(x, y, cellW, cellH);
-
-        ctx.fillStyle = symbolInfo.fillColor;
-        ctx.fillText(
-          symbolInfo.symbol,
-          x + cellW / 2,
-          y + cellH / 2
-        );
-      }
-    }
-  }
-
-  renderImage(): void {
-    if (!this.canvasRef?.nativeElement || !this.imageSrc || !this.originalImage) return;
-
-    const canvas = this.canvasRef.nativeElement;
-    const ctx = canvas.getContext('2d', { willReadFrequently: true });
-    if (!ctx) return;
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    const tempCanvas = document.createElement('canvas');
-    const tempCtx = tempCanvas.getContext('2d', { willReadFrequently: true });
-    if (!tempCtx) return;
+    this.lastPixelParams = key;
 
     const width = this.originalImage.width;
     const height = this.originalImage.height;
 
+    const tempCanvas = document.createElement('canvas');
+    const ctx = tempCanvas.getContext('2d', { willReadFrequently: true });
+    if (!ctx) return;
+
     tempCanvas.width = width;
     tempCanvas.height = height;
-    tempCtx.drawImage(this.originalImage, 0, 0);
+    ctx.drawImage(this.originalImage, 0, 0);
 
-    const imageData = tempCtx.getImageData(0, 0, width, height);
+    const imageData = ctx.getImageData(0, 0, width, height);
     const data = imageData.data;
 
-    // 🔹 збір кольорів
-    const allColors: { r: number; g: number; b: number }[] = [];
+    const allColors = [];
     for (let i = 0; i < data.length; i += 4) {
-      allColors.push({
-        r: data[i],
-        g: data[i + 1],
-        b: data[i + 2]
-      });
+      allColors.push({ r: data[i], g: data[i + 1], b: data[i + 2] });
     }
 
-    // 🔹 палітра
     this.buildColorPalette(allColors);
 
-    // 🔹 сітка
+    // ⬇️ твоя логіка блоків БЕЗ змін
     const minSide = Math.min(width, height);
     const maxSide = Math.max(width, height);
     const isWidthMin = width <= height;
-
     const numMin = this.pixelCount;
     const pixelSizeApprox = minSide / numMin;
     const numMax = Math.ceil(maxSide / pixelSizeApprox);
@@ -560,10 +440,13 @@ export class PixelationComponent implements AfterViewInit {
     const numCols = isWidthMin ? numMin : numMax;
     const numRows = isWidthMin ? numMax : numMin;
 
+    this.currentNumCols = numCols;
+    this.currentNumRows = numRows;
+
     const colInfo = this.getBlockInfo(width, numCols);
     const rowInfo = this.getBlockInfo(height, numRows);
 
-    tempCtx.clearRect(0, 0, width, height);
+    ctx.clearRect(0, 0, width, height);
 
     for (let row = 0; row < numRows; row++) {
       const py = rowInfo.starts[row];
@@ -573,43 +456,119 @@ export class PixelationComponent implements AfterViewInit {
         const px = colInfo.starts[col];
         const blockW = colInfo.sizes[col];
 
-        let sumR = 0, sumG = 0, sumB = 0;
-        const count = blockW * blockH;
+        let avg = this.getBlockColor(px, py, blockW, blockH, data, width);
 
-        for (let iy = py; iy < py + blockH; iy++) {
-          for (let ix = px; ix < px + blockW; ix++) {
-            const idx = (iy * width + ix) * 4;
-
-            sumR += data[idx];
-            sumG += data[idx + 1];
-            sumB += data[idx + 2];
-          }
-        }
-
-        let avg = this.getClosestColor(
-          Math.round(sumR / count),
-          Math.round(sumG / count),
-          Math.round(sumB / count)
-        );
-
-        // 🔥 ТУТ ГОЛОВНЕ — режим
         if (this.schemeMode === 'bw') {
           const gray = Math.round(0.299 * avg.r + 0.587 * avg.g + 0.114 * avg.b);
           avg = { r: gray, g: gray, b: gray };
         }
 
-        tempCtx.fillStyle = `rgb(${avg.r}, ${avg.g}, ${avg.b})`;
-        tempCtx.fillRect(px, py, blockW, blockH);
+        ctx.fillStyle = `rgb(${avg.r},${avg.g},${avg.b})`;
+        ctx.fillRect(px, py, blockW, blockH);
       }
     }
 
-    const scale = Math.min(canvas.width / width, canvas.height / height);
-    const offsetX = (canvas.width - width * scale) / 2;
-    const offsetY = (canvas.height - height * scale) / 2;
-
-    ctx.drawImage(tempCanvas, offsetX, offsetY, width * scale, height * scale);
+    this.pixelatedCanvas = tempCanvas;
   }
 
+  private drawToCanvas(): void {
+    if (!this.canvasRef || !this.pixelatedCanvas) return;
+
+    const canvas = this.canvasRef.nativeElement;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    const scale = Math.min(
+      canvas.width / this.pixelatedCanvas.width,
+      canvas.height / this.pixelatedCanvas.height
+    );
+
+    const offsetX = (canvas.width - this.pixelatedCanvas.width * scale) / 2;
+    const offsetY = (canvas.height - this.pixelatedCanvas.height * scale) / 2;
+
+    ctx.drawImage(
+      this.pixelatedCanvas,
+      offsetX,
+      offsetY,
+      this.pixelatedCanvas.width * scale,
+      this.pixelatedCanvas.height * scale
+    );
+  }
+
+  renderImage(): void {
+    if (!this.originalImage) return;
+
+    this.renderPixelated(); // ❗ тільки коли треба
+    this.drawToCanvas();    // ❗ завжди
+
+    this.drawCropOverlay(); // ⬇️ винесли окремо
+  }
+
+  private drawCropOverlay(): void {
+    if (!this.isCropping || !this.cropStart || !this.cropEnd || !this.pixelatedCanvas) return;
+
+    const canvas = this.canvasRef.nativeElement;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const cropX = Math.min(this.cropStart.x, this.cropEnd.x);
+    const cropY = Math.min(this.cropStart.y, this.cropEnd.y);
+    const cropW = Math.abs(this.cropEnd.x - this.cropStart.x);
+    const cropH = Math.abs(this.cropEnd.y - this.cropStart.y);
+
+    if (cropW < 20 || cropH < 20) return;
+
+    const displayW = this.pixelatedCanvas.width;
+    const displayH = this.pixelatedCanvas.height;
+
+    const scale = Math.min(
+      canvas.width / displayW,
+      canvas.height / displayH
+    );
+
+    const offsetX = (canvas.width - displayW * scale) / 2;
+    const offsetY = (canvas.height - displayH * scale) / 2;
+
+    ctx.save();
+
+    // Затемнення всього полотна
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // === ВИПРАВЛЕНО: правильно вирізати вибрану область ===
+    const sourceX = (cropX - offsetX) / scale;
+    const sourceY = (cropY - offsetY) / scale;
+    const sourceW = cropW / scale;
+    const sourceH = cropH / scale;
+
+    ctx.drawImage(
+      this.pixelatedCanvas,
+      sourceX,          // sx
+      sourceY,          // sy
+      sourceW,          // sWidth
+      sourceH,          // sHeight
+      cropX,            // dx
+      cropY,            // dy
+      cropW,            // dWidth
+      cropH             // dHeight
+    );
+
+    // Рамка виділення
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 3;
+    ctx.setLineDash([6, 4]);
+    ctx.strokeRect(cropX, cropY, cropW, cropH);
+
+    // Додаткова тонка темна рамка для контрасту
+    ctx.strokeStyle = 'rgba(0,0,0,0.6)';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([]);
+    ctx.strokeRect(cropX + 1, cropY + 1, cropW - 2, cropH - 2);
+
+    ctx.restore();
+  }
   private mapSliderToPixelCount(value: number): number {
     const normalized = (value - this.minPixelCount) / (this.maxPixelCount - this.minPixelCount);
     const adjusted = Math.pow(normalized, 2.8);
@@ -621,23 +580,27 @@ export class PixelationComponent implements AfterViewInit {
   updatePixelation(): void {
     if (!this.imageSrc || this.isCropping) return;
 
-    this.saveState();
-
     const mappedValue = this.mapSliderToPixelCount(this.sliderValue);
 
-    this.pixelCount = Math.min(
+    const newPixelCount = Math.min(
       this.maxPixelCount,
       Math.max(this.minPixelCount, mappedValue)
     );
 
+    if (newPixelCount === this.pixelCount) return; // 🔥 щоб не спамити історію
+
+    this.pixelCount = newPixelCount;
+
     this.resetDerivedState();
     this.renderImage();
+
+    this.saveState(); // ✅ ПІСЛЯ змін
   }
 
   onSchemeModeChange(): void {
     this.saveState();
     this.resetDerivedState();
-    this.renderImage();
+    this.renderImage();   // просто оновлює фон, символи зникають — як і повинно
   }
 
   onColorCountChange(): void {
@@ -721,79 +684,103 @@ export class PixelationComponent implements AfterViewInit {
   }
 
   endCrop(): void {
-    if (!this.isCropping || !this.cropStart || !this.cropEnd || !this.isMouseDown || !this.canvasRef?.nativeElement) return;
+    if (
+      !this.isCropping ||
+      !this.cropStart ||
+      !this.cropEnd ||
+      !this.isMouseDown ||
+      !this.canvasRef?.nativeElement ||
+      !this.originalImage ||
+      !this.pixelatedCanvas
+    ) {
+      this.resetCrop();
+      return;
+    }
 
     const canvas = this.canvasRef.nativeElement;
-    if (!this.originalImage) return;
 
     let cropX = Math.min(this.cropStart.x, this.cropEnd.x);
     let cropY = Math.min(this.cropStart.y, this.cropEnd.y);
     let cropWidth = Math.abs(this.cropEnd.x - this.cropStart.x);
     let cropHeight = Math.abs(this.cropEnd.y - this.cropStart.y);
 
-    cropWidth = Math.max(cropWidth, this.minCropSize);
-    cropHeight = Math.max(cropHeight, this.minCropSize);
-
-    if (this.aspectRatio) {
-      if (cropWidth / cropHeight > this.aspectRatio) {
-        cropWidth = cropHeight * this.aspectRatio;
-      } else {
-        cropHeight = cropWidth / this.aspectRatio;
-      }
-    }
-
-    cropX = Math.max(0, Math.min(cropX, canvas.width - cropWidth));
-    cropY = Math.max(0, Math.min(cropY, canvas.height - cropHeight));
-
     if (cropWidth < this.minCropSize || cropHeight < this.minCropSize) {
-      this.isCropping = false;
-      this.cropStart = null;
-      this.cropEnd = null;
-      this.isMouseDown = false;
-      this.resetDerivedState();
-      this.renderImage();
+      this.resetCrop();
       return;
     }
 
-    this.saveState();
-    this.preservePixelCount = this.pixelCount;
+    const displayW = this.pixelatedCanvas.width;
+    const displayH = this.pixelatedCanvas.height;
 
-    const scaleX = this.originalImage.width / canvas.width;
-    const scaleY = this.originalImage.height / canvas.height;
-    const origCropX = Math.round(cropX * scaleX);
-    const origCropY = Math.round(cropY * scaleY);
-    const origCropWidth = Math.round(cropWidth * scaleX);
-    const origCropHeight = Math.round(cropHeight * scaleY);
-
-    const tempCanvas = document.createElement('canvas');
-    const tempCtx = tempCanvas.getContext('2d', { willReadFrequently: true });
-    if (!tempCtx) return;
-
-    tempCanvas.width = origCropWidth;
-    tempCanvas.height = origCropHeight;
-
-    tempCtx.drawImage(
-      this.originalImage,
-      origCropX,
-      origCropY,
-      origCropWidth,
-      origCropHeight,
-      0,
-      0,
-      origCropWidth,
-      origCropHeight
+    const scale = Math.min(
+      canvas.width / displayW,
+      canvas.height / displayH
     );
 
-    this.imageSrc = tempCanvas.toDataURL('image/png');
+    const offsetX = (canvas.width - displayW * scale) / 2;
+    const offsetY = (canvas.height - displayH * scale) / 2;
+
+    let srcX = Math.round((cropX - offsetX) / scale);
+    let srcY = Math.round((cropY - offsetY) / scale);
+    let srcW = Math.round(cropWidth / scale);
+    let srcH = Math.round(cropHeight / scale);
+
+    srcX = Math.max(0, srcX);
+    srcY = Math.max(0, srcY);
+    srcW = Math.min(srcW, this.originalImage.width - srcX);
+    srcH = Math.min(srcH, this.originalImage.height - srcY);
+
+    if (srcW <= 10 || srcH <= 10) {
+      this.resetCrop();
+      return;
+    }
+
+    const tempCanvas = document.createElement('canvas');
+    const ctx = tempCanvas.getContext('2d');
+    if (!ctx) {
+      this.resetCrop();
+      return;
+    }
+
+    tempCanvas.width = srcW;
+    tempCanvas.height = srcH;
+
+    ctx.drawImage(
+      this.originalImage,
+      srcX, srcY, srcW, srcH,
+      0, 0, srcW, srcH
+    );
+
+    const newImageSrc = tempCanvas.toDataURL('image/png', 1.0);
+
+    // 🔥 очищаємо crop-стан
     this.isCropping = false;
     this.cropStart = null;
     this.cropEnd = null;
     this.isMouseDown = false;
+    this.pixelatedCanvas = null;
+    this.lastPixelParams = '';
+
+    // 🔥 застосовуємо зміну
+    this.imageSrc = newImageSrc;
     this.resetDerivedState();
 
-    if (this.imageSrc) {
-      this.loadImage(this.imageSrc);
-    }
+    // 🔥 завантажуємо нове зображення
+    this.loadImage(newImageSrc);
+
+    // ✅ ГОЛОВНЕ — зберігаємо ПІСЛЯ зміни
+    this.saveState();
+  }
+  private resetCrop(): void {
+    this.isCropping = false;
+    this.cropStart = null;
+    this.cropEnd = null;
+    this.isMouseDown = false;
+    this.renderImage();
+  }
+
+  get canUndo(): boolean {
+    return this.history.length > 1;
   }
 
   downloadImage(): void {
@@ -843,29 +830,34 @@ export class PixelationComponent implements AfterViewInit {
 
     tempCanvas.remove();
   }
-
   rotateImage(): void {
-    if (!this.originalImage || !this.canvasRef?.nativeElement) return;
+    if (!this.originalImage) return;
 
-    this.saveState();
     this.preservePixelCount = this.pixelCount;
-    this.resetDerivedState();
+
+    const source = this.pixelatedCanvas || this.originalImage;
 
     const tempCanvas = document.createElement('canvas');
-    const tempCtx = tempCanvas.getContext('2d', { willReadFrequently: true });
+    const tempCtx = tempCanvas.getContext('2d');
     if (!tempCtx) return;
 
-    tempCanvas.width = this.originalImage.height;
-    tempCanvas.height = this.originalImage.width;
+    tempCanvas.width = source.height;
+    tempCanvas.height = source.width;
 
     tempCtx.translate(tempCanvas.width / 2, tempCanvas.height / 2);
     tempCtx.rotate(Math.PI / 2);
-    tempCtx.drawImage(this.originalImage, -this.originalImage.width / 2, -this.originalImage.height / 2);
 
-    this.imageSrc = tempCanvas.toDataURL('image/png');
-    if (this.imageSrc) {
-      this.loadImage(this.imageSrc);
-    }
+    tempCtx.drawImage(source, -source.width / 2, -source.height / 2);
+
+    const newImageSrc = tempCanvas.toDataURL('image/png');
+
+    this.imageSrc = newImageSrc;
+    this.pixelatedCanvas = tempCanvas;
+
+    this.loadImage(newImageSrc);
+
+    // ✅ ЗБЕРІГАЄМО ПІСЛЯ зміни
+    this.saveState();
   }
 
   onMaterialTypeChange(): void {
@@ -875,50 +867,95 @@ export class PixelationComponent implements AfterViewInit {
   private getCanvas(): HTMLCanvasElement {
     return this.canvasRef.nativeElement;
   }
+
   onGenerateScheme(): void {
     if (!this.imageSrc) return;
 
-    // зберігаємо поточний стан для можливості undo
-    this.saveState();
-
-    // тут йде твоя логіка перетворення в схему
+    this.renderPixelated();
+    this.buildSymbolColors();
     this.generateNumberedScheme();
+
+    // ✅ тепер тут!
+    this.saveState();
+  }
+
+  private buildSymbolColors(): void {
+    if (!this.originalImage) return;
+
+    // 🔥 гарантуємо, що палітра вже побудована
+    if (!this.reducedPalette || this.reducedPalette.length === 0) {
+      const width = this.originalImage.width;
+      const height = this.originalImage.height;
+
+      const tempCanvas = document.createElement('canvas');
+      const ctx = tempCanvas.getContext('2d');
+      if (!ctx) return;
+
+      tempCanvas.width = width;
+      tempCanvas.height = height;
+      ctx.drawImage(this.originalImage, 0, 0);
+
+      const data = ctx.getImageData(0, 0, width, height).data;
+
+      const allColors: { r: number; g: number; b: number }[] = [];
+      for (let i = 0; i < data.length; i += 4) {
+        allColors.push({ r: data[i], g: data[i + 1], b: data[i + 2] });
+      }
+
+      this.buildColorPalette(allColors);
+    }
+
+    // ⚠️ перевірка на кількість символів
+    if (this.reducedPalette.length > this.symbolPool.length) {
+      console.warn('Недостатньо символів для всіх кольорів!');
+    }
+
+    // ✅ ГОЛОВНЕ — 1:1 відповідність
+    this.symbolColors = this.reducedPalette.map((color, index) => {
+      const brightness =
+        color.r * 0.299 +
+        color.g * 0.587 +
+        color.b * 0.114;
+
+      const fillColor = brightness < 140 ? '#FFFFFF' : '#000000';
+
+      return {
+        symbol: this.symbolPool[index], // 🔥 більше НЕ повторюється
+        color,
+        fillColor
+      };
+    });
   }
 
   generateNumberedScheme(): void {
-    if (!this.originalImage) return;
+    if (!this.canvasRef?.nativeElement || !this.pixelatedCanvas) return;
 
-    const width = this.originalImage.width;
-    const height = this.originalImage.height;
+    const canvas = this.canvasRef.nativeElement;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
 
+    // малюємо фон
+    this.drawToCanvas();
+
+    const width = this.pixelatedCanvas.width;
+    const height = this.pixelatedCanvas.height;
+
+    // беремо пікселі з пікселізованого канвасу
     const tempCanvas = document.createElement('canvas');
     const tempCtx = tempCanvas.getContext('2d', { willReadFrequently: true });
     if (!tempCtx) return;
 
     tempCanvas.width = width;
     tempCanvas.height = height;
-    tempCtx.drawImage(this.originalImage, 0, 0);
+    tempCtx.drawImage(this.pixelatedCanvas, 0, 0);
 
     const imageData = tempCtx.getImageData(0, 0, width, height);
     const data = imageData.data;
 
-    // палітра
-    const allColors: { r: number; g: number; b: number }[] = [];
-    for (let i = 0; i < data.length; i += 4) {
-      allColors.push({
-        r: data[i],
-        g: data[i + 1],
-        b: data[i + 2]
-      });
-    }
-
-    this.buildColorPalette(allColors);
-
-    // сітка
+    // === СІТКА ===
     const minSide = Math.min(width, height);
     const maxSide = Math.max(width, height);
     const isWidthMin = width <= height;
-
     const numMin = this.pixelCount;
     const pixelSizeApprox = minSide / numMin;
     const numMax = Math.ceil(maxSide / pixelSizeApprox);
@@ -929,8 +966,23 @@ export class PixelationComponent implements AfterViewInit {
     const colInfo = this.getBlockInfo(width, numCols);
     const rowInfo = this.getBlockInfo(height, numRows);
 
-    const colorMap: any = {};
+    // === МАПА СИМВОЛІВ (тільки з палітри) ===
+    const symbolMap: { [key: string]: any } = {};
+    this.symbolColors.forEach(sc => {
+      const key = `${sc.color.r},${sc.color.g},${sc.color.b}`;
+      symbolMap[key] = sc;
+    });
 
+    // === SCALE ===
+    const scale = Math.min(
+      canvas.width / width,
+      canvas.height / height
+    );
+
+    const offsetX = (canvas.width - width * scale) / 2;
+    const offsetY = (canvas.height - height * scale) / 2;
+
+    // === МАЛЮЄМО СИМВОЛИ ===
     for (let row = 0; row < numRows; row++) {
       const py = rowInfo.starts[row];
       const blockH = rowInfo.sizes[row];
@@ -939,63 +991,52 @@ export class PixelationComponent implements AfterViewInit {
         const px = colInfo.starts[col];
         const blockW = colInfo.sizes[col];
 
-        let sumR = 0, sumG = 0, sumB = 0;
-        const count = blockW * blockH;
-
-        for (let iy = py; iy < py + blockH; iy++) {
-          for (let ix = px; ix < px + blockW; ix++) {
-            const idx = (iy * width + ix) * 4;
-
-            sumR += data[idx];
-            sumG += data[idx + 1];
-            sumB += data[idx + 2];
-          }
-        }
-
-        const avg = this.getClosestColor(
-          Math.round(sumR / count),
-          Math.round(sumG / count),
-          Math.round(sumB / count)
-        );
+        // ✅ беремо СЕРЕДНІЙ колір блоку (як при генерації палітри)
+        const avg = this.getBlockColor(px, py, blockW, blockH, data, width);
 
         const key = `${avg.r},${avg.g},${avg.b}`;
+        const symbolInfo = symbolMap[key];
 
-        if (!colorMap[key]) {
-          colorMap[key] = { r: avg.r, g: avg.g, b: avg.b, count: 0 };
+        if (symbolInfo) {
+          ctx.save();
+
+          ctx.fillStyle = symbolInfo.fillColor;
+
+          ctx.font = `${Math.floor(Math.min(blockW, blockH) * scale * 0.55)}px monospace`;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+
+          ctx.fillText(
+            symbolInfo.symbol,
+            Math.round(offsetX + (px + blockW / 2) * scale),
+            Math.round(offsetY + (py + blockH / 2) * scale)
+          );
+
+          ctx.restore();
         }
-
-        colorMap[key].count++;
       }
     }
+  }
 
-    const sortedColors = Object.values(colorMap)
-      .sort((a: any, b: any) => b.count - a.count)
-      .slice(0, this.colorCount);
 
-    // 🔥 КОНТРАСТ СИМВОЛІВ
-    this.symbolColors = sortedColors.map((color: any, index: number) => {
-      const brightness = color.r * 0.299 + color.g * 0.587 + color.b * 0.114;
+  // Допоміжний метод для отримання кольору блоку з оригінального зображення
+  private getBlockColorFromOriginal(
+    px: number, py: number, blockW: number, blockH: number, width: number, height: number
+  ): { r: number; g: number; b: number } {
+    if (!this.originalImage) return { r: 0, g: 0, b: 0 };
 
-      return {
-        symbol: this.symbolPool[index],
-        color,
-        fillColor: brightness < 128 ? '#FFFFFF' : '#000000'
-      };
-    });
+    const tempCanvas = document.createElement('canvas');
+    const tempCtx = tempCanvas.getContext('2d', { willReadFrequently: true });
+    if (!tempCtx) return { r: 0, g: 0, b: 0 };
 
-    const canvas = this.canvasRef.nativeElement;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    tempCanvas.width = width;
+    tempCanvas.height = height;
+    tempCtx.drawImage(this.originalImage, 0, 0);
 
-    const scaleX = canvas.width / width;
-    const scaleY = canvas.height / height;
-    const scale = Math.min(scaleX, scaleY);
+    const imageData = tempCtx.getImageData(0, 0, width, height);
+    const data = imageData.data;
 
-    ctx.setTransform(scale, 0, 0, scale, 0, 0);
-
-    this.drawSchemeOnCanvas(ctx, width, height, colInfo, rowInfo, data);
-
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    return this.getBlockColor(px, py, blockW, blockH, data, width);
   }
 
   findMaterials(): void {
@@ -1036,26 +1077,6 @@ export class PixelationComponent implements AfterViewInit {
     });
   }
 
-  saveSketch(): void {
-    if (!this.canvasRef?.nativeElement) return;
-    const canvas = this.canvasRef.nativeElement;
-    const sketchData = {
-      image: canvas.toDataURL('image/png'),
-      caption: this.fileName,
-      materialList: this.materialList
-    };
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      'X-CSRFToken': this.getCsrfToken(),
-      ...(isPlatformBrowser(this.platformId) && localStorage.getItem('token')
-        ? { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
-        : {})
-    });
-    this.http.post('http://localhost:8000/accounts/sketches/', sketchData, { headers }).subscribe({
-      next: (response) => console.log('Sketch saved:', response),
-      error: (error) => console.error('Failed to save sketch:', error)
-    });
-  }
 
   private getCsrfToken(): string {
     if (!isPlatformBrowser(this.platformId)) return '';
