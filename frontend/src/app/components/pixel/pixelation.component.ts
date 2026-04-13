@@ -4,11 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { isPlatformBrowser } from '@angular/common';
 import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 interface MaterialResponse {
   number: string;
   color: { r: string; g: string; b: string };
-  materials: Array<{ brand: string; number: string }>;
+  brand: string;      // завжди буде 'DMC'
 }
 
 @Component({
@@ -36,7 +37,9 @@ export class PixelationComponent implements AfterViewInit {
   materialList: Array<{
     number: string;
     color: { r: number; g: number; b: number };
-    materials: Array<{ brand: string; number: string }>;
+    symbol: string;
+    fillColor: string;
+    brand: string;
   }> = [];
   symbolColors: Array<{
     symbol: string;
@@ -424,7 +427,16 @@ export class PixelationComponent implements AfterViewInit {
 
     const allColors = [];
     for (let i = 0; i < data.length; i += 4) {
-      allColors.push({ r: data[i], g: data[i + 1], b: data[i + 2] });
+      let r = data[i];
+      let g = data[i + 1];
+      let b = data[i + 2];
+
+      if (this.schemeMode === 'bw') {
+        const gray = Math.round(0.299 * r + 0.587 * g + 0.114 * b);
+        r = g = b = gray;
+      }
+
+      allColors.push({ r, g, b });
     }
 
     this.buildColorPalette(allColors);
@@ -498,12 +510,14 @@ export class PixelationComponent implements AfterViewInit {
   }
 
   renderImage(): void {
-    if (!this.originalImage) return;
+    if (!this.originalImage || !this.canvasRef?.nativeElement) return;
 
-    this.renderPixelated(); // ❗ тільки коли треба
-    this.drawToCanvas();    // ❗ завжди
+    //  критично — синхронізація з layout
+    this.adjustCanvasSize();
 
-    this.drawCropOverlay(); // ⬇️ винесли окремо
+    this.renderPixelated();
+    this.drawToCanvas();
+    this.drawCropOverlay();
   }
 
   private drawCropOverlay(): void {
@@ -783,53 +797,131 @@ export class PixelationComponent implements AfterViewInit {
     return this.history.length > 1;
   }
 
+  // ==================== ГОЛОВНИЙ МЕТОД ЗБЕРЕЖЕННЯ ====================
   downloadImage(): void {
-    const canvas = this.getCanvas();
+    const safeFileName = (this.fileName || 'pixelated_image')
+      .replace(/[^a-zA-Z0-9_-]/g, '');
 
-    const originalCanvas = this.canvasRef.nativeElement;
-    const safeFileName = (this.fileName || 'pixelated_image').replace(/[^a-zA-Z0-9_-]/g, '');
+    if (this.materialList.length === 0) {
+      this.downloadCanvasOnly(safeFileName);
+    } else {
+      this.downloadWithLegend(safeFileName);
+    }
+  }
 
-    let scaleFactor = 2;
-    if (this.pixelCount > 80) scaleFactor = 3;
-    if (this.pixelCount > 150) scaleFactor = 4;
+  // ==================== Збереження ТІЛЬКИ canvas ====================
+  private downloadCanvasOnly(fileName: string): void {
+    const canvas = this.canvasRef.nativeElement;
+    const scaleFactor = this.pixelCount > 100 ? 3 : 2;
 
     const tempCanvas = document.createElement('canvas');
-    tempCanvas.width = originalCanvas.width * scaleFactor;
-    tempCanvas.height = originalCanvas.height * scaleFactor;
+    tempCanvas.width = canvas.width * scaleFactor;
+    tempCanvas.height = canvas.height * scaleFactor;
 
-    const tempCtx = tempCanvas.getContext('2d');
-    if (!tempCtx) return;
+    const ctx = tempCanvas.getContext('2d', { willReadFrequently: true });
+    if (!ctx) return;
 
-    tempCtx.imageSmoothingEnabled = false;
-    tempCtx.drawImage(originalCanvas, 0, 0, tempCanvas.width, tempCanvas.height);
+    ctx.imageSmoothingEnabled = false;
+    ctx.drawImage(canvas, 0, 0, tempCanvas.width, tempCanvas.height);
 
+    this.saveCanvasAsFile(tempCanvas, fileName);
+  }
+
+  // ==================== Збереження canvas + легенда ====================
+  private async downloadWithLegend(fileName: string): Promise<void> {
+    const mainCanvas = this.canvasRef.nativeElement;
+    const scaleFactor = this.pixelCount > 100 ? 3 : 2;
+
+    // 1. Підготовка основного зображення
+    const mainTemp = document.createElement('canvas');
+    mainTemp.width = mainCanvas.width * scaleFactor;
+    mainTemp.height = mainCanvas.height * scaleFactor;
+
+    const mainCtx = mainTemp.getContext('2d')!;
+    mainCtx.imageSmoothingEnabled = false;
+    mainCtx.drawImage(mainCanvas, 0, 0, mainTemp.width, mainTemp.height);
+
+    // 2. Створення canvas з легенди
+    const legendCanvas = await this.createLegendCanvas(scaleFactor);
+
+    if (!legendCanvas) {
+      this.saveCanvasAsFile(mainTemp, fileName);
+      return;
+    }
+
+    // 3. Фінальне комбіноване зображення
+    const finalCanvas = document.createElement('canvas');
+    finalCanvas.width = Math.max(mainTemp.width, legendCanvas.width);
+    finalCanvas.height = mainTemp.height + legendCanvas.height + 60; // відступ між схемою і легендою
+
+    const finalCtx = finalCanvas.getContext('2d')!;
+    finalCtx.fillStyle = '#111111';
+    finalCtx.fillRect(0, 0, finalCanvas.width, finalCanvas.height);
+
+    // Малюємо схему зверху
+    finalCtx.drawImage(mainTemp, 0, 0);
+
+    // Малюємо легенду знизу по центру
+    finalCtx.drawImage(
+      legendCanvas,
+      (finalCanvas.width - legendCanvas.width) / 2,
+      mainTemp.height + 40
+    );
+
+    this.saveCanvasAsFile(finalCanvas, fileName);
+  }
+
+  // ==================== Створення canvas з легенди (html2canvas) ====================
+  private async createLegendCanvas(scale: number = 2): Promise<HTMLCanvasElement | null> {
+    const legendEl = document.querySelector('.legend-container') as HTMLElement;
+    if (!legendEl) return null;
+
+    try {
+      const canvas = await html2canvas(legendEl, {
+        scale: scale,
+        backgroundColor: '#111111',
+        logging: false,
+        useCORS: true,
+        allowTaint: true,
+        width: legendEl.offsetWidth,
+        height: legendEl.offsetHeight
+      });
+
+      return canvas;
+    } catch (error) {
+      console.error('Помилка створення легенди для збереження:', error);
+      return null;
+    }
+  }
+
+  // ==================== Збереження canvas у файл (PDF або PNG/JPG) ====================
+  private saveCanvasAsFile(canvas: HTMLCanvasElement, fileName: string): void {
     if (this.downloadFormat === 'application/pdf') {
       const pdf = new jsPDF({
-        orientation: tempCanvas.width > tempCanvas.height ? 'landscape' : 'portrait',
+        orientation: canvas.width > canvas.height ? 'landscape' : 'portrait',
         unit: 'px',
-        format: [tempCanvas.width, tempCanvas.height],
+        format: [canvas.width, canvas.height],
         compress: false
       });
 
-      const imgData = tempCanvas.toDataURL('image/png', 1.0);
-      pdf.addImage(imgData, 'PNG', 0, 0, tempCanvas.width, tempCanvas.height);
-
-      pdf.save(`${safeFileName}.pdf`);
+      const imgData = canvas.toDataURL('image/png', 1.0);
+      pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+      pdf.save(`${fileName}.pdf`);
     } else {
-      const mimeType = this.downloadFormat;
-      const extension = mimeType === 'image/jpeg' ? 'jpg' : 'png';
-      const quality = mimeType === 'image/jpeg' ? 0.92 : 1.0;
+      const isJpeg = this.downloadFormat === 'image/jpeg';
+      const mimeType = isJpeg ? 'image/jpeg' : 'image/png';
+      const extension = isJpeg ? 'jpg' : 'png';
+      const quality = isJpeg ? 0.92 : 1.0;
 
-      const dataUrl = tempCanvas.toDataURL(mimeType, quality);
+      const dataUrl = canvas.toDataURL(mimeType, quality);
 
       const link = document.createElement('a');
       link.href = dataUrl;
-      link.download = `${safeFileName}.${extension}`;
+      link.download = `${fileName}.${extension}`;
       link.click();
     }
-
-    tempCanvas.remove();
   }
+
   rotateImage(): void {
     if (!this.originalImage) return;
 
@@ -856,12 +948,17 @@ export class PixelationComponent implements AfterViewInit {
 
     this.loadImage(newImageSrc);
 
-    // ✅ ЗБЕРІГАЄМО ПІСЛЯ зміни
+    //  ЗБЕРІГАЄМО ПІСЛЯ зміни
     this.saveState();
   }
 
   onMaterialTypeChange(): void {
-    this.resetDerivedState();
+    this.materialList = [];           // очищаємо тільки легенду
+
+    // Відновлюємо символи на canvas (щоб вони не зникали)
+    if (this.pixelatedCanvas && this.symbolColors.length > 0) {
+      this.generateNumberedScheme();
+    }
   }
 
   private getCanvas(): HTMLCanvasElement {
@@ -871,18 +968,33 @@ export class PixelationComponent implements AfterViewInit {
   onGenerateScheme(): void {
     if (!this.imageSrc) return;
 
+    // будуємо пікселізацію
     this.renderPixelated();
+
+    // будуємо символи
     this.buildSymbolColors();
+
+    // малюємо схему
     this.generateNumberedScheme();
 
-    // ✅ тепер тут!
+    // очищаємо легенду (щоб вона з’явилась заново)
+    this.materialList = [];
+
+    // 🔥 ФІКС: після зміни DOM (legend) — перемалювати canvas
+    setTimeout(() => {
+      this.adjustCanvasSize();
+      this.renderPixelated();
+      this.drawToCanvas();
+      this.generateNumberedScheme();
+    }, 0);
+
     this.saveState();
   }
 
   private buildSymbolColors(): void {
     if (!this.originalImage) return;
 
-    // 🔥 гарантуємо, що палітра вже побудована
+    // гарантуємо, що палітра вже побудована
     if (!this.reducedPalette || this.reducedPalette.length === 0) {
       const width = this.originalImage.width;
       const height = this.originalImage.height;
@@ -905,12 +1017,12 @@ export class PixelationComponent implements AfterViewInit {
       this.buildColorPalette(allColors);
     }
 
-    // ⚠️ перевірка на кількість символів
+    //  перевірка на кількість символів
     if (this.reducedPalette.length > this.symbolPool.length) {
       console.warn('Недостатньо символів для всіх кольорів!');
     }
 
-    // ✅ ГОЛОВНЕ — 1:1 відповідність
+    //  ГОЛОВНЕ — 1:1 відповідність
     this.symbolColors = this.reducedPalette.map((color, index) => {
       const brightness =
         color.r * 0.299 +
@@ -920,11 +1032,12 @@ export class PixelationComponent implements AfterViewInit {
       const fillColor = brightness < 140 ? '#FFFFFF' : '#000000';
 
       return {
-        symbol: this.symbolPool[index], // 🔥 більше НЕ повторюється
+        symbol: this.symbolPool[index], //  більше НЕ повторюється
         color,
         fillColor
       };
     });
+    this.symbolColors = [...this.symbolColors]; // примусове оновлення масиву для Angular
   }
 
   generateNumberedScheme(): void {
@@ -991,7 +1104,7 @@ export class PixelationComponent implements AfterViewInit {
         const px = colInfo.starts[col];
         const blockW = colInfo.sizes[col];
 
-        // ✅ беремо СЕРЕДНІЙ колір блоку (як при генерації палітри)
+        // беремо СЕРЕДНІЙ колір блоку (як при генерації палітри)
         const avg = this.getBlockColor(px, py, blockW, blockH, data, width);
 
         const key = `${avg.r},${avg.g},${avg.b}`;
@@ -1039,14 +1152,24 @@ export class PixelationComponent implements AfterViewInit {
     return this.getBlockColor(px, py, blockW, blockH, data, width);
   }
 
+  // === НОВА МЕТОДА ДЛЯ ЛЕГЕНДИ ===
+  renderLegend(): void {
+    // нічого не робимо — легенда рендериться автоматично через *ngFor
+    // (можна додати логіку, якщо треба)
+  }
+
   findMaterials(): void {
     if (this.symbolColors.length === 0) {
-      alert('Спочатку створіть схему з позначками кольорів');
+      alert('Спочатку створіть схему з позначками кольорів (кнопка "Перетворити на схему")');
+      return;
+    }
+
+    if (this.materialType !== 'threads') {
+      alert('Наразі підбір ниток працює тільки для DMC threads');
       return;
     }
 
     const colorList = this.symbolColors.map(colorInfo => ({
-      number: colorInfo.symbol,
       r: colorInfo.color.r.toString(),
       g: colorInfo.color.g.toString(),
       b: colorInfo.color.b.toString()
@@ -1060,23 +1183,52 @@ export class PixelationComponent implements AfterViewInit {
         : {})
     });
 
-    this.http.post<{ materials: MaterialResponse[] }>('http://localhost:8000/accounts/materials/',
-      { colors: colorList, materialType: this.materialType },
+    this.http.post<{ materials: MaterialResponse[] }>(
+      'http://localhost:8000/accounts/materials/',
+      {
+        colors: colorList,
+        materialType: 'threads'
+      },
       { headers }
     ).subscribe({
       next: (response) => {
-        this.materialList = response.materials.map((m: MaterialResponse) => ({
-          number: m.number,
-          color: { r: parseInt(m.color.r), g: parseInt(m.color.g), b: parseInt(m.color.b) },
-          materials: m.materials
+        // Головне — просто беремо те, що повернув бекенд
+        // Порядок матеріалів відповідає порядку symbolColors
+        this.materialList = response.materials.map((m, index) => ({
+          number: m.number || '???',
+          color: {
+            r: +m.color.r,
+            g: +m.color.g,
+            b: +m.color.b
+          },
+          symbol: this.symbolColors[index].symbol,
+          fillColor: this.symbolColors[index].fillColor,
+          brand: m.brand || 'DMC'
         }));
+
+        console.log(`✅ Знайдено матеріали для ${this.materialList.length} кольорів`);
+
+        // Оновлюємо відображення після отримання ниток
+        setTimeout(() => {
+          this.adjustCanvasSize();
+          this.renderPixelated();
+          this.drawToCanvas();
+          this.generateNumberedScheme();
+        }, 10);
       },
-      error: (error) => {
-        alert('Не вдалося знайти матеріали: ' + (error.error?.error || error.message));
+      error: (err) => {
+        console.error('❌ Помилка при підборі ниток:', err);
+
+        if (err.status === 0) {
+          alert('Не вдалося підключитися до сервера. Перевірте, чи запущений Django (python manage.py runserver)');
+        } else if (err.status === 400) {
+          alert('Помилка в запиті: ' + (err.error?.error || JSON.stringify(err.error)));
+        } else {
+          alert('Не вдалося знайти нитки. Перевірте логи сервера.');
+        }
       }
     });
   }
-
 
   private getCsrfToken(): string {
     if (!isPlatformBrowser(this.platformId)) return '';
