@@ -25,7 +25,7 @@
 
     <div class="main-layout">
 
-      <!-- 🔹 ЛІВА ПАНЕЛЬ (ІНСТРУМЕНТИ) -->
+      <!--  ЛІВА ПАНЕЛЬ (ІНСТРУМЕНТИ) -->
       <aside class="sidebar-controls">
 
         <div class="control-group">
@@ -72,13 +72,31 @@
 
       </aside>
 
-      <!-- 🔹 ЦЕНТР (CANVAS) -->
       <main class="canvas-wrapper">
-        <canvas #pixelationCanvas class="pixelation-canvas" (mousedown)="startCrop($event)"
-          (mousemove)="updateCrop($event)" (mouseup)="endCrop()"></canvas>
+        <div class="canvas-and-legend">
+
+          <canvas #pixelationCanvas class="pixelation-canvas" (mousedown)="startCrop($event)"
+            (mousemove)="updateCrop($event)" (mouseup)="endCrop()">
+          </canvas>
+
+          <div class="legend-container" *ngIf="materialList.length > 0">
+            <h3 class="legend-title">Легенда матеріалів (DMC)</h3>
+
+            <div class="legend-grid">
+              <div *ngFor="let mat of materialList" class="legend-item">
+                <div class="legend-color"
+                  [style.background-color]="'rgb(' + mat.color.r + ',' + mat.color.g + ',' + mat.color.b + ')'">
+                </div>
+                <span class="legend-symbol">{{ mat.symbol }}</span>
+                <span class="legend-number">DMC {{ mat.number }}</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
       </main>
 
-      <!-- 🔹 ПРАВА ПАНЕЛЬ (ЗБЕРЕЖЕННЯ) -->
+      <!--  ПРАВА ПАНЕЛЬ ТЕПЕР ОКРЕМО -->
       <aside class="save-sidebar">
 
         <div class="save-field">
@@ -113,8 +131,3 @@
         </button>
 
       </aside>
-
-    </div>
-
-  </div>
-</div>
