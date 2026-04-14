@@ -1,0 +1,3594 @@
+[
+    {
+        "number": "DB-001",
+        "description": "White",
+        "r": 255,
+        "g": 255,
+        "b": 255,
+        "hex": "FFFFFF"
+    },
+    {
+        "number": "DB-002",
+        "description": "Cream",
+        "r": 255,
+        "g": 248,
+        "b": 220,
+        "hex": "FFF8DC"
+    },
+    {
+        "number": "DB-003",
+        "description": "Pale Yellow",
+        "r": 255,
+        "g": 255,
+        "b": 180,
+        "hex": "FFFFB4"
+    },
+    {
+        "number": "DB-004",
+        "description": "Lemon",
+        "r": 255,
+        "g": 240,
+        "b": 100,
+        "hex": "FFF064"
+    },
+    {
+        "number": "DB-005",
+        "description": "Yellow",
+        "r": 255,
+        "g": 220,
+        "b": 0,
+        "hex": "FFDC00"
+    },
+    {
+        "number": "DB-006",
+        "description": "Pale Orange",
+        "r": 255,
+        "g": 180,
+        "b": 80,
+        "hex": "FFB450"
+    },
+    {
+        "number": "DB-007",
+        "description": "Orange",
+        "r": 255,
+        "g": 140,
+        "b": 0,
+        "hex": "FF8C00"
+    },
+    {
+        "number": "DB-008",
+        "description": "Coral",
+        "r": 255,
+        "g": 100,
+        "b": 80,
+        "hex": "FF6450"
+    },
+    {
+        "number": "DB-009",
+        "description": "Salmon",
+        "r": 255,
+        "g": 140,
+        "b": 120,
+        "hex": "FF8C78"
+    },
+    {
+        "number": "DB-010",
+        "description": "Black",
+        "r": 20,
+        "g": 20,
+        "b": 20,
+        "hex": "141414"
+    },
+    {
+        "number": "DB-011",
+        "description": "Metallic Dark Blue Iris",
+        "r": 30,
+        "g": 50,
+        "b": 90,
+        "hex": "1E325A"
+    },
+    {
+        "number": "DB-012",
+        "description": "Metallic Dark Raspberry",
+        "r": 120,
+        "g": 30,
+        "b": 60,
+        "hex": "781E3C"
+    },
+    {
+        "number": "DB-021",
+        "description": "Nickel Plated",
+        "r": 180,
+        "g": 180,
+        "b": 190,
+        "hex": "B4B4BE"
+    },
+    {
+        "number": "DB-022",
+        "description": "Metallic Dark Bronze",
+        "r": 90,
+        "g": 60,
+        "b": 40,
+        "hex": "5A3C28"
+    },
+    {
+        "number": "DB-023",
+        "description": "Metallic Gold Iris",
+        "r": 220,
+        "g": 180,
+        "b": 50,
+        "hex": "DCB432"
+    },
+    {
+        "number": "DB-024",
+        "description": "Metallic Olive Green Iris",
+        "r": 80,
+        "g": 110,
+        "b": 60,
+        "hex": "506E3C"
+    },
+    {
+        "number": "DB-025",
+        "description": "Metallic Blue Iris",
+        "r": 60,
+        "g": 110,
+        "b": 160,
+        "hex": "3C6EA0"
+    },
+    {
+        "number": "DB-031",
+        "description": "Purple",
+        "r": 110,
+        "g": 40,
+        "b": 120,
+        "hex": "6E2878"
+    },
+    {
+        "number": "DB-032",
+        "description": "Violet",
+        "r": 140,
+        "g": 60,
+        "b": 160,
+        "hex": "8C3CA0"
+    },
+    {
+        "number": "DB-041",
+        "description": "Silver Lined Ruby",
+        "r": 200,
+        "g": 30,
+        "b": 50,
+        "hex": "C81E32"
+    },
+    {
+        "number": "DB-042",
+        "description": "Silver Lined Gold",
+        "r": 255,
+        "g": 200,
+        "b": 50,
+        "hex": "FFC832"
+    },
+    {
+        "number": "DB-043",
+        "description": "Silver Lined Flame Red",
+        "r": 220,
+        "g": 40,
+        "b": 30,
+        "hex": "DC281E"
+    },
+    {
+        "number": "DB-044",
+        "description": "Silver Lined Aqua",
+        "r": 100,
+        "g": 220,
+        "b": 220,
+        "hex": "64DCDC"
+    },
+    {
+        "number": "DB-045",
+        "description": "Silver Lined Orange",
+        "r": 255,
+        "g": 140,
+        "b": 30,
+        "hex": "FF8C1E"
+    },
+    {
+        "number": "DB-046",
+        "description": "Silver Lined Green",
+        "r": 60,
+        "g": 180,
+        "b": 80,
+        "hex": "3CB450"
+    },
+    {
+        "number": "DB-047",
+        "description": "Silver Lined Cobalt",
+        "r": 40,
+        "g": 80,
+        "b": 160,
+        "hex": "2850A0"
+    },
+    {
+        "number": "DB-050",
+        "description": "Crystal Luster",
+        "r": 240,
+        "g": 240,
+        "b": 240,
+        "hex": "F0F0F0"
+    },
+    {
+        "number": "DB-051",
+        "description": "Crystal AB",
+        "r": 230,
+        "g": 240,
+        "b": 255,
+        "hex": "E6F0FF"
+    },
+    {
+        "number": "DB-052",
+        "description": "Pale Peach Lined Crystal",
+        "r": 255,
+        "g": 210,
+        "b": 180,
+        "hex": "FFD2B4"
+    },
+    {
+        "number": "DB-053",
+        "description": "Light Yellow Lined Crystal",
+        "r": 255,
+        "g": 240,
+        "b": 140,
+        "hex": "FFF08C"
+    },
+    {
+        "number": "DB-054",
+        "description": "Dark Peach Lined Crystal",
+        "r": 255,
+        "g": 160,
+        "b": 120,
+        "hex": "FFA078"
+    },
+    {
+        "number": "DB-055",
+        "description": "Pink Lined Crystal AB",
+        "r": 255,
+        "g": 180,
+        "b": 200,
+        "hex": "FFB4C8"
+    },
+    {
+        "number": "DB-061",
+        "description": "Emerald Green",
+        "r": 0,
+        "g": 140,
+        "b": 80,
+        "hex": "008C50"
+    },
+    {
+        "number": "DB-062",
+        "description": "Light Cranberry",
+        "r": 200,
+        "g": 60,
+        "b": 100,
+        "hex": "C83C64"
+    },
+    {
+        "number": "DB-063",
+        "description": "Cobalt Lined Sapphire",
+        "r": 50,
+        "g": 80,
+        "b": 160,
+        "hex": "3250A0"
+    },
+    {
+        "number": "DB-070",
+        "description": "Coral Lined Crystal Luster",
+        "r": 255,
+        "g": 120,
+        "b": 100,
+        "hex": "FF7864"
+    },
+    {
+        "number": "DB-078",
+        "description": "Gold",
+        "r": 220,
+        "g": 170,
+        "b": 40,
+        "hex": "DCAA28"
+    },
+    {
+        "number": "DB-079",
+        "description": "Turquoise Green Lined Crystal AB",
+        "r": 80,
+        "g": 200,
+        "b": 180,
+        "hex": "50C8B4"
+    },
+    {
+        "number": "DB-080",
+        "description": "Pale Violet Lined Crystal Luster",
+        "r": 200,
+        "g": 160,
+        "b": 220,
+        "hex": "C8A0DC"
+    },
+    {
+        "number": "DB-085",
+        "description": "Peach",
+        "r": 255,
+        "g": 180,
+        "b": 140,
+        "hex": "FFB48C"
+    },
+    {
+        "number": "DB-100",
+        "description": "Transparent Light Topaz AB",
+        "r": 255,
+        "g": 220,
+        "b": 140,
+        "hex": "FFDC8C"
+    },
+    {
+        "number": "DB-105",
+        "description": "Garnet Gold Luster",
+        "r": 140,
+        "g": 30,
+        "b": 50,
+        "hex": "8C1E32"
+    },
+    {
+        "number": "DB-110",
+        "description": "Transparent Light Marine Blue Gold Luster",
+        "r": 100,
+        "g": 180,
+        "b": 220,
+        "hex": "64B4DC"
+    },
+    {
+        "number": "DB-150",
+        "description": "Transparent Light Sapphire",
+        "r": 80,
+        "g": 140,
+        "b": 200,
+        "hex": "508CC8"
+    },
+    {
+        "number": "DB-200",
+        "description": "White Opal",
+        "r": 240,
+        "g": 245,
+        "b": 255,
+        "hex": "F0F5FF"
+    },
+    {
+        "number": "DB-201",
+        "description": "Light Aqua Opal",
+        "r": 180,
+        "g": 230,
+        "b": 230,
+        "hex": "B4E6E6"
+    },
+    {
+        "number": "DB-210",
+        "description": "Opaque White",
+        "r": 245,
+        "g": 245,
+        "b": 245,
+        "hex": "F5F5F5"
+    },
+    {
+        "number": "DB-211",
+        "description": "Opaque Cream",
+        "r": 255,
+        "g": 240,
+        "b": 200,
+        "hex": "FFF0C8"
+    },
+    {
+        "number": "DB-212",
+        "description": "Opaque Pale Yellow",
+        "r": 255,
+        "g": 240,
+        "b": 140,
+        "hex": "FFF08C"
+    },
+    {
+        "number": "DB-213",
+        "description": "Opaque Yellow",
+        "r": 255,
+        "g": 200,
+        "b": 0,
+        "hex": "FFC800"
+    },
+    {
+        "number": "DB-214",
+        "description": "Opaque Orange",
+        "r": 255,
+        "g": 140,
+        "b": 40,
+        "hex": "FF8C28"
+    },
+    {
+        "number": "DB-215",
+        "description": "Opaque Red",
+        "r": 200,
+        "g": 30,
+        "b": 40,
+        "hex": "C81E28"
+    },
+    {
+        "number": "DB-216",
+        "description": "Opaque Dark Red",
+        "r": 140,
+        "g": 20,
+        "b": 30,
+        "hex": "8C141E"
+    },
+    {
+        "number": "DB-217",
+        "description": "Opaque Pink",
+        "r": 255,
+        "g": 140,
+        "b": 180,
+        "hex": "FF8CB4"
+    },
+    {
+        "number": "DB-218",
+        "description": "Opaque Fuchsia",
+        "r": 200,
+        "g": 40,
+        "b": 120,
+        "hex": "C82878"
+    },
+    {
+        "number": "DB-219",
+        "description": "Opaque Purple",
+        "r": 120,
+        "g": 40,
+        "b": 140,
+        "hex": "78288C"
+    },
+    {
+        "number": "DB-220",
+        "description": "Opaque Navy Blue",
+        "r": 30,
+        "g": 50,
+        "b": 110,
+        "hex": "1E326E"
+    },
+    {
+        "number": "DB-221",
+        "description": "Opaque Cobalt Blue",
+        "r": 40,
+        "g": 80,
+        "b": 160,
+        "hex": "2850A0"
+    },
+    {
+        "number": "DB-222",
+        "description": "Opaque Turquoise",
+        "r": 60,
+        "g": 180,
+        "b": 180,
+        "hex": "3CB4B4"
+    },
+    {
+        "number": "DB-223",
+        "description": "Opaque Emerald",
+        "r": 30,
+        "g": 140,
+        "b": 80,
+        "hex": "1E8C50"
+    },
+    {
+        "number": "DB-224",
+        "description": "Opaque Olive Green",
+        "r": 100,
+        "g": 120,
+        "b": 40,
+        "hex": "647828"
+    },
+    {
+        "number": "DB-225",
+        "description": "Opaque Dark Green",
+        "r": 40,
+        "g": 90,
+        "b": 50,
+        "hex": "285A32"
+    },
+    {
+        "number": "DB-226",
+        "description": "Opaque Brown",
+        "r": 140,
+        "g": 80,
+        "b": 40,
+        "hex": "8C5028"
+    },
+    {
+        "number": "DB-227",
+        "description": "Opaque Gray",
+        "r": 120,
+        "g": 120,
+        "b": 120,
+        "hex": "787878"
+    },
+    {
+        "number": "DB-310",
+        "description": "Matte Black",
+        "r": 30,
+        "g": 30,
+        "b": 30,
+        "hex": "1E1E1E"
+    },
+    {
+        "number": "DB-311",
+        "description": "Matte White",
+        "r": 240,
+        "g": 240,
+        "b": 240,
+        "hex": "F0F0F0"
+    },
+    {
+        "number": "DB-350",
+        "description": "Matte Opaque Red",
+        "r": 180,
+        "g": 40,
+        "b": 50,
+        "hex": "B42832"
+    },
+    {
+        "number": "DB-351",
+        "description": "Matte Opaque Pink",
+        "r": 240,
+        "g": 140,
+        "b": 170,
+        "hex": "F08CAA"
+    },
+    {
+        "number": "DB-352",
+        "description": "Matte Opaque Fuchsia",
+        "r": 180,
+        "g": 50,
+        "b": 110,
+        "hex": "B4326E"
+    },
+    {
+        "number": "DB-353",
+        "description": "Matte Opaque Purple",
+        "r": 110,
+        "g": 50,
+        "b": 130,
+        "hex": "6E3282"
+    },
+    {
+        "number": "DB-354",
+        "description": "Matte Opaque Blue",
+        "r": 50,
+        "g": 90,
+        "b": 160,
+        "hex": "325AA0"
+    },
+    {
+        "number": "DB-355",
+        "description": "Matte Opaque Turquoise",
+        "r": 70,
+        "g": 170,
+        "b": 170,
+        "hex": "46AAAA"
+    },
+    {
+        "number": "DB-356",
+        "description": "Matte Opaque Green",
+        "r": 50,
+        "g": 140,
+        "b": 80,
+        "hex": "328C50"
+    },
+    {
+        "number": "DB-357",
+        "description": "Matte Opaque Olive",
+        "r": 110,
+        "g": 120,
+        "b": 50,
+        "hex": "6E7832"
+    },
+    {
+        "number": "DB-358",
+        "description": "Matte Opaque Brown",
+        "r": 130,
+        "g": 80,
+        "b": 50,
+        "hex": "825032"
+    },
+    {
+        "number": "DB-359",
+        "description": "Matte Opaque Gray",
+        "r": 110,
+        "g": 110,
+        "b": 110,
+        "hex": "6E6E6E"
+    },
+    {
+        "number": "DB-360",
+        "description": "Matte Opaque Cream",
+        "r": 245,
+        "g": 230,
+        "b": 190,
+        "hex": "F5E6BE"
+    },
+    {
+        "number": "DB-361",
+        "description": "Matte Opaque Yellow",
+        "r": 255,
+        "g": 200,
+        "b": 60,
+        "hex": "FFC83C"
+    },
+    {
+        "number": "DB-362",
+        "description": "Matte Opaque Orange",
+        "r": 240,
+        "g": 130,
+        "b": 50,
+        "hex": "F08232"
+    },
+    {
+        "number": "DB-363",
+        "description": "Matte Opaque Dark Red",
+        "r": 140,
+        "g": 30,
+        "b": 40,
+        "hex": "8C1E28"
+    },
+    {
+        "number": "DB-653",
+        "description": "Duracoat Opaque Dyed Orchid",
+        "r": 200,
+        "g": 100,
+        "b": 180,
+        "hex": "C864B4"
+    },
+    {
+        "number": "DB-654",
+        "description": "Duracoat Opaque Dyed Fuchsia",
+        "r": 190,
+        "g": 50,
+        "b": 120,
+        "hex": "BE3278"
+    },
+    {
+        "number": "DB-655",
+        "description": "Duracoat Opaque Dyed Berry",
+        "r": 140,
+        "g": 40,
+        "b": 90,
+        "hex": "8C285A"
+    },
+    {
+        "number": "DB-1831",
+        "description": "Galvanized Duracoat Silver",
+        "r": 200,
+        "g": 200,
+        "b": 210,
+        "hex": "C8C8D2"
+    },
+    {
+        "number": "DB-1832",
+        "description": "Galvanized Duracoat Gold",
+        "r": 220,
+        "g": 180,
+        "b": 60,
+        "hex": "DCB43C"
+    },
+    {
+        "number": "DB-2001",
+        "description": "Duracoat Opaque White",
+        "r": 245,
+        "g": 245,
+        "b": 245,
+        "hex": "F5F5F5"
+    },
+    {
+        "number": "DB-2101",
+        "description": "Duracoat Opaque Black",
+        "r": 30,
+        "g": 30,
+        "b": 30,
+        "hex": "1E1E1E"
+    },
+    {
+        "number": "DB-2111",
+        "description": "Duracoat Opaque Cream",
+        "r": 255,
+        "g": 240,
+        "b": 200,
+        "hex": "FFF0C8"
+    },
+    {
+        "number": "DB-2135",
+        "description": "Duracoat Opaque Dyed Juniper Berry",
+        "r": 80,
+        "g": 50,
+        "b": 100,
+        "hex": "503264"
+    },
+    {
+        "number": "DB-2192",
+        "description": "Duracoat Silver Lined Dyed Montana",
+        "r": 50,
+        "g": 90,
+        "b": 140,
+        "hex": "325A8C"
+    },
+    {
+        "number": "DB-2292",
+        "description": "Opaque Glazed Frosted Grape",
+        "r": 140,
+        "g": 80,
+        "b": 140,
+        "hex": "8C508C"
+    },
+    {
+        "number": "DB-2317",
+        "description": "Opaque Matte Glazed Ab Bayberry",
+        "r": 90,
+        "g": 110,
+        "b": 90,
+        "hex": "5A6E5A"
+    },
+    {
+        "number": "DB-243",
+        "description": "Ceylon Blue",
+        "r": 140,
+        "g": 180,
+        "b": 220,
+        "hex": "8CB4DC"
+    },
+    {
+        "number": "DB-2516",
+        "description": "Duracoat Galvanized Deep Aqua Blue",
+        "r": 50,
+        "g": 140,
+        "b": 180,
+        "hex": "328CB4"
+    },
+    {
+        "number": "DB-056",
+        "description": "Silver Lined Light Topaz",
+        "r": 255,
+        "g": 220,
+        "b": 120,
+        "hex": "FFDC78"
+    },
+    {
+        "number": "DB-057",
+        "description": "Silver Lined Light Amethyst",
+        "r": 180,
+        "g": 140,
+        "b": 220,
+        "hex": "B48CDC"
+    },
+    {
+        "number": "DB-058",
+        "description": "Silver Lined Light Emerald",
+        "r": 80,
+        "g": 200,
+        "b": 140,
+        "hex": "50C88C"
+    },
+    {
+        "number": "DB-059",
+        "description": "Silver Lined Light Sapphire",
+        "r": 80,
+        "g": 140,
+        "b": 220,
+        "hex": "508CDC"
+    },
+    {
+        "number": "DB-060",
+        "description": "Silver Lined Dark Topaz",
+        "r": 200,
+        "g": 160,
+        "b": 60,
+        "hex": "C8A03C"
+    },
+    {
+        "number": "DB-064",
+        "description": "Silver Lined Dark Emerald",
+        "r": 30,
+        "g": 120,
+        "b": 80,
+        "hex": "1E7850"
+    },
+    {
+        "number": "DB-065",
+        "description": "Silver Lined Dark Sapphire",
+        "r": 30,
+        "g": 60,
+        "b": 140,
+        "hex": "1E3C8C"
+    },
+    {
+        "number": "DB-066",
+        "description": "Silver Lined Dark Amethyst",
+        "r": 100,
+        "g": 60,
+        "b": 140,
+        "hex": "643C8C"
+    },
+    {
+        "number": "DB-067",
+        "description": "Silver Lined Dark Ruby",
+        "r": 160,
+        "g": 30,
+        "b": 50,
+        "hex": "A01E32"
+    },
+    {
+        "number": "DB-068",
+        "description": "Silver Lined Dark Aqua",
+        "r": 60,
+        "g": 180,
+        "b": 180,
+        "hex": "3CB4B4"
+    },
+    {
+        "number": "DB-069",
+        "description": "Silver Lined Light Peach",
+        "r": 255,
+        "g": 200,
+        "b": 160,
+        "hex": "FFC8A0"
+    },
+    {
+        "number": "DB-071",
+        "description": "Light Topaz AB",
+        "r": 255,
+        "g": 210,
+        "b": 120,
+        "hex": "FFD278"
+    },
+    {
+        "number": "DB-072",
+        "description": "Light Amethyst AB",
+        "r": 200,
+        "g": 160,
+        "b": 230,
+        "hex": "C8A0E6"
+    },
+    {
+        "number": "DB-073",
+        "description": "Light Emerald AB",
+        "r": 100,
+        "g": 210,
+        "b": 160,
+        "hex": "64D2A0"
+    },
+    {
+        "number": "DB-074",
+        "description": "Light Sapphire AB",
+        "r": 100,
+        "g": 160,
+        "b": 230,
+        "hex": "64A0E6"
+    },
+    {
+        "number": "DB-075",
+        "description": "Dark Topaz AB",
+        "r": 220,
+        "g": 170,
+        "b": 80,
+        "hex": "DCAA50"
+    },
+    {
+        "number": "DB-076",
+        "description": "Dark Amethyst AB",
+        "r": 120,
+        "g": 70,
+        "b": 160,
+        "hex": "7846A0"
+    },
+    {
+        "number": "DB-077",
+        "description": "Dark Ruby AB",
+        "r": 180,
+        "g": 50,
+        "b": 70,
+        "hex": "B43246"
+    },
+    {
+        "number": "DB-079",
+        "description": "Turquoise Green AB",
+        "r": 90,
+        "g": 210,
+        "b": 190,
+        "hex": "5AD2BE"
+    },
+    {
+        "number": "DB-081",
+        "description": "Pale Blue AB",
+        "r": 180,
+        "g": 210,
+        "b": 240,
+        "hex": "B4D2F0"
+    },
+    {
+        "number": "DB-082",
+        "description": "Pale Pink AB",
+        "r": 255,
+        "g": 190,
+        "b": 210,
+        "hex": "FFBED2"
+    },
+    {
+        "number": "DB-083",
+        "description": "Pale Green AB",
+        "r": 160,
+        "g": 220,
+        "b": 160,
+        "hex": "A0DCA0"
+    },
+    {
+        "number": "DB-084",
+        "description": "Champagne AB",
+        "r": 240,
+        "g": 200,
+        "b": 160,
+        "hex": "F0C8A0"
+    },
+    {
+        "number": "DB-086",
+        "description": "Light Apricot",
+        "r": 255,
+        "g": 190,
+        "b": 150,
+        "hex": "FFBE96"
+    },
+    {
+        "number": "DB-087",
+        "description": "Light Coral",
+        "r": 255,
+        "g": 130,
+        "b": 110,
+        "hex": "FF826E"
+    },
+    {
+        "number": "DB-088",
+        "description": "Light Rose",
+        "r": 255,
+        "g": 160,
+        "b": 180,
+        "hex": "FFA0B4"
+    },
+    {
+        "number": "DB-089",
+        "description": "Light Lavender",
+        "r": 220,
+        "g": 180,
+        "b": 230,
+        "hex": "DCB4E6"
+    },
+    {
+        "number": "DB-090",
+        "description": "Light Sky Blue",
+        "r": 140,
+        "g": 200,
+        "b": 240,
+        "hex": "8CC8F0"
+    },
+    {
+        "number": "DB-091",
+        "description": "Light Mint Green",
+        "r": 160,
+        "g": 230,
+        "b": 180,
+        "hex": "A0E6B4"
+    },
+    {
+        "number": "DB-092",
+        "description": "Light Turquoise",
+        "r": 100,
+        "g": 210,
+        "b": 210,
+        "hex": "64D2D2"
+    },
+    {
+        "number": "DB-093",
+        "description": "Medium Topaz",
+        "r": 240,
+        "g": 180,
+        "b": 60,
+        "hex": "F0B43C"
+    },
+    {
+        "number": "DB-094",
+        "description": "Medium Amethyst",
+        "r": 140,
+        "g": 80,
+        "b": 180,
+        "hex": "8C50B4"
+    },
+    {
+        "number": "DB-095",
+        "description": "Medium Ruby",
+        "r": 180,
+        "g": 40,
+        "b": 60,
+        "hex": "B4283C"
+    },
+    {
+        "number": "DB-096",
+        "description": "Medium Sapphire",
+        "r": 60,
+        "g": 100,
+        "b": 180,
+        "hex": "3C64B4"
+    },
+    {
+        "number": "DB-097",
+        "description": "Medium Emerald",
+        "r": 40,
+        "g": 150,
+        "b": 100,
+        "hex": "289664"
+    },
+    {
+        "number": "DB-098",
+        "description": "Medium Aquamarine",
+        "r": 80,
+        "g": 190,
+        "b": 190,
+        "hex": "50BEBE"
+    },
+    {
+        "number": "DB-099",
+        "description": "Medium Violet",
+        "r": 160,
+        "g": 100,
+        "b": 200,
+        "hex": "A064C8"
+    },
+    {
+        "number": "DB-101",
+        "description": "Transparent Light Amethyst",
+        "r": 200,
+        "g": 160,
+        "b": 220,
+        "hex": "C8A0DC"
+    },
+    {
+        "number": "DB-102",
+        "description": "Transparent Light Sapphire",
+        "r": 100,
+        "g": 160,
+        "b": 220,
+        "hex": "64A0DC"
+    },
+    {
+        "number": "DB-103",
+        "description": "Transparent Light Emerald",
+        "r": 100,
+        "g": 200,
+        "b": 140,
+        "hex": "64C88C"
+    },
+    {
+        "number": "DB-104",
+        "description": "Transparent Light Topaz",
+        "r": 255,
+        "g": 210,
+        "b": 140,
+        "hex": "FFD28C"
+    },
+    {
+        "number": "DB-106",
+        "description": "Transparent Dark Amethyst",
+        "r": 100,
+        "g": 60,
+        "b": 140,
+        "hex": "643C8C"
+    },
+    {
+        "number": "DB-107",
+        "description": "Transparent Dark Sapphire",
+        "r": 40,
+        "g": 70,
+        "b": 140,
+        "hex": "28468C"
+    },
+    {
+        "number": "DB-108",
+        "description": "Transparent Dark Emerald",
+        "r": 30,
+        "g": 110,
+        "b": 70,
+        "hex": "1E6E46"
+    },
+    {
+        "number": "DB-109",
+        "description": "Transparent Dark Topaz",
+        "r": 200,
+        "g": 150,
+        "b": 70,
+        "hex": "C89646"
+    },
+    {
+        "number": "DB-111",
+        "description": "Transparent Light Ruby",
+        "r": 220,
+        "g": 80,
+        "b": 90,
+        "hex": "DC505A"
+    },
+    {
+        "number": "DB-112",
+        "description": "Transparent Light Rose",
+        "r": 255,
+        "g": 170,
+        "b": 190,
+        "hex": "FFAAC0"
+    },
+    {
+        "number": "DB-113",
+        "description": "Transparent Light Peach",
+        "r": 255,
+        "g": 200,
+        "b": 170,
+        "hex": "FFC8AA"
+    },
+    {
+        "number": "DB-114",
+        "description": "Transparent Light Aquamarine",
+        "r": 140,
+        "g": 220,
+        "b": 220,
+        "hex": "8CDCDC"
+    },
+    {
+        "number": "DB-115",
+        "description": "Transparent Light Violet",
+        "r": 180,
+        "g": 140,
+        "b": 220,
+        "hex": "B48CDC"
+    },
+    {
+        "number": "DB-116",
+        "description": "Transparent Medium Amethyst",
+        "r": 140,
+        "g": 90,
+        "b": 180,
+        "hex": "8C5AB4"
+    },
+    {
+        "number": "DB-117",
+        "description": "Transparent Medium Sapphire",
+        "r": 60,
+        "g": 110,
+        "b": 190,
+        "hex": "3C6EBE"
+    },
+    {
+        "number": "DB-118",
+        "description": "Transparent Medium Emerald",
+        "r": 50,
+        "g": 160,
+        "b": 110,
+        "hex": "32A06E"
+    },
+    {
+        "number": "DB-119",
+        "description": "Transparent Medium Topaz",
+        "r": 240,
+        "g": 180,
+        "b": 90,
+        "hex": "F0B45A"
+    },
+    {
+        "number": "DB-120",
+        "description": "Transparent Medium Ruby",
+        "r": 200,
+        "g": 60,
+        "b": 80,
+        "hex": "C83C50"
+    },
+    {
+        "number": "DB-121",
+        "description": "Transparent Garnet",
+        "r": 140,
+        "g": 30,
+        "b": 50,
+        "hex": "8C1E32"
+    },
+    {
+        "number": "DB-122",
+        "description": "Transparent Siam",
+        "r": 180,
+        "g": 20,
+        "b": 40,
+        "hex": "B41428"
+    },
+    {
+        "number": "DB-123",
+        "description": "Transparent Light Siam",
+        "r": 220,
+        "g": 50,
+        "b": 60,
+        "hex": "DC323C"
+    },
+    {
+        "number": "DB-124",
+        "description": "Transparent Light Garnet",
+        "r": 170,
+        "g": 40,
+        "b": 60,
+        "hex": "AA2840"
+    },
+    {
+        "number": "DB-125",
+        "description": "Transparent Dark Siam",
+        "r": 140,
+        "g": 20,
+        "b": 30,
+        "hex": "8C141E"
+    },
+    {
+        "number": "DB-126",
+        "description": "Transparent Fuchsia",
+        "r": 200,
+        "g": 40,
+        "b": 110,
+        "hex": "C8286E"
+    },
+    {
+        "number": "DB-127",
+        "description": "Transparent Light Fuchsia",
+        "r": 230,
+        "g": 80,
+        "b": 150,
+        "hex": "E65096"
+    },
+    {
+        "number": "DB-128",
+        "description": "Transparent Violet",
+        "r": 140,
+        "g": 70,
+        "b": 160,
+        "hex": "8C46A0"
+    },
+    {
+        "number": "DB-129",
+        "description": "Transparent Light Violet",
+        "r": 190,
+        "g": 130,
+        "b": 210,
+        "hex": "BE82D2"
+    },
+    {
+        "number": "DB-130",
+        "description": "Transparent Blue Violet",
+        "r": 100,
+        "g": 80,
+        "b": 170,
+        "hex": "6450AA"
+    },
+    {
+        "number": "DB-131",
+        "description": "Transparent Cobalt",
+        "r": 40,
+        "g": 70,
+        "b": 150,
+        "hex": "284696"
+    },
+    {
+        "number": "DB-132",
+        "description": "Transparent Navy Blue",
+        "r": 30,
+        "g": 50,
+        "b": 110,
+        "hex": "1E326E"
+    },
+    {
+        "number": "DB-133",
+        "description": "Transparent Sky Blue",
+        "r": 120,
+        "g": 180,
+        "b": 230,
+        "hex": "78B4E6"
+    },
+    {
+        "number": "DB-134",
+        "description": "Transparent Light Sky Blue",
+        "r": 160,
+        "g": 210,
+        "b": 240,
+        "hex": "A0D2F0"
+    },
+    {
+        "number": "DB-135",
+        "description": "Transparent Turquoise",
+        "r": 70,
+        "g": 190,
+        "b": 190,
+        "hex": "46BEBE"
+    },
+    {
+        "number": "DB-136",
+        "description": "Transparent Light Turquoise",
+        "r": 120,
+        "g": 220,
+        "b": 220,
+        "hex": "78DCDC"
+    },
+    {
+        "number": "DB-137",
+        "description": "Transparent Aquamarine",
+        "r": 100,
+        "g": 210,
+        "b": 200,
+        "hex": "64D2C8"
+    },
+    {
+        "number": "DB-138",
+        "description": "Transparent Light Aquamarine",
+        "r": 160,
+        "g": 230,
+        "b": 220,
+        "hex": "A0E6DC"
+    },
+    {
+        "number": "DB-139",
+        "description": "Transparent Olive Green",
+        "r": 110,
+        "g": 130,
+        "b": 60,
+        "hex": "6E823C"
+    },
+    {
+        "number": "DB-140",
+        "description": "Transparent Dark Olive",
+        "r": 80,
+        "g": 100,
+        "b": 40,
+        "hex": "506428"
+    },
+    {
+        "number": "DB-141",
+        "description": "Transparent Grass Green",
+        "r": 80,
+        "g": 170,
+        "b": 80,
+        "hex": "50AA50"
+    },
+    {
+        "number": "DB-142",
+        "description": "Transparent Light Grass Green",
+        "r": 140,
+        "g": 210,
+        "b": 120,
+        "hex": "8CD278"
+    },
+    {
+        "number": "DB-143",
+        "description": "Transparent Emerald",
+        "r": 40,
+        "g": 140,
+        "b": 90,
+        "hex": "288C5A"
+    },
+    {
+        "number": "DB-144",
+        "description": "Transparent Light Emerald",
+        "r": 90,
+        "g": 190,
+        "b": 130,
+        "hex": "5ABE82"
+    },
+    {
+        "number": "DB-145",
+        "description": "Transparent Forest Green",
+        "r": 40,
+        "g": 110,
+        "b": 60,
+        "hex": "286E3C"
+    },
+    {
+        "number": "DB-146",
+        "description": "Transparent Light Forest Green",
+        "r": 80,
+        "g": 160,
+        "b": 100,
+        "hex": "50A064"
+    },
+    {
+        "number": "DB-147",
+        "description": "Transparent Brown",
+        "r": 140,
+        "g": 90,
+        "b": 50,
+        "hex": "8C5A32"
+    },
+    {
+        "number": "DB-148",
+        "description": "Transparent Light Brown",
+        "r": 190,
+        "g": 140,
+        "b": 90,
+        "hex": "BE8C5A"
+    },
+    {
+        "number": "DB-149",
+        "description": "Transparent Dark Brown",
+        "r": 100,
+        "g": 60,
+        "b": 30,
+        "hex": "643C1E"
+    },
+    {
+        "number": "DB-151",
+        "description": "Transparent Light Cobalt",
+        "r": 70,
+        "g": 110,
+        "b": 190,
+        "hex": "466EBE"
+    },
+    {
+        "number": "DB-152",
+        "description": "Transparent Medium Cobalt",
+        "r": 50,
+        "g": 80,
+        "b": 160,
+        "hex": "3250A0"
+    },
+    {
+        "number": "DB-153",
+        "description": "Transparent Dark Cobalt",
+        "r": 30,
+        "g": 50,
+        "b": 120,
+        "hex": "1E3278"
+    },
+    {
+        "number": "DB-154",
+        "description": "Transparent Royal Blue",
+        "r": 40,
+        "g": 70,
+        "b": 150,
+        "hex": "284696"
+    },
+    {
+        "number": "DB-155",
+        "description": "Transparent Light Royal Blue",
+        "r": 80,
+        "g": 120,
+        "b": 200,
+        "hex": "5078C8"
+    },
+    {
+        "number": "DB-156",
+        "description": "Transparent Deep Blue",
+        "r": 30,
+        "g": 50,
+        "b": 110,
+        "hex": "1E326E"
+    },
+    {
+        "number": "DB-157",
+        "description": "Transparent Light Azure",
+        "r": 120,
+        "g": 180,
+        "b": 230,
+        "hex": "78B4E6"
+    },
+    {
+        "number": "DB-158",
+        "description": "Transparent Azure",
+        "r": 80,
+        "g": 150,
+        "b": 210,
+        "hex": "5096D2"
+    },
+    {
+        "number": "DB-159",
+        "description": "Transparent Caribbean Blue",
+        "r": 60,
+        "g": 180,
+        "b": 200,
+        "hex": "3CB4C8"
+    },
+    {
+        "number": "DB-160",
+        "description": "Transparent Light Caribbean",
+        "r": 100,
+        "g": 210,
+        "b": 220,
+        "hex": "64D2DC"
+    },
+    {
+        "number": "DB-161",
+        "description": "Transparent Teal",
+        "r": 50,
+        "g": 140,
+        "b": 140,
+        "hex": "328C8C"
+    },
+    {
+        "number": "DB-162",
+        "description": "Transparent Light Teal",
+        "r": 90,
+        "g": 180,
+        "b": 180,
+        "hex": "5AB4B4"
+    },
+    {
+        "number": "DB-163",
+        "description": "Transparent Sea Green",
+        "r": 60,
+        "g": 160,
+        "b": 140,
+        "hex": "3CA08C"
+    },
+    {
+        "number": "DB-164",
+        "description": "Transparent Light Sea Green",
+        "r": 110,
+        "g": 200,
+        "b": 170,
+        "hex": "6EC8AA"
+    },
+    {
+        "number": "DB-165",
+        "description": "Transparent Mint Green",
+        "r": 140,
+        "g": 220,
+        "b": 180,
+        "hex": "8CDCB4"
+    },
+    {
+        "number": "DB-166",
+        "description": "Transparent Pale Mint",
+        "r": 180,
+        "g": 240,
+        "b": 210,
+        "hex": "B4F0D2"
+    },
+    {
+        "number": "DB-167",
+        "description": "Transparent Chartreuse",
+        "r": 180,
+        "g": 220,
+        "b": 80,
+        "hex": "B4DC50"
+    },
+    {
+        "number": "DB-168",
+        "description": "Transparent Light Chartreuse",
+        "r": 210,
+        "g": 240,
+        "b": 110,
+        "hex": "D2F06E"
+    },
+    {
+        "number": "DB-169",
+        "description": "Transparent Lime Green",
+        "r": 140,
+        "g": 200,
+        "b": 60,
+        "hex": "8CC83C"
+    },
+    {
+        "number": "DB-170",
+        "description": "Transparent Light Lime",
+        "r": 180,
+        "g": 230,
+        "b": 90,
+        "hex": "B4E65A"
+    },
+    {
+        "number": "DB-171",
+        "description": "Transparent Apple Green",
+        "r": 120,
+        "g": 190,
+        "b": 80,
+        "hex": "78BE50"
+    },
+    {
+        "number": "DB-172",
+        "description": "Transparent Light Apple Green",
+        "r": 160,
+        "g": 220,
+        "b": 110,
+        "hex": "A0DC6E"
+    },
+    {
+        "number": "DB-173",
+        "description": "Transparent Olive",
+        "r": 110,
+        "g": 130,
+        "b": 50,
+        "hex": "6E8232"
+    },
+    {
+        "number": "DB-174",
+        "description": "Transparent Khaki",
+        "r": 140,
+        "g": 140,
+        "b": 80,
+        "hex": "8C8C50"
+    },
+    {
+        "number": "DB-175",
+        "description": "Transparent Light Khaki",
+        "r": 190,
+        "g": 180,
+        "b": 110,
+        "hex": "BEB46E"
+    },
+    {
+        "number": "DB-176",
+        "description": "Transparent Beige",
+        "r": 220,
+        "g": 190,
+        "b": 140,
+        "hex": "DCBE8C"
+    },
+    {
+        "number": "DB-177",
+        "description": "Transparent Light Beige",
+        "r": 240,
+        "g": 210,
+        "b": 170,
+        "hex": "F0D2AA"
+    },
+    {
+        "number": "DB-178",
+        "description": "Transparent Taupe",
+        "r": 160,
+        "g": 140,
+        "b": 110,
+        "hex": "A08C6E"
+    },
+    {
+        "number": "DB-179",
+        "description": "Transparent Light Taupe",
+        "r": 200,
+        "g": 180,
+        "b": 150,
+        "hex": "C8B496"
+    },
+    {
+        "number": "DB-180",
+        "description": "Transparent Gray",
+        "r": 140,
+        "g": 140,
+        "b": 140,
+        "hex": "8C8C8C"
+    },
+    {
+        "number": "DB-181",
+        "description": "Transparent Light Gray",
+        "r": 190,
+        "g": 190,
+        "b": 190,
+        "hex": "BEBEBE"
+    },
+    {
+        "number": "DB-182",
+        "description": "Transparent Dark Gray",
+        "r": 90,
+        "g": 90,
+        "b": 90,
+        "hex": "5A5A5A"
+    },
+    {
+        "number": "DB-183",
+        "description": "Transparent Black",
+        "r": 40,
+        "g": 40,
+        "b": 40,
+        "hex": "282828"
+    },
+    {
+        "number": "DB-184",
+        "description": "Transparent Smoke Gray",
+        "r": 110,
+        "g": 110,
+        "b": 120,
+        "hex": "6E6E78"
+    },
+    {
+        "number": "DB-185",
+        "description": "Transparent Pale Smoke",
+        "r": 180,
+        "g": 180,
+        "b": 190,
+        "hex": "B4B4BE"
+    },
+    {
+        "number": "DB-186",
+        "description": "Transparent Frosted Crystal",
+        "r": 230,
+        "g": 235,
+        "b": 240,
+        "hex": "E6EBF0"
+    },
+    {
+        "number": "DB-187",
+        "description": "Transparent Frosted White",
+        "r": 245,
+        "g": 245,
+        "b": 245,
+        "hex": "F5F5F5"
+    },
+    {
+        "number": "DB-188",
+        "description": "Transparent Frosted Cream",
+        "r": 255,
+        "g": 245,
+        "b": 220,
+        "hex": "FFF5DC"
+    },
+    {
+        "number": "DB-189",
+        "description": "Transparent Frosted Yellow",
+        "r": 255,
+        "g": 230,
+        "b": 140,
+        "hex": "FFE68C"
+    },
+    {
+        "number": "DB-190",
+        "description": "Transparent Frosted Peach",
+        "r": 255,
+        "g": 200,
+        "b": 160,
+        "hex": "FFC8A0"
+    },
+    {
+        "number": "DB-191",
+        "description": "Transparent Frosted Pink",
+        "r": 255,
+        "g": 190,
+        "b": 200,
+        "hex": "FFBEC8"
+    },
+    {
+        "number": "DB-192",
+        "description": "Transparent Frosted Lavender",
+        "r": 220,
+        "g": 190,
+        "b": 230,
+        "hex": "DCBEE6"
+    },
+    {
+        "number": "DB-193",
+        "description": "Transparent Frosted Blue",
+        "r": 180,
+        "g": 210,
+        "b": 240,
+        "hex": "B4D2F0"
+    },
+    {
+        "number": "DB-194",
+        "description": "Transparent Frosted Green",
+        "r": 160,
+        "g": 220,
+        "b": 180,
+        "hex": "A0DCB4"
+    },
+    {
+        "number": "DB-195",
+        "description": "Transparent Frosted Turquoise",
+        "r": 140,
+        "g": 220,
+        "b": 210,
+        "hex": "8CDCD2"
+    },
+    {
+        "number": "DB-196",
+        "description": "Transparent Frosted Aqua",
+        "r": 160,
+        "g": 230,
+        "b": 220,
+        "hex": "A0E6DC"
+    },
+    {
+        "number": "DB-197",
+        "description": "Ceylon White",
+        "r": 240,
+        "g": 240,
+        "b": 240,
+        "hex": "F0F0F0"
+    },
+    {
+        "number": "DB-198",
+        "description": "Ceylon Cream",
+        "r": 255,
+        "g": 240,
+        "b": 200,
+        "hex": "FFF0C8"
+    },
+    {
+        "number": "DB-199",
+        "description": "Ceylon Pale Yellow",
+        "r": 255,
+        "g": 235,
+        "b": 160,
+        "hex": "FFEB9E"
+    },
+    {
+        "number": "DB-200",
+        "description": "Ceylon Opal White",
+        "r": 245,
+        "g": 245,
+        "b": 255,
+        "hex": "F5F5FF"
+    },
+    {
+        "number": "DB-201",
+        "description": "Ceylon Light Aqua",
+        "r": 200,
+        "g": 235,
+        "b": 235,
+        "hex": "C8EBEB"
+    },
+    {
+        "number": "DB-202",
+        "description": "Ceylon Pale Blue",
+        "r": 200,
+        "g": 220,
+        "b": 240,
+        "hex": "C8DCF0"
+    },
+    {
+        "number": "DB-203",
+        "description": "Ceylon Pale Pink",
+        "r": 255,
+        "g": 210,
+        "b": 220,
+        "hex": "FFD2DC"
+    },
+    {
+        "number": "DB-204",
+        "description": "Ceylon Pale Green",
+        "r": 200,
+        "g": 230,
+        "b": 190,
+        "hex": "C8E6BE"
+    },
+    {
+        "number": "DB-205",
+        "description": "Ceylon Pale Lavender",
+        "r": 220,
+        "g": 200,
+        "b": 240,
+        "hex": "DCC8F0"
+    },
+    {
+        "number": "DB-206",
+        "description": "Ceylon Light Topaz",
+        "r": 255,
+        "g": 220,
+        "b": 140,
+        "hex": "FFDC8C"
+    },
+    {
+        "number": "DB-207",
+        "description": "Ceylon Light Amethyst",
+        "r": 210,
+        "g": 180,
+        "b": 230,
+        "hex": "D2B4E6"
+    },
+    {
+        "number": "DB-208",
+        "description": "Ceylon Light Sapphire",
+        "r": 160,
+        "g": 190,
+        "b": 240,
+        "hex": "A0BEF0"
+    },
+    {
+        "number": "DB-209",
+        "description": "Ceylon Light Emerald",
+        "r": 140,
+        "g": 220,
+        "b": 160,
+        "hex": "8CDCA0"
+    },
+    {
+        "number": "DB-210",
+        "description": "Opaque White",
+        "r": 250,
+        "g": 250,
+        "b": 250,
+        "hex": "FAFAFA"
+    },
+    {
+        "number": "DB-211",
+        "description": "Opaque Cream",
+        "r": 255,
+        "g": 245,
+        "b": 210,
+        "hex": "FFF5D2"
+    },
+    {
+        "number": "DB-212",
+        "description": "Opaque Pale Yellow",
+        "r": 255,
+        "g": 235,
+        "b": 140,
+        "hex": "FFEB8C"
+    },
+    {
+        "number": "DB-213",
+        "description": "Opaque Bright Yellow",
+        "r": 255,
+        "g": 200,
+        "b": 20,
+        "hex": "FFC814"
+    },
+    {
+        "number": "DB-214",
+        "description": "Opaque Orange",
+        "r": 255,
+        "g": 140,
+        "b": 40,
+        "hex": "FF8C28"
+    },
+    {
+        "number": "DB-215",
+        "description": "Opaque Red",
+        "r": 200,
+        "g": 30,
+        "b": 40,
+        "hex": "C81E28"
+    },
+    {
+        "number": "DB-216",
+        "description": "Opaque Dark Red",
+        "r": 140,
+        "g": 20,
+        "b": 30,
+        "hex": "8C141E"
+    },
+    {
+        "number": "DB-217",
+        "description": "Opaque Bright Pink",
+        "r": 255,
+        "g": 100,
+        "b": 160,
+        "hex": "FF64A0"
+    },
+    {
+        "number": "DB-218",
+        "description": "Opaque Fuchsia",
+        "r": 200,
+        "g": 40,
+        "b": 110,
+        "hex": "C8286E"
+    },
+    {
+        "number": "DB-219",
+        "description": "Opaque Purple",
+        "r": 120,
+        "g": 40,
+        "b": 140,
+        "hex": "78288C"
+    },
+    {
+        "number": "DB-220",
+        "description": "Opaque Navy Blue",
+        "r": 30,
+        "g": 50,
+        "b": 110,
+        "hex": "1E326E"
+    },
+    {
+        "number": "DB-221",
+        "description": "Opaque Cobalt Blue",
+        "r": 40,
+        "g": 80,
+        "b": 170,
+        "hex": "2850AA"
+    },
+    {
+        "number": "DB-222",
+        "description": "Opaque Turquoise",
+        "r": 60,
+        "g": 180,
+        "b": 190,
+        "hex": "3CB4BE"
+    },
+    {
+        "number": "DB-223",
+        "description": "Opaque Emerald Green",
+        "r": 30,
+        "g": 140,
+        "b": 90,
+        "hex": "1E8C5A"
+    },
+    {
+        "number": "DB-224",
+        "description": "Opaque Olive Green",
+        "r": 110,
+        "g": 120,
+        "b": 50,
+        "hex": "6E7832"
+    },
+    {
+        "number": "DB-225",
+        "description": "Opaque Dark Green",
+        "r": 40,
+        "g": 90,
+        "b": 50,
+        "hex": "285A32"
+    },
+    {
+        "number": "DB-226",
+        "description": "Opaque Brown",
+        "r": 140,
+        "g": 90,
+        "b": 50,
+        "hex": "8C5A32"
+    },
+    {
+        "number": "DB-227",
+        "description": "Opaque Gray",
+        "r": 120,
+        "g": 120,
+        "b": 120,
+        "hex": "787878"
+    },
+    {
+        "number": "DB-228",
+        "description": "Opaque Charcoal",
+        "r": 60,
+        "g": 60,
+        "b": 70,
+        "hex": "3C3C46"
+    },
+    {
+        "number": "DB-229",
+        "description": "Opaque Black",
+        "r": 30,
+        "g": 30,
+        "b": 30,
+        "hex": "1E1E1E"
+    },
+    {
+        "number": "DB-230",
+        "description": "Opaque Matte White",
+        "r": 245,
+        "g": 245,
+        "b": 245,
+        "hex": "F5F5F5"
+    },
+    {
+        "number": "DB-231",
+        "description": "Opaque Matte Cream",
+        "r": 255,
+        "g": 240,
+        "b": 200,
+        "hex": "FFF0C8"
+    },
+    {
+        "number": "DB-232",
+        "description": "Opaque Matte Pale Yellow",
+        "r": 255,
+        "g": 230,
+        "b": 150,
+        "hex": "FFE696"
+    },
+    {
+        "number": "DB-233",
+        "description": "Opaque Matte Yellow",
+        "r": 255,
+        "g": 190,
+        "b": 40,
+        "hex": "FFBE28"
+    },
+    {
+        "number": "DB-234",
+        "description": "Opaque Matte Orange",
+        "r": 255,
+        "g": 140,
+        "b": 60,
+        "hex": "FF8C3C"
+    },
+    {
+        "number": "DB-235",
+        "description": "Opaque Matte Red",
+        "r": 180,
+        "g": 40,
+        "b": 50,
+        "hex": "B42832"
+    },
+    {
+        "number": "DB-236",
+        "description": "Opaque Matte Dark Red",
+        "r": 130,
+        "g": 30,
+        "b": 40,
+        "hex": "821E28"
+    },
+    {
+        "number": "DB-237",
+        "description": "Opaque Matte Pink",
+        "r": 255,
+        "g": 140,
+        "b": 170,
+        "hex": "FF8CAA"
+    },
+    {
+        "number": "DB-238",
+        "description": "Opaque Matte Fuchsia",
+        "r": 190,
+        "g": 50,
+        "b": 120,
+        "hex": "BE3278"
+    },
+    {
+        "number": "DB-239",
+        "description": "Opaque Matte Purple",
+        "r": 110,
+        "g": 50,
+        "b": 130,
+        "hex": "6E3282"
+    },
+    {
+        "number": "DB-240",
+        "description": "Opaque Matte Navy",
+        "r": 30,
+        "g": 50,
+        "b": 100,
+        "hex": "1E3264"
+    },
+    {
+        "number": "DB-241",
+        "description": "Opaque Matte Cobalt",
+        "r": 50,
+        "g": 90,
+        "b": 160,
+        "hex": "325AA0"
+    },
+    {
+        "number": "DB-242",
+        "description": "Opaque Matte Turquoise",
+        "r": 70,
+        "g": 170,
+        "b": 180,
+        "hex": "46A8B4"
+    },
+    {
+        "number": "DB-243",
+        "description": "Opaque Matte Emerald",
+        "r": 40,
+        "g": 140,
+        "b": 90,
+        "hex": "288C5A"
+    },
+    {
+        "number": "DB-244",
+        "description": "Opaque Matte Olive",
+        "r": 100,
+        "g": 120,
+        "b": 60,
+        "hex": "64783C"
+    },
+    {
+        "number": "DB-245",
+        "description": "Opaque Matte Dark Green",
+        "r": 40,
+        "g": 90,
+        "b": 60,
+        "hex": "285A3C"
+    },
+    {
+        "number": "DB-246",
+        "description": "Opaque Matte Brown",
+        "r": 130,
+        "g": 90,
+        "b": 60,
+        "hex": "825A3C"
+    },
+    {
+        "number": "DB-247",
+        "description": "Opaque Matte Gray",
+        "r": 110,
+        "g": 110,
+        "b": 110,
+        "hex": "6E6E6E"
+    },
+    {
+        "number": "DB-248",
+        "description": "Opaque Matte Black",
+        "r": 30,
+        "g": 30,
+        "b": 30,
+        "hex": "1E1E1E"
+    },
+    {
+        "number": "DB-249",
+        "description": "Matte Opaque Cream",
+        "r": 255,
+        "g": 240,
+        "b": 200,
+        "hex": "FFF0C8"
+    },
+    {
+        "number": "DB-250",
+        "description": "Matte Opaque Pale Yellow",
+        "r": 255,
+        "g": 235,
+        "b": 150,
+        "hex": "FFEB96"
+    },
+    {
+        "number": "DB-251",
+        "description": "Matte Opaque Yellow",
+        "r": 255,
+        "g": 200,
+        "b": 50,
+        "hex": "FFC832"
+    },
+    {
+        "number": "DB-252",
+        "description": "Matte Opaque Orange",
+        "r": 255,
+        "g": 150,
+        "b": 60,
+        "hex": "FF963C"
+    },
+    {
+        "number": "DB-253",
+        "description": "Matte Opaque Coral",
+        "r": 255,
+        "g": 120,
+        "b": 90,
+        "hex": "FF785A"
+    },
+    {
+        "number": "DB-254",
+        "description": "Matte Opaque Red",
+        "r": 190,
+        "g": 50,
+        "b": 60,
+        "hex": "BE323C"
+    },
+    {
+        "number": "DB-255",
+        "description": "Matte Opaque Dark Red",
+        "r": 140,
+        "g": 30,
+        "b": 40,
+        "hex": "8C1E28"
+    },
+    {
+        "number": "DB-256",
+        "description": "Matte Opaque Pink",
+        "r": 255,
+        "g": 150,
+        "b": 180,
+        "hex": "FF96B4"
+    },
+    {
+        "number": "DB-257",
+        "description": "Matte Opaque Bright Pink",
+        "r": 255,
+        "g": 100,
+        "b": 150,
+        "hex": "FF6496"
+    },
+    {
+        "number": "DB-258",
+        "description": "Matte Opaque Fuchsia",
+        "r": 190,
+        "g": 50,
+        "b": 120,
+        "hex": "BE3278"
+    },
+    {
+        "number": "DB-259",
+        "description": "Matte Opaque Purple",
+        "r": 120,
+        "g": 50,
+        "b": 140,
+        "hex": "78328C"
+    },
+    {
+        "number": "DB-260",
+        "description": "Matte Opaque Violet",
+        "r": 140,
+        "g": 70,
+        "b": 170,
+        "hex": "8C46AA"
+    },
+    {
+        "number": "DB-261",
+        "description": "Matte Opaque Navy Blue",
+        "r": 30,
+        "g": 50,
+        "b": 100,
+        "hex": "1E3264"
+    },
+    {
+        "number": "DB-262",
+        "description": "Matte Opaque Cobalt Blue",
+        "r": 50,
+        "g": 90,
+        "b": 170,
+        "hex": "325AAA"
+    },
+    {
+        "number": "DB-263",
+        "description": "Matte Opaque Sky Blue",
+        "r": 100,
+        "g": 170,
+        "b": 220,
+        "hex": "64AAD8"
+    },
+    {
+        "number": "DB-264",
+        "description": "Matte Opaque Turquoise",
+        "r": 70,
+        "g": 170,
+        "b": 180,
+        "hex": "46AAB4"
+    },
+    {
+        "number": "DB-265",
+        "description": "Matte Opaque Aqua",
+        "r": 90,
+        "g": 200,
+        "b": 200,
+        "hex": "5AC8C8"
+    },
+    {
+        "number": "DB-266",
+        "description": "Matte Opaque Emerald Green",
+        "r": 40,
+        "g": 140,
+        "b": 90,
+        "hex": "288C5A"
+    },
+    {
+        "number": "DB-267",
+        "description": "Matte Opaque Grass Green",
+        "r": 80,
+        "g": 170,
+        "b": 90,
+        "hex": "50AA5A"
+    },
+    {
+        "number": "DB-268",
+        "description": "Matte Opaque Olive Green",
+        "r": 110,
+        "g": 120,
+        "b": 60,
+        "hex": "6E783C"
+    },
+    {
+        "number": "DB-269",
+        "description": "Matte Opaque Dark Green",
+        "r": 40,
+        "g": 90,
+        "b": 60,
+        "hex": "285A3C"
+    },
+    {
+        "number": "DB-270",
+        "description": "Matte Opaque Brown",
+        "r": 140,
+        "g": 90,
+        "b": 60,
+        "hex": "8C5A3C"
+    },
+    {
+        "number": "DB-271",
+        "description": "Matte Opaque Taupe",
+        "r": 140,
+        "g": 120,
+        "b": 90,
+        "hex": "8C785A"
+    },
+    {
+        "number": "DB-272",
+        "description": "Matte Opaque Gray",
+        "r": 110,
+        "g": 110,
+        "b": 110,
+        "hex": "6E6E6E"
+    },
+    {
+        "number": "DB-273",
+        "description": "Matte Opaque Charcoal",
+        "r": 60,
+        "g": 60,
+        "b": 70,
+        "hex": "3C3C46"
+    },
+    {
+        "number": "DB-274",
+        "description": "Matte Opaque Black",
+        "r": 30,
+        "g": 30,
+        "b": 30,
+        "hex": "1E1E1E"
+    },
+    {
+        "number": "DB-275",
+        "description": "Matte Metallic Silver",
+        "r": 190,
+        "g": 190,
+        "b": 200,
+        "hex": "BEBEC8"
+    },
+    {
+        "number": "DB-276",
+        "description": "Matte Metallic Gold",
+        "r": 200,
+        "g": 170,
+        "b": 60,
+        "hex": "C8AA3C"
+    },
+    {
+        "number": "DB-277",
+        "description": "Matte Metallic Copper",
+        "r": 180,
+        "g": 100,
+        "b": 60,
+        "hex": "B4643C"
+    },
+    {
+        "number": "DB-278",
+        "description": "Matte Metallic Bronze",
+        "r": 140,
+        "g": 90,
+        "b": 50,
+        "hex": "8C5A32"
+    },
+    {
+        "number": "DB-279",
+        "description": "Matte Metallic Gunmetal",
+        "r": 80,
+        "g": 80,
+        "b": 90,
+        "hex": "50505A"
+    },
+    {
+        "number": "DB-280",
+        "description": "Duracoat Opaque White",
+        "r": 245,
+        "g": 245,
+        "b": 245,
+        "hex": "F5F5F5"
+    },
+    {
+        "number": "DB-281",
+        "description": "Duracoat Opaque Cream",
+        "r": 255,
+        "g": 240,
+        "b": 200,
+        "hex": "FFF0C8"
+    },
+    {
+        "number": "DB-282",
+        "description": "Duracoat Opaque Pale Yellow",
+        "r": 255,
+        "g": 230,
+        "b": 140,
+        "hex": "FFE68C"
+    },
+    {
+        "number": "DB-283",
+        "description": "Duracoat Opaque Yellow",
+        "r": 255,
+        "g": 200,
+        "b": 40,
+        "hex": "FFC828"
+    },
+    {
+        "number": "DB-284",
+        "description": "Duracoat Opaque Orange",
+        "r": 255,
+        "g": 140,
+        "b": 50,
+        "hex": "FF8C32"
+    },
+    {
+        "number": "DB-285",
+        "description": "Duracoat Opaque Red",
+        "r": 200,
+        "g": 40,
+        "b": 50,
+        "hex": "C82832"
+    },
+    {
+        "number": "DB-286",
+        "description": "Duracoat Opaque Pink",
+        "r": 255,
+        "g": 140,
+        "b": 170,
+        "hex": "FF8CAA"
+    },
+    {
+        "number": "DB-287",
+        "description": "Duracoat Opaque Fuchsia",
+        "r": 200,
+        "g": 50,
+        "b": 120,
+        "hex": "C83278"
+    },
+    {
+        "number": "DB-288",
+        "description": "Duracoat Opaque Purple",
+        "r": 130,
+        "g": 50,
+        "b": 140,
+        "hex": "82328C"
+    },
+    {
+        "number": "DB-289",
+        "description": "Duracoat Opaque Violet",
+        "r": 140,
+        "g": 70,
+        "b": 170,
+        "hex": "8C46AA"
+    },
+    {
+        "number": "DB-290",
+        "description": "Duracoat Opaque Navy Blue",
+        "r": 30,
+        "g": 50,
+        "b": 110,
+        "hex": "1E326E"
+    },
+    {
+        "number": "DB-291",
+        "description": "Duracoat Opaque Cobalt Blue",
+        "r": 50,
+        "g": 90,
+        "b": 170,
+        "hex": "325AAA"
+    },
+    {
+        "number": "DB-292",
+        "description": "Duracoat Opaque Sky Blue",
+        "r": 90,
+        "g": 170,
+        "b": 220,
+        "hex": "5AAADC"
+    },
+    {
+        "number": "DB-293",
+        "description": "Duracoat Opaque Turquoise",
+        "r": 70,
+        "g": 180,
+        "b": 190,
+        "hex": "46B4BE"
+    },
+    {
+        "number": "DB-294",
+        "description": "Duracoat Opaque Aqua",
+        "r": 100,
+        "g": 210,
+        "b": 210,
+        "hex": "64D2D2"
+    },
+    {
+        "number": "DB-295",
+        "description": "Duracoat Opaque Emerald Green",
+        "r": 40,
+        "g": 150,
+        "b": 100,
+        "hex": "289664"
+    },
+    {
+        "number": "DB-296",
+        "description": "Duracoat Opaque Grass Green",
+        "r": 80,
+        "g": 170,
+        "b": 90,
+        "hex": "50AA5A"
+    },
+    {
+        "number": "DB-297",
+        "description": "Duracoat Opaque Olive Green",
+        "r": 110,
+        "g": 130,
+        "b": 60,
+        "hex": "6E823C"
+    },
+    {
+        "number": "DB-298",
+        "description": "Duracoat Opaque Brown",
+        "r": 140,
+        "g": 90,
+        "b": 60,
+        "hex": "8C5A3C"
+    },
+    {
+        "number": "DB-299",
+        "description": "Duracoat Opaque Gray",
+        "r": 110,
+        "g": 110,
+        "b": 120,
+        "hex": "6E6E78"
+    },
+    {
+        "number": "DB-300",
+        "description": "Duracoat Opaque Black",
+        "r": 30,
+        "g": 30,
+        "b": 30,
+        "hex": "1E1E1E"
+    },
+    {
+        "number": "DB-301",
+        "description": "Duracoat Galvanized Silver",
+        "r": 200,
+        "g": 200,
+        "b": 210,
+        "hex": "C8C8D2"
+    },
+    {
+        "number": "DB-302",
+        "description": "Duracoat Galvanized Gold",
+        "r": 220,
+        "g": 180,
+        "b": 70,
+        "hex": "DCB446"
+    },
+    {
+        "number": "DB-303",
+        "description": "Duracoat Galvanized Copper",
+        "r": 190,
+        "g": 110,
+        "b": 70,
+        "hex": "BE6E46"
+    },
+    {
+        "number": "DB-304",
+        "description": "Duracoat Galvanized Bronze",
+        "r": 160,
+        "g": 110,
+        "b": 70,
+        "hex": "A06E46"
+    },
+    {
+        "number": "DB-305",
+        "description": "Duracoat Galvanized Gunmetal",
+        "r": 90,
+        "g": 90,
+        "b": 100,
+        "hex": "5A5A64"
+    },
+    {
+        "number": "DB-306",
+        "description": "Duracoat Opaque Dyed White",
+        "r": 245,
+        "g": 245,
+        "b": 245,
+        "hex": "F5F5F5"
+    },
+    {
+        "number": "DB-307",
+        "description": "Duracoat Opaque Dyed Cream",
+        "r": 255,
+        "g": 240,
+        "b": 200,
+        "hex": "FFF0C8"
+    },
+    {
+        "number": "DB-308",
+        "description": "Duracoat Opaque Dyed Yellow",
+        "r": 255,
+        "g": 210,
+        "b": 80,
+        "hex": "FFD250"
+    },
+    {
+        "number": "DB-309",
+        "description": "Duracoat Opaque Dyed Orange",
+        "r": 255,
+        "g": 150,
+        "b": 70,
+        "hex": "FF9646"
+    },
+    {
+        "number": "DB-310",
+        "description": "Duracoat Opaque Dyed Red",
+        "r": 200,
+        "g": 50,
+        "b": 60,
+        "hex": "C8323C"
+    },
+    {
+        "number": "DB-311",
+        "description": "Duracoat Opaque Dyed Pink",
+        "r": 255,
+        "g": 150,
+        "b": 180,
+        "hex": "FF96B4"
+    },
+    {
+        "number": "DB-312",
+        "description": "Duracoat Opaque Dyed Fuchsia",
+        "r": 200,
+        "g": 60,
+        "b": 130,
+        "hex": "C83C82"
+    },
+    {
+        "number": "DB-313",
+        "description": "Duracoat Opaque Dyed Purple",
+        "r": 130,
+        "g": 60,
+        "b": 150,
+        "hex": "823C96"
+    },
+    {
+        "number": "DB-314",
+        "description": "Duracoat Opaque Dyed Violet",
+        "r": 140,
+        "g": 80,
+        "b": 170,
+        "hex": "8C50AA"
+    },
+    {
+        "number": "DB-315",
+        "description": "Duracoat Opaque Dyed Blue",
+        "r": 60,
+        "g": 110,
+        "b": 180,
+        "hex": "3C6EB4"
+    },
+    {
+        "number": "DB-316",
+        "description": "Duracoat Opaque Dyed Turquoise",
+        "r": 80,
+        "g": 180,
+        "b": 190,
+        "hex": "50B4BE"
+    },
+    {
+        "number": "DB-317",
+        "description": "Duracoat Opaque Dyed Green",
+        "r": 60,
+        "g": 150,
+        "b": 100,
+        "hex": "3C9664"
+    },
+    {
+        "number": "DB-318",
+        "description": "Duracoat Opaque Dyed Olive",
+        "r": 110,
+        "g": 130,
+        "b": 70,
+        "hex": "6E8246"
+    },
+    {
+        "number": "DB-319",
+        "description": "Duracoat Opaque Dyed Brown",
+        "r": 140,
+        "g": 100,
+        "b": 70,
+        "hex": "8C6446"
+    },
+    {
+        "number": "DB-320",
+        "description": "Duracoat Opaque Dyed Gray",
+        "r": 110,
+        "g": 110,
+        "b": 120,
+        "hex": "6E6E78"
+    },
+    {
+        "number": "DB-321",
+        "description": "Duracoat Metallic Silver",
+        "r": 200,
+        "g": 200,
+        "b": 210,
+        "hex": "C8C8D2"
+    },
+    {
+        "number": "DB-322",
+        "description": "Duracoat Metallic Gold",
+        "r": 220,
+        "g": 180,
+        "b": 70,
+        "hex": "DCB446"
+    },
+    {
+        "number": "DB-323",
+        "description": "Duracoat Metallic Copper",
+        "r": 190,
+        "g": 120,
+        "b": 80,
+        "hex": "BE7850"
+    },
+    {
+        "number": "DB-324",
+        "description": "Duracoat Metallic Bronze",
+        "r": 160,
+        "g": 110,
+        "b": 70,
+        "hex": "A06E46"
+    },
+    {
+        "number": "DB-325",
+        "description": "Duracoat Metallic Gunmetal",
+        "r": 90,
+        "g": 90,
+        "b": 100,
+        "hex": "5A5A64"
+    },
+    {
+        "number": "DB-326",
+        "description": "Galvanized Silver",
+        "r": 200,
+        "g": 200,
+        "b": 210,
+        "hex": "C8C8D2"
+    },
+    {
+        "number": "DB-327",
+        "description": "Galvanized Gold",
+        "r": 220,
+        "g": 180,
+        "b": 60,
+        "hex": "DCB43C"
+    },
+    {
+        "number": "DB-328",
+        "description": "Galvanized Copper",
+        "r": 190,
+        "g": 110,
+        "b": 70,
+        "hex": "BE6E46"
+    },
+    {
+        "number": "DB-329",
+        "description": "Galvanized Bronze",
+        "r": 160,
+        "g": 110,
+        "b": 70,
+        "hex": "A06E46"
+    },
+    {
+        "number": "DB-330",
+        "description": "Galvanized Gunmetal",
+        "r": 90,
+        "g": 90,
+        "b": 100,
+        "hex": "5A5A64"
+    },
+    {
+        "number": "DB-331",
+        "description": "Metallic Silver",
+        "r": 190,
+        "g": 190,
+        "b": 200,
+        "hex": "BEBEC8"
+    },
+    {
+        "number": "DB-332",
+        "description": "Metallic Gold",
+        "r": 220,
+        "g": 180,
+        "b": 60,
+        "hex": "DCB43C"
+    },
+    {
+        "number": "DB-333",
+        "description": "Metallic Copper",
+        "r": 180,
+        "g": 100,
+        "b": 60,
+        "hex": "B4643C"
+    },
+    {
+        "number": "DB-334",
+        "description": "Metallic Bronze",
+        "r": 140,
+        "g": 90,
+        "b": 50,
+        "hex": "8C5A32"
+    },
+    {
+        "number": "DB-335",
+        "description": "Metallic Gunmetal",
+        "r": 80,
+        "g": 80,
+        "b": 90,
+        "hex": "50505A"
+    },
+    {
+        "number": "DB-336",
+        "description": "Metallic Dark Silver",
+        "r": 160,
+        "g": 160,
+        "b": 170,
+        "hex": "A0A0AA"
+    },
+    {
+        "number": "DB-337",
+        "description": "Metallic Dark Gold",
+        "r": 180,
+        "g": 140,
+        "b": 50,
+        "hex": "B48C32"
+    },
+    {
+        "number": "DB-338",
+        "description": "Metallic Dark Copper",
+        "r": 140,
+        "g": 80,
+        "b": 50,
+        "hex": "8C5032"
+    },
+    {
+        "number": "DB-339",
+        "description": "Metallic Dark Bronze",
+        "r": 110,
+        "g": 80,
+        "b": 50,
+        "hex": "6E5032"
+    },
+    {
+        "number": "DB-340",
+        "description": "Metallic Dark Gunmetal",
+        "r": 70,
+        "g": 70,
+        "b": 80,
+        "hex": "464650"
+    },
+    {
+        "number": "DB-341",
+        "description": "Metallic Dark Raspberry",
+        "r": 130,
+        "g": 40,
+        "b": 70,
+        "hex": "822846"
+    },
+    {
+        "number": "DB-342",
+        "description": "Metallic Dark Blue Iris",
+        "r": 40,
+        "g": 60,
+        "b": 110,
+        "hex": "283C6E"
+    },
+    {
+        "number": "DB-343",
+        "description": "Metallic Dark Purple Iris",
+        "r": 90,
+        "g": 50,
+        "b": 120,
+        "hex": "5A3278"
+    },
+    {
+        "number": "DB-344",
+        "description": "Metallic Dark Green Iris",
+        "r": 50,
+        "g": 90,
+        "b": 70,
+        "hex": "325A46"
+    },
+    {
+        "number": "DB-345",
+        "description": "Metallic Dark Olive Iris",
+        "r": 90,
+        "g": 100,
+        "b": 50,
+        "hex": "5A6432"
+    },
+    {
+        "number": "DB-346",
+        "description": "Metallic Dark Bronze Iris",
+        "r": 110,
+        "g": 80,
+        "b": 50,
+        "hex": "6E5032"
+    },
+    {
+        "number": "DB-347",
+        "description": "Metallic Dark Gold Iris",
+        "r": 180,
+        "g": 140,
+        "b": 50,
+        "hex": "B48C32"
+    },
+    {
+        "number": "DB-348",
+        "description": "Metallic Dark Silver Iris",
+        "r": 160,
+        "g": 160,
+        "b": 170,
+        "hex": "A0A0AA"
+    },
+    {
+        "number": "DB-349",
+        "description": "Metallic Hematite",
+        "r": 70,
+        "g": 70,
+        "b": 80,
+        "hex": "464650"
+    },
+    {
+        "number": "DB-350",
+        "description": "Matte Opaque Red",
+        "r": 180,
+        "g": 40,
+        "b": 50,
+        "hex": "B42832"
+    },
+    {
+        "number": "DB-351",
+        "description": "Matte Opaque Pink",
+        "r": 240,
+        "g": 140,
+        "b": 170,
+        "hex": "F08CAA"
+    },
+    {
+        "number": "DB-352",
+        "description": "Matte Opaque Fuchsia",
+        "r": 180,
+        "g": 50,
+        "b": 110,
+        "hex": "B4326E"
+    },
+    {
+        "number": "DB-353",
+        "description": "Matte Opaque Purple",
+        "r": 110,
+        "g": 50,
+        "b": 130,
+        "hex": "6E3282"
+    },
+    {
+        "number": "DB-354",
+        "description": "Matte Opaque Blue",
+        "r": 50,
+        "g": 90,
+        "b": 160,
+        "hex": "325AA0"
+    },
+    {
+        "number": "DB-355",
+        "description": "Matte Opaque Turquoise",
+        "r": 70,
+        "g": 170,
+        "b": 170,
+        "hex": "46AAAA"
+    },
+    {
+        "number": "DB-356",
+        "description": "Matte Opaque Green",
+        "r": 50,
+        "g": 140,
+        "b": 80,
+        "hex": "328C50"
+    },
+    {
+        "number": "DB-357",
+        "description": "Matte Opaque Olive",
+        "r": 110,
+        "g": 120,
+        "b": 50,
+        "hex": "6E7832"
+    },
+    {
+        "number": "DB-358",
+        "description": "Matte Opaque Brown",
+        "r": 130,
+        "g": 80,
+        "b": 50,
+        "hex": "825032"
+    },
+    {
+        "number": "DB-359",
+        "description": "Matte Opaque Gray",
+        "r": 110,
+        "g": 110,
+        "b": 110,
+        "hex": "6E6E6E"
+    },
+    {
+        "number": "DB-360",
+        "description": "Matte Opaque Cream",
+        "r": 245,
+        "g": 230,
+        "b": 190,
+        "hex": "F5E6BE"
+    },
+    {
+        "number": "DB-361",
+        "description": "Matte Opaque Yellow",
+        "r": 255,
+        "g": 200,
+        "b": 60,
+        "hex": "FFC83C"
+    },
+    {
+        "number": "DB-362",
+        "description": "Matte Opaque Orange",
+        "r": 240,
+        "g": 130,
+        "b": 50,
+        "hex": "F08232"
+    },
+    {
+        "number": "DB-363",
+        "description": "Matte Opaque Dark Red",
+        "r": 140,
+        "g": 30,
+        "b": 40,
+        "hex": "8C1E28"
+    },
+    {
+        "number": "DB-364",
+        "description": "Matte Metallic Silver",
+        "r": 190,
+        "g": 190,
+        "b": 200,
+        "hex": "BEBEC8"
+    },
+    {
+        "number": "DB-365",
+        "description": "Matte Metallic Gold",
+        "r": 200,
+        "g": 170,
+        "b": 60,
+        "hex": "C8AA3C"
+    },
+    {
+        "number": "DB-366",
+        "description": "Matte Metallic Copper",
+        "r": 180,
+        "g": 100,
+        "b": 60,
+        "hex": "B4643C"
+    },
+    {
+        "number": "DB-367",
+        "description": "Matte Metallic Bronze",
+        "r": 140,
+        "g": 90,
+        "b": 50,
+        "hex": "8C5A32"
+    },
+    {
+        "number": "DB-368",
+        "description": "Matte Metallic Gunmetal",
+        "r": 80,
+        "g": 80,
+        "b": 90,
+        "hex": "50505A"
+    },
+    {
+        "number": "DB-369",
+        "description": "Duracoat Galvanized Silver",
+        "r": 200,
+        "g": 200,
+        "b": 210,
+        "hex": "C8C8D2"
+    },
+    {
+        "number": "DB-370",
+        "description": "Duracoat Galvanized Gold",
+        "r": 220,
+        "g": 180,
+        "b": 60,
+        "hex": "DCB43C"
+    },
+    {
+        "number": "DB-371",
+        "description": "Duracoat Galvanized Copper",
+        "r": 190,
+        "g": 110,
+        "b": 70,
+        "hex": "BE6E46"
+    },
+    {
+        "number": "DB-372",
+        "description": "Duracoat Galvanized Bronze",
+        "r": 160,
+        "g": 110,
+        "b": 70,
+        "hex": "A06E46"
+    },
+    {
+        "number": "DB-373",
+        "description": "Duracoat Galvanized Gunmetal",
+        "r": 90,
+        "g": 90,
+        "b": 100,
+        "hex": "5A5A64"
+    },
+    {
+        "number": "DB-374",
+        "description": "Duracoat Opaque Dyed Orchid",
+        "r": 200,
+        "g": 100,
+        "b": 180,
+        "hex": "C864B4"
+    },
+    {
+        "number": "DB-375",
+        "description": "Duracoat Opaque Dyed Fuchsia",
+        "r": 190,
+        "g": 50,
+        "b": 120,
+        "hex": "BE3278"
+    },
+    {
+        "number": "DB-376",
+        "description": "Duracoat Opaque Dyed Berry",
+        "r": 140,
+        "g": 40,
+        "b": 90,
+        "hex": "8C285A"
+    },
+    {
+        "number": "DB-377",
+        "description": "Duracoat Opaque Dyed Juniper Berry",
+        "r": 80,
+        "g": 50,
+        "b": 100,
+        "hex": "503264"
+    },
+    {
+        "number": "DB-378",
+        "description": "Duracoat Opaque Dyed Montana",
+        "r": 50,
+        "g": 90,
+        "b": 140,
+        "hex": "325A8C"
+    },
+    {
+        "number": "DB-379",
+        "description": "Duracoat Opaque Dyed Caribbean Blue",
+        "r": 60,
+        "g": 160,
+        "b": 180,
+        "hex": "3CA0B4"
+    },
+    {
+        "number": "DB-380",
+        "description": "Duracoat Opaque Dyed Emerald",
+        "r": 40,
+        "g": 140,
+        "b": 90,
+        "hex": "288C5A"
+    },
+    {
+        "number": "DB-381",
+        "description": "Duracoat Opaque Dyed Olive",
+        "r": 110,
+        "g": 120,
+        "b": 60,
+        "hex": "6E783C"
+    },
+    {
+        "number": "DB-382",
+        "description": "Duracoat Opaque Dyed Brown",
+        "r": 140,
+        "g": 90,
+        "b": 60,
+        "hex": "8C5A3C"
+    },
+    {
+        "number": "DB-383",
+        "description": "Duracoat Silver Lined Dyed White",
+        "r": 245,
+        "g": 245,
+        "b": 245,
+        "hex": "F5F5F5"
+    },
+    {
+        "number": "DB-384",
+        "description": "Duracoat Silver Lined Dyed Cream",
+        "r": 255,
+        "g": 240,
+        "b": 200,
+        "hex": "FFF0C8"
+    },
+    {
+        "number": "DB-385",
+        "description": "Duracoat Silver Lined Dyed Yellow",
+        "r": 255,
+        "g": 210,
+        "b": 100,
+        "hex": "FFD264"
+    },
+    {
+        "number": "DB-386",
+        "description": "Duracoat Silver Lined Dyed Orange",
+        "r": 255,
+        "g": 150,
+        "b": 80,
+        "hex": "FF9650"
+    },
+    {
+        "number": "DB-387",
+        "description": "Duracoat Silver Lined Dyed Red",
+        "r": 200,
+        "g": 50,
+        "b": 60,
+        "hex": "C8323C"
+    },
+    {
+        "number": "DB-388",
+        "description": "Duracoat Silver Lined Dyed Pink",
+        "r": 255,
+        "g": 160,
+        "b": 180,
+        "hex": "FFA0B4"
+    },
+    {
+        "number": "DB-389",
+        "description": "Duracoat Silver Lined Dyed Fuchsia",
+        "r": 200,
+        "g": 60,
+        "b": 130,
+        "hex": "C83C82"
+    },
+    {
+        "number": "DB-390",
+        "description": "Duracoat Silver Lined Dyed Purple",
+        "r": 130,
+        "g": 60,
+        "b": 150,
+        "hex": "823C96"
+    },
+    {
+        "number": "DB-391",
+        "description": "Duracoat Silver Lined Dyed Blue",
+        "r": 60,
+        "g": 110,
+        "b": 180,
+        "hex": "3C6EB4"
+    },
+    {
+        "number": "DB-392",
+        "description": "Duracoat Silver Lined Dyed Turquoise",
+        "r": 80,
+        "g": 180,
+        "b": 190,
+        "hex": "50B4BE"
+    },
+    {
+        "number": "DB-393",
+        "description": "Duracoat Silver Lined Dyed Green",
+        "r": 60,
+        "g": 150,
+        "b": 100,
+        "hex": "3C9664"
+    },
+    {
+        "number": "DB-394",
+        "description": "Duracoat Silver Lined Dyed Olive",
+        "r": 110,
+        "g": 120,
+        "b": 60,
+        "hex": "6E823C"
+    },
+    {
+        "number": "DB-395",
+        "description": "Duracoat Silver Lined Dyed Brown",
+        "r": 140,
+        "g": 90,
+        "b": 60,
+        "hex": "8C5A3C"
+    },
+    {
+        "number": "DB-396",
+        "description": "Opaque Glazed Frosted White",
+        "r": 245,
+        "g": 245,
+        "b": 245,
+        "hex": "F5F5F5"
+    },
+    {
+        "number": "DB-397",
+        "description": "Opaque Glazed Frosted Cream",
+        "r": 255,
+        "g": 240,
+        "b": 200,
+        "hex": "FFF0C8"
+    },
+    {
+        "number": "DB-398",
+        "description": "Opaque Glazed Frosted Yellow",
+        "r": 255,
+        "g": 220,
+        "b": 120,
+        "hex": "FFDC78"
+    },
+    {
+        "number": "DB-399",
+        "description": "Opaque Glazed Frosted Peach",
+        "r": 255,
+        "g": 190,
+        "b": 150,
+        "hex": "FFBE96"
+    },
+    {
+        "number": "DB-400",
+        "description": "Opaque Glazed Frosted Pink",
+        "r": 255,
+        "g": 180,
+        "b": 190,
+        "hex": "FFB4BE"
+    },
+    {
+        "number": "DB-401",
+        "description": "Opaque Glazed Frosted Lavender",
+        "r": 220,
+        "g": 190,
+        "b": 230,
+        "hex": "DCBEE6"
+    },
+    {
+        "number": "DB-402",
+        "description": "Opaque Glazed Frosted Blue",
+        "r": 160,
+        "g": 200,
+        "b": 230,
+        "hex": "A0C8E6"
+    },
+    {
+        "number": "DB-403",
+        "description": "Opaque Glazed Frosted Green",
+        "r": 140,
+        "g": 200,
+        "b": 160,
+        "hex": "8CC8A0"
+    },
+    {
+        "number": "DB-404",
+        "description": "Opaque Glazed Frosted Turquoise",
+        "r": 100,
+        "g": 200,
+        "b": 200,
+        "hex": "64C8C8"
+    },
+    {
+        "number": "DB-405",
+        "description": "Opaque Glazed Frosted Aqua",
+        "r": 140,
+        "g": 220,
+        "b": 210,
+        "hex": "8CDCD2"
+    },
+    {
+        "number": "DB-406",
+        "description": "Opaque Glazed Frosted Grape",
+        "r": 140,
+        "g": 80,
+        "b": 140,
+        "hex": "8C508C"
+    },
+    {
+        "number": "DB-407",
+        "description": "Opaque Glazed Frosted Ab Bayberry",
+        "r": 90,
+        "g": 110,
+        "b": 90,
+        "hex": "5A6E5A"
+    },
+    {
+        "number": "DB-653",
+        "description": "Duracoat Opaque Dyed Orchid",
+        "r": 200,
+        "g": 100,
+        "b": 180,
+        "hex": "C864B4"
+    },
+    {
+        "number": "DB-654",
+        "description": "Duracoat Opaque Dyed Fuchsia",
+        "r": 190,
+        "g": 50,
+        "b": 120,
+        "hex": "BE3278"
+    },
+    {
+        "number": "DB-655",
+        "description": "Duracoat Opaque Dyed Berry",
+        "r": 140,
+        "g": 40,
+        "b": 90,
+        "hex": "8C285A"
+    },
+    {
+        "number": "DB-1831",
+        "description": "Galvanized Duracoat Silver",
+        "r": 200,
+        "g": 200,
+        "b": 210,
+        "hex": "C8C8D2"
+    },
+    {
+        "number": "DB-1832",
+        "description": "Galvanized Duracoat Gold",
+        "r": 220,
+        "g": 180,
+        "b": 60,
+        "hex": "DCB43C"
+    },
+    {
+        "number": "DB-2001",
+        "description": "Duracoat Opaque White",
+        "r": 245,
+        "g": 245,
+        "b": 245,
+        "hex": "F5F5F5"
+    },
+    {
+        "number": "DB-2101",
+        "description": "Duracoat Opaque Black",
+        "r": 30,
+        "g": 30,
+        "b": 30,
+        "hex": "1E1E1E"
+    },
+    {
+        "number": "DB-2111",
+        "description": "Duracoat Opaque Cream",
+        "r": 255,
+        "g": 240,
+        "b": 200,
+        "hex": "FFF0C8"
+    },
+    {
+        "number": "DB-2135",
+        "description": "Duracoat Opaque Dyed Juniper Berry",
+        "r": 80,
+        "g": 50,
+        "b": 100,
+        "hex": "503264"
+    },
+    {
+        "number": "DB-2192",
+        "description": "Duracoat Silver Lined Dyed Montana",
+        "r": 50,
+        "g": 90,
+        "b": 140,
+        "hex": "325A8C"
+    },
+    {
+        "number": "DB-2292",
+        "description": "Opaque Glazed Frosted Grape",
+        "r": 140,
+        "g": 80,
+        "b": 140,
+        "hex": "8C508C"
+    },
+    {
+        "number": "DB-2317",
+        "description": "Opaque Matte Glazed Ab Bayberry",
+        "r": 90,
+        "g": 110,
+        "b": 90,
+        "hex": "5A6E5A"
+    },
+    {
+        "number": "DB-243",
+        "description": "Ceylon Blue",
+        "r": 140,
+        "g": 180,
+        "b": 220,
+        "hex": "8CB4DC"
+    },
+    {
+        "number": "DB-2516",
+        "description": "Duracoat Galvanized Deep Aqua Blue",
+        "r": 50,
+        "g": 140,
+        "b": 180,
+        "hex": "328CB4"
+    }
+]

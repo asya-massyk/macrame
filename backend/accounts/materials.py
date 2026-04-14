@@ -141,22 +141,44 @@ def load_dmc_colors():
         ]
 
 
-# ====================== API VIEW ======================
+# ====================== НОВЕ: ЗАВАНТАЖЕННЯ MIYUKI ======================
+_miyuki_cache = None
+def load_miyuki_beads():
+    global _miyuki_cache
+    if _miyuki_cache is not None: return _miyuki_cache
+    base_dir = Path(__file__).parent.parent
+    json_path = base_dir / "assets" / "miyuki-beads.json"
+    if json_path.exists():
+        with open(json_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        colors = [{
+            'brand': 'Miyuki',
+            'number': str(item.get('number') or item.get('bead')),
+            'color': {'r': int(item['r']), 'g': int(item['g']), 'b': int(item['b'])}
+        } for item in data]
+        logger.info(f"Завантажено {len(colors)} кольорів Miyuki beads")
+        _miyuki_cache = colors
+        return colors
+    logger.warning("miyuki-beads.json не знайдено")
+    return []
+
+# ====================== API VIEW (оновлений) ======================
 class MaterialsAPIView(APIView):
     def post(self, request):
         serializer = MaterialInputSerializer(data=request.data)
         if not serializer.is_valid():
-            logger.warning(f"Невалідні дані: {serializer.errors}")
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         input_colors = serializer.validated_data['colors']
         material_type = serializer.validated_data['materialType']
 
-        if material_type != 'threads':
-            return Response({'error': 'Підтримується тільки materialType = threads'}, 
+        if material_type == 'threads':
+            available_materials = load_dmc_colors()
+        elif material_type == 'beads':
+            available_materials = load_miyuki_beads()
+        else:
+            return Response({'error': 'Підтримується тільки threads або beads'}, 
                           status=status.HTTP_400_BAD_REQUEST)
-
-        available_materials = load_dmc_colors()
 
         # === ЖАДІБНИЙ ПІДБІР УНІКАЛЬНИХ НИТОК ===
         used_numbers = set()
