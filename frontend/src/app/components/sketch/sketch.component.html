@@ -97,18 +97,15 @@
 
   </div>
 
-  <!-- Блок збереження — тепер тільки назва, формат і кнопка "Зберегти" -->
+  <!-- Блок збереження -->
   <div class="save-section">
     <div class="save-controls">
-
-
       <div class="save-form">
         <div class="save-field">
           <label for="fileName">Назва файлу</label>
           <input type="text" id="fileName" [(ngModel)]="fileName" placeholder="Введіть назву файлу"
             class="control-input" />
         </div>
-
         <div class="save-field">
           <label for="fileFormat">Формат</label>
           <select id="fileFormat" [(ngModel)]="fileFormat" class="control-input">
@@ -120,7 +117,14 @@
       </div>
 
       <div class="save-actions">
-        <button (click)="saveCanvas()" class="pixelation-button pixelation-button--download">Зберегти</button>
+        <button (click)="saveCanvas()" class="pixelation-button pixelation-button--download">
+          Зберегти
+        </button>
+
+        <!-- НОВА КНОПКА -->
+        <button (click)="convertToScheme()" class="pixelation-button pixelation-button--scheme">
+          Перетворити на схему
+        </button>
       </div>
     </div>
   </div>
