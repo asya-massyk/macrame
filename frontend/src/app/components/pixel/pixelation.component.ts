@@ -5,6 +5,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { isPlatformBrowser } from '@angular/common';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import { ActivatedRoute, Router } from '@angular/router';
+import { SketchTransferService } from '../services/sketch-transfer.service';
 
 interface MaterialResponse {
   number: string;
@@ -46,6 +48,9 @@ export class PixelationComponent implements AfterViewInit {
     color: { r: number; g: number; b: number };
     fillColor: string;
   }> = [];
+  isFromSketch: boolean = false;
+  disablePixelControls: boolean = false;
+  exactSketchMode: boolean = false;
 
   private symbolPool: string[] = [
     '■', '□', '●', '○', '▲', '▼', '▶', '◀', '★', '☆', '◆', '◇', '✚', '✖', '◼', '◻', '⬛', '⬜',
@@ -78,6 +83,7 @@ export class PixelationComponent implements AfterViewInit {
   private pixelatedCanvas: HTMLCanvasElement | null = null;
   private lastPixelParams: string = '';
 
+
   get pixelGridLabel(): string {
     if (this.currentNumCols === 0 || this.currentNumRows === 0) {
       return `${this.pixelCount}×${this.pixelCount}`;
@@ -87,8 +93,46 @@ export class PixelationComponent implements AfterViewInit {
 
   constructor(
     private http: HttpClient,
-    @Inject(PLATFORM_ID) private platformId: Object
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private route: ActivatedRoute,
+    private router: Router,
+    private sketchTransferService: SketchTransferService
   ) { }
+
+  ngOnInit(): void {
+    const sketchData = this.sketchTransferService.getAndClearSketch();
+
+    if (sketchData) {
+      console.log('Отримано ескіз зі скетч-редактора');
+      this.imageSrc = sketchData;
+      this.isFromSketch = true;
+      this.exactSketchMode = true;
+      this.disablePixelControls = true;
+
+      this.loadImage(this.imageSrc);
+    }
+  }
+
+  private loadFromNavigation(): void {
+    const state = history.state as any;
+
+    if (state?.sketchImage) {
+      console.log(' Знайдено зображення зі скетчу через state');
+      this.imageSrc = state.sketchImage;
+      this.disablePixelControls = true;
+      this.isFromSketch = true;
+
+      if (this.imageSrc) {
+        this.loadImage(this.imageSrc);
+        return;   // якщо успішно — виходимо
+      }
+    }
+
+    // Якщо state не спрацював — перевіряємо, чи є вже imageSrc (наприклад, після reload)
+    if (!this.imageSrc) {
+      console.warn(' Не знайдено sketchImage в state');
+    }
+  }
 
   ngAfterViewInit(): void {
     if (isPlatformBrowser(this.platformId)) {
@@ -113,6 +157,8 @@ export class PixelationComponent implements AfterViewInit {
   }
 
   private buildColorPalette(colors: { r: number; g: number; b: number }[]): void {
+    if (this.exactSketchMode) return;   // ← не чіпаємо скетчі
+    if (colors.length === 0) return;
     if (colors.length === 0) return;
 
     const k = this.colorCount;
@@ -254,19 +300,33 @@ export class PixelationComponent implements AfterViewInit {
     this.materialList = [];
     this.symbolColors = [];
   }
-
   private adjustCanvasSize(): void {
     if (!this.canvasRef?.nativeElement || !this.originalImage) return;
 
     const canvas = this.canvasRef.nativeElement;
     const aspectRatio = this.originalImage.width / this.originalImage.height;
 
-    let newWidth = Math.min(820, this.originalImage.width);   // трохи збільшив максимум
-    let newHeight = newWidth / aspectRatio;
+    let newWidth: number;
+    let newHeight: number;
 
-    if (newHeight > 620) {
-      newHeight = 620;
-      newWidth = newHeight * aspectRatio;
+    if (this.exactSketchMode) {
+      // Для скетчів робимо значно більший розмір
+      newWidth = Math.min(820, this.originalImage.width * 1.4);   // збільшуємо
+      newHeight = newWidth / aspectRatio;
+
+      if (newHeight > 620) {
+        newHeight = 620;
+        newWidth = newHeight * aspectRatio;
+      }
+    } else {
+      // Для звичайних фото — як було
+      newWidth = Math.min(820, this.originalImage.width);
+      newHeight = newWidth / aspectRatio;
+
+      if (newHeight > 620) {
+        newHeight = 620;
+        newWidth = newHeight * aspectRatio;
+      }
     }
 
     if (isPlatformBrowser(this.platformId)) {
@@ -324,41 +384,103 @@ export class PixelationComponent implements AfterViewInit {
   }
 
   private loadImage(src: string): void {
+    if (!src) return;
+
     const img = new Image();
     img.src = src;
 
     img.onload = () => {
-      this.originalImage = img;
-
-      const minSide = Math.min(img.width, img.height);
-      this.maxPixelCount = Math.min(50, Math.floor(minSide / this.minCellSize));
-      this.maxPixelCount = Math.max(this.maxPixelCount, this.minPixelCount);
-
-      if (this.preservePixelCount !== null) {
-        this.pixelCount = Math.min(this.maxPixelCount, Math.max(this.minPixelCount, this.preservePixelCount));
-        this.preservePixelCount = null;
-      } else {
-        this.pixelCount = Math.max(this.minPixelCount, Math.floor(this.pixelCount * 0.85));
+      if (this.exactSketchMode) {
+        // ← Асинхронно чистимо сітку і ТІЛЬКИ після цього продовжуємо
+        this.removeGridFromSketch(img).then((cleanedImage) => {
+          this.originalImage = cleanedImage;
+          console.log('✅ Сітка повністю видалена з скетчу');
+          this.processSketchAfterClean();
+        });
+        return;
       }
 
-      this.sliderValue = this.pixelCount;
-      this.currentNumCols = 0;
-      this.currentNumRows = 0;
-
-      this.adjustCanvasSize();
-
-      setTimeout(() => {
-        this.renderImage();
-        // НІЯКОГО saveState(true) тут!!!
-      }, 30);
+      // Для звичайних фото — відразу
+      this.originalImage = img;
+      this.processSketchAfterClean();
     };
 
-    img.onerror = () => {
-      console.error('Не вдалося завантажити зображення');
-      this.resetCrop();
-    };
+    img.onerror = () => console.error('Не вдалося завантажити зображення');
   }
 
+  // === НОВА ВЕРСІЯ — повертає Promise ===
+  private removeGridFromSketch(originalImg: HTMLImageElement): Promise<HTMLImageElement> {
+    return new Promise((resolve) => {
+      const tempCanvas = document.createElement('canvas');
+      const ctx = tempCanvas.getContext('2d', { willReadFrequently: true });
+      if (!ctx) {
+        resolve(originalImg); // fallback
+        return;
+      }
+
+      tempCanvas.width = originalImg.width;
+      tempCanvas.height = originalImg.height;
+      ctx.drawImage(originalImg, 0, 0);
+
+      const imageData = ctx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+      const data = imageData.data;
+
+      // === БІЛЬШ АГРЕСИВНЕ ВИДАЛЕННЯ СІТКИ ===
+      for (let i = 0; i < data.length; i += 4) {
+        const r = data[i];
+        const g = data[i + 1];
+        const b = data[i + 2];
+
+        const avgGray = (r + g + b) / 3;
+
+        // Сітка зазвичай #F0F0F0, #E8E8E8, #F5F5F5, #FAFAFA тощо
+        const isLightGray =
+          Math.abs(r - g) < 30 &&
+          Math.abs(g - b) < 30 &&
+          Math.abs(r - b) < 30 &&
+          avgGray > 200 && avgGray < 255;   // ← розширили діапазон
+
+        if (isLightGray) {
+          data[i] = 255;   // чисто білий
+          data[i + 1] = 255;
+          data[i + 2] = 255;
+        }
+      }
+
+      ctx.putImageData(imageData, 0, 0);
+
+      const cleanedSrc = tempCanvas.toDataURL('image/png', 1.0);
+      const cleanedImg = new Image();
+
+      cleanedImg.onload = () => resolve(cleanedImg);
+      cleanedImg.src = cleanedSrc;
+    });
+  }
+
+  // === НЕ ЗМІНЮЄМО (вже гарно) ===
+  private processSketchAfterClean(): void {
+    if (!this.originalImage) return;
+
+    if (this.exactSketchMode) {
+      this.pixelCount = Math.max(
+        this.minPixelCount,
+        Math.floor(Math.min(this.originalImage.width, this.originalImage.height) / 20)
+      );
+      this.currentNumCols = Math.floor(this.originalImage.width / 20);
+      this.currentNumRows = Math.floor(this.originalImage.height / 20);
+    } else {
+      const minSide = Math.min(this.originalImage.width, this.originalImage.height);
+      this.maxPixelCount = Math.min(50, Math.floor(minSide / this.minCellSize));
+      this.pixelCount = Math.max(this.minPixelCount, Math.floor(this.pixelCount * 0.85));
+    }
+
+    this.sliderValue = this.pixelCount;
+    this.adjustCanvasSize();
+
+    setTimeout(() => {
+      this.renderImage();
+    }, 50);
+  }
   private getBlockInfo(side: number, numBlocks: number): { starts: number[]; sizes: number[] } {
     const blockSize = Math.floor(side / numBlocks);
     const remainder = side % numBlocks;
@@ -395,6 +517,7 @@ export class PixelationComponent implements AfterViewInit {
       }
     }
 
+
     return this.getClosestColor(
       Math.round(sumR / count),
       Math.round(sumG / count),
@@ -405,6 +528,22 @@ export class PixelationComponent implements AfterViewInit {
 
   private renderPixelated(): void {
     if (!this.originalImage) return;
+
+    // === СПЕЦІАЛЬНИЙ РЕЖИМ ДЛЯ ЕСКІЗУ ===
+    if (this.exactSketchMode) {
+      const tempCanvas = document.createElement('canvas');
+      const ctx = tempCanvas.getContext('2d', { willReadFrequently: true });
+      if (!ctx) return;
+
+      tempCanvas.width = this.originalImage.width;
+      tempCanvas.height = this.originalImage.height;
+
+      ctx.imageSmoothingEnabled = false;
+      ctx.drawImage(this.originalImage, 0, 0);
+
+      this.pixelatedCanvas = tempCanvas;
+      return;
+    }
 
     const key = `${this.pixelCount}_${this.colorCount}_${this.schemeMode}`;
     if (this.lastPixelParams === key && this.pixelatedCanvas) return;
@@ -440,6 +579,7 @@ export class PixelationComponent implements AfterViewInit {
     }
 
     this.buildColorPalette(allColors);
+
 
     // ⬇️ твоя логіка блоків БЕЗ змін
     const minSide = Math.min(width, height);
@@ -965,28 +1105,55 @@ export class PixelationComponent implements AfterViewInit {
     return this.canvasRef.nativeElement;
   }
 
+  private extractUniqueColorsFromCanvas() {
+  const colorsMap = new Map<string, { r: number; g: number; b: number }>();
+
+  const canvas = this.pixelatedCanvas;
+  if (!canvas) return [];
+
+  const ctx = canvas.getContext('2d', { willReadFrequently: true });
+  if (!ctx) return [];
+
+  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  const data = imageData.data;
+
+  for (let i = 0; i < data.length; i += 4) {
+    const r = data[i];
+    const g = data[i + 1];
+    const b = data[i + 2];
+
+    const key = `${r},${g},${b}`;
+    if (!colorsMap.has(key)) {
+      colorsMap.set(key, { r, g, b });
+    }
+  }
+
+  return Array.from(colorsMap.values());
+}
+
   onGenerateScheme(): void {
     if (!this.imageSrc) return;
 
-    // будуємо пікселізацію
-    this.renderPixelated();
+    if (this.exactSketchMode) {
+      this.renderPixelated();
+      if (this.exactSketchMode) {
+        this.reducedPalette = this.extractUniqueColorsFromCanvas();
+      }
+      this.buildSymbolColors();
+    } else {
+      this.renderPixelated();
+      this.buildSymbolColors();
+    }
 
-    // будуємо символи
-    this.buildSymbolColors();
-
-    // малюємо схему
     this.generateNumberedScheme();
-
-    // очищаємо легенду (щоб вона з’явилась заново)
     this.materialList = [];
 
-    // 🔥 ФІКС: після зміни DOM (legend) — перемалювати canvas
+    // в кінці onGenerateScheme()
     setTimeout(() => {
       this.adjustCanvasSize();
-      this.renderPixelated();
       this.drawToCanvas();
       this.generateNumberedScheme();
-    }, 0);
+    }, 150);
 
     this.saveState();
   }
@@ -994,51 +1161,38 @@ export class PixelationComponent implements AfterViewInit {
   private buildSymbolColors(): void {
     if (!this.originalImage) return;
 
-    // гарантуємо, що палітра вже побудована
-    if (!this.reducedPalette || this.reducedPalette.length === 0) {
-      const width = this.originalImage.width;
-      const height = this.originalImage.height;
+    const tempCanvas = document.createElement('canvas');
+    const ctx = tempCanvas.getContext('2d', { willReadFrequently: true });
+    if (!ctx) return;
 
-      const tempCanvas = document.createElement('canvas');
-      const ctx = tempCanvas.getContext('2d');
-      if (!ctx) return;
+    tempCanvas.width = this.originalImage.width;
+    tempCanvas.height = this.originalImage.height;
+    ctx.imageSmoothingEnabled = false;
+    ctx.drawImage(this.originalImage, 0, 0);
 
-      tempCanvas.width = width;
-      tempCanvas.height = height;
-      ctx.drawImage(this.originalImage, 0, 0);
+    const imageData = ctx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+    const data = imageData.data;
 
-      const data = ctx.getImageData(0, 0, width, height).data;
+    // 🔥 ВИКОРИСТОВУЄМО ВЖЕ ОБМЕЖЕНУ ПАЛІТРУ
+    const palette = this.reducedPalette;
 
-      const allColors: { r: number; g: number; b: number }[] = [];
-      for (let i = 0; i < data.length; i += 4) {
-        allColors.push({ r: data[i], g: data[i + 1], b: data[i + 2] });
-      }
+    console.log(`[Sketch] Унікальних кольорів після видалення сітки: ${this.reducedPalette.length}`);
 
-      this.buildColorPalette(allColors);
-    }
-
-    //  перевірка на кількість символів
-    if (this.reducedPalette.length > this.symbolPool.length) {
-      console.warn('Недостатньо символів для всіх кольорів!');
-    }
-
-    //  ГОЛОВНЕ — 1:1 відповідність
     this.symbolColors = this.reducedPalette.map((color, index) => {
-      const brightness =
-        color.r * 0.299 +
-        color.g * 0.587 +
-        color.b * 0.114;
-
-      const fillColor = brightness < 140 ? '#FFFFFF' : '#000000';
+      const brightness = color.r * 0.299 + color.g * 0.587 + color.b * 0.114;
+      const fillColor = brightness < 110 ? '#FFFFFF' : '#000000';
 
       return {
-        symbol: this.symbolPool[index], //  більше НЕ повторюється
+        symbol: this.symbolPool[index % this.symbolPool.length],
         color,
         fillColor
       };
     });
-    this.symbolColors = [...this.symbolColors]; // примусове оновлення масиву для Angular
+
+    this.symbolColors = [...this.symbolColors];
   }
+
+
 
   generateNumberedScheme(): void {
     if (!this.canvasRef?.nativeElement || !this.pixelatedCanvas) return;
@@ -1047,13 +1201,12 @@ export class PixelationComponent implements AfterViewInit {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // малюємо фон
+    // малюємо фон (без сітки!)
     this.drawToCanvas();
 
     const width = this.pixelatedCanvas.width;
     const height = this.pixelatedCanvas.height;
 
-    // беремо пікселі з пікселізованого канвасу
     const tempCanvas = document.createElement('canvas');
     const tempCtx = tempCanvas.getContext('2d', { willReadFrequently: true });
     if (!tempCtx) return;
@@ -1065,7 +1218,7 @@ export class PixelationComponent implements AfterViewInit {
     const imageData = tempCtx.getImageData(0, 0, width, height);
     const data = imageData.data;
 
-    // === СІТКА ===
+    // === СІТКА — тільки для розрахунку, НЕ малюємо її на фінальному canvas ===
     const minSide = Math.min(width, height);
     const maxSide = Math.max(width, height);
     const isWidthMin = width <= height;
@@ -1079,14 +1232,13 @@ export class PixelationComponent implements AfterViewInit {
     const colInfo = this.getBlockInfo(width, numCols);
     const rowInfo = this.getBlockInfo(height, numRows);
 
-    // === МАПА СИМВОЛІВ (тільки з палітри) ===
+    // === МАПА СИМВОЛІВ ===
     const symbolMap: { [key: string]: any } = {};
     this.symbolColors.forEach(sc => {
       const key = `${sc.color.r},${sc.color.g},${sc.color.b}`;
       symbolMap[key] = sc;
     });
 
-    // === SCALE ===
     const scale = Math.min(
       canvas.width / width,
       canvas.height / height
@@ -1095,7 +1247,7 @@ export class PixelationComponent implements AfterViewInit {
     const offsetX = (canvas.width - width * scale) / 2;
     const offsetY = (canvas.height - height * scale) / 2;
 
-    // === МАЛЮЄМО СИМВОЛИ ===
+    // === МАЛЮЄМО ТІЛЬКИ СИМВОЛИ (без сітки) ===
     for (let row = 0; row < numRows; row++) {
       const py = rowInfo.starts[row];
       const blockH = rowInfo.sizes[row];
@@ -1104,17 +1256,23 @@ export class PixelationComponent implements AfterViewInit {
         const px = colInfo.starts[col];
         const blockW = colInfo.sizes[col];
 
-        // беремо СЕРЕДНІЙ колір блоку (як при генерації палітри)
-        const avg = this.getBlockColor(px, py, blockW, blockH, data, width);
+        let avg = this.getBlockColor(px, py, blockW, blockH, data, width);
+
+
+        if (avg.r > 230 && avg.g > 230 && avg.b > 230) {
+          avg = this.getClosestColor(255, 255, 255);
+        }
 
         const key = `${avg.r},${avg.g},${avg.b}`;
         const symbolInfo = symbolMap[key];
 
+        if (!symbolInfo) {
+          console.log(' NO SYMBOL FOR:', key, avg);
+        }
+
         if (symbolInfo) {
           ctx.save();
-
           ctx.fillStyle = symbolInfo.fillColor;
-
           ctx.font = `${Math.floor(Math.min(blockW, blockH) * scale * 0.55)}px monospace`;
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
@@ -1164,6 +1322,9 @@ export class PixelationComponent implements AfterViewInit {
       return;
     }
 
+    // === ВАЖЛИВИЙ ФІКС ДЛЯ СКЕТЧУ ===
+    const actualColorCount = this.symbolColors.length;
+
     const colorList = this.symbolColors.map(colorInfo => ({
       r: colorInfo.color.r.toString(),
       g: colorInfo.color.g.toString(),
@@ -1182,7 +1343,7 @@ export class PixelationComponent implements AfterViewInit {
       'http://localhost:8000/accounts/materials/',
       {
         colors: colorList,
-        materialType: this.materialType   // ← тепер динамічно!
+        materialType: this.materialType
       },
       { headers }
     ).subscribe({
@@ -1199,17 +1360,17 @@ export class PixelationComponent implements AfterViewInit {
           brand: m.brand || (this.materialType === 'threads' ? 'DMC' : 'Miyuki')
         }));
 
-        console.log(` Знайдено матеріали для ${this.materialList.length} кольорів (${this.materialType})`);
+        console.log(`Знайдено матеріали для ${this.materialList.length} кольорів (${this.materialType})`);
 
+        // Оновлюємо після отримання легенди
         setTimeout(() => {
           this.adjustCanvasSize();
-          this.renderPixelated();
           this.drawToCanvas();
           this.generateNumberedScheme();
         }, 10);
       },
       error: (err) => {
-        console.error(' Помилка при підборі матеріалів:', err);
+        console.error('Помилка при підборі матеріалів:', err);
         if (err.status === 0) alert('Не вдалося підключитися до сервера');
         else alert('Не вдалося знайти матеріали. Перевірте логи сервера.');
       }

@@ -558,6 +558,7 @@ $secondary-color: #3344DC;
   margin: 0 auto;
   margin-top: 0;
   align-items: start;
+justify-content: center;
 }
 
 .canvas-wrapper {
@@ -763,16 +764,31 @@ $secondary-color: #3344DC;
 }
 
 /* ====================== CANVAS + ЛЕГЕНДА ПІД НИМ (того ж розміру) ====================== */
+.canvas-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  margin-top: 20px;
+  grid-column: 2;           /* фіксуємо в центральній колонці */
+}
 
 .canvas-and-legend {
   width: 100%;
   max-width: 720px;
-  /* така ж максимальна ширина як у canvas */
-  margin: 0 auto;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 25px;
+  gap: 40px;                    /* відступ між фото і легендою */
+}
+
+.legend-container {
+  width: 100%;
+  max-width: 720px;
+  background: #111;
+  padding: 30px 25px;
+  border-radius: 16px;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.65);
+  margin-top: 15px;
 }
 
 .pixelation-canvas {
@@ -787,9 +803,6 @@ $secondary-color: #3344DC;
   margin: 0 auto;
 }
 
-.legend-container {
-  box-sizing: border-box;
-}
 
 .legend-grid {
   display: grid;
@@ -844,19 +857,17 @@ $secondary-color: #3344DC;
   letter-spacing: 0.3px;
 }
 
-/* Адаптивність легенди */
-@media (min-width: 1450px) {
-  .legend-grid {
-    grid-template-columns: repeat(5, 1fr);
-    /* 5 колонок при широкому екрані */
-  }
+.main-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr 260px;
+  gap: 30px;
+  max-width: 1600px;
+  margin: 25px auto 0;
+  align-items: start;
+  justify-content: center;
 }
 
-@media (max-width: 1449px) and (min-width: 1100px) {
-  .legend-grid {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
+
 
 @media (max-width: 1099px) and (min-width: 800px) {
   .legend-grid {
@@ -874,4 +885,14 @@ $secondary-color: #3344DC;
   .legend-grid {
     grid-template-columns: 1fr;
   }
+}
+
+/* Додай в pixelation.component.scss */
+.control-note {
+  font-size: 13px;
+  color: #d657c1;
+  font-style: italic;
+  margin-top: 6px;
+  text-align: center;
+  opacity: 0.9;
 }

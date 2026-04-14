@@ -4,18 +4,16 @@
   <div *ngIf="!imageSrc" class="pixelation-decor-left"></div>
   <div *ngIf="!imageSrc" class="pixelation-decor-right"></div>
 
-  <!-- Welcome сторінка -->
-  <div *ngIf="!imageSrc" class="pixelation-welcome">
+  <!-- Welcome сторінка — показуємо ТІЛЬКИ якщо немає зображення І НЕ прийшли зі скетчу -->
+  <div *ngIf="!imageSrc && !isFromSketch" class="pixelation-welcome">
     <h1 class="pixelation-title">Створіть власну схему!</h1>
     <p class="pixelation-subtitle">
       Завантажте зображення, щоб перетворити його на піксельну картину
     </p>
-
     <label for="file-upload" class="pixelation-upload-button">
       <span class="pixelation-upload-icon">📷</span>
       Виберіть зображення
     </label>
-
     <input id="file-upload" type="file" accept="image/*" (change)="onImageUpload($event)"
       class="pixelation-input-hidden" />
   </div>
@@ -28,19 +26,30 @@
       <!--  ЛІВА ПАНЕЛЬ (ІНСТРУМЕНТИ) -->
       <aside class="sidebar-controls">
 
+        <!-- === Кількість пікселів === -->
         <div class="control-group">
           <label>Кількість пікселів ({{ pixelGridLabel }}):</label>
           <input type="range" [min]="minPixelCount" [max]="maxPixelCount" step="1" [(ngModel)]="sliderValue"
-            (ngModelChange)="updatePixelation()" class="pixelation-slider" />
+            (ngModelChange)="updatePixelation()" class="pixelation-slider" [disabled]="disablePixelControls" />
+
+          <div *ngIf="disablePixelControls" class="control-note">
+            Розмір сітки зафіксовано
+          </div>
         </div>
 
+        <!-- === Кількість кольорів === -->
         <div class="control-group">
           <label>Кількість кольорів:</label>
           <div class="color-row">
             <input type="range" [min]="minColorCount" [max]="maxColorCount" [(ngModel)]="colorCount"
-              (ngModelChange)="onColorCountChange()" class="pixelation-slider" />
+              (ngModelChange)="onColorCountChange()" class="pixelation-slider" [disabled]="disablePixelControls" />
+
             <input type="number" [(ngModel)]="colorCount" (ngModelChange)="onColorCountChange()"
-              class="pixelation-input small-input" />
+              class="pixelation-input small-input" [disabled]="disablePixelControls" />
+          </div>
+
+          <div *ngIf="disablePixelControls" class="control-note">
+            Кількість кольорів зафіксована
           </div>
         </div>
 
@@ -57,9 +66,13 @@
             Скасувати
           </button>
 
-          <button (click)="startCropping()" [disabled]="isCropping" class="pixelation-button pixelation-button--crop">
+          <button (click)="startCropping()" [disabled]="isCropping || exactSketchMode"
+            class="pixelation-button pixelation-button--crop">
             Обрізати
           </button>
+          <div *ngIf="exactSketchMode" class="control-note">
+            Обрізання вимкнено для ескізів
+          </div>
 
           <button (click)="rotateImage()" class="pixelation-button pixelation-button--rotate">
             Повернути

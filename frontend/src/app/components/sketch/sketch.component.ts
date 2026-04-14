@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
 import { jsPDF } from 'jspdf';
+import { SketchTransferService } from '../services/sketch-transfer.service';
 
 @Component({
   selector: 'app-edit-sketch',
@@ -37,10 +38,12 @@ export class EditSketchComponent implements AfterViewInit {
   Math: any;
   currentTool: 'brush' | 'eraser' = 'brush';
 
+
   constructor(
     private router: Router,
     @Inject(PLATFORM_ID) private platformId: Object,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private sketchTransferService: SketchTransferService
   ) {
     this.isBrowser = isPlatformBrowser(this.platformId);
   }
@@ -190,6 +193,39 @@ export class EditSketchComponent implements AfterViewInit {
     img.onerror = () => {
       console.error('Failed to restore drawing');
     };
+  }
+
+  convertToScheme(): void {
+    if (!this.canvasRef?.nativeElement) return;
+
+    const canvas = this.canvasRef.nativeElement;
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    if (!ctx) return;
+
+    // === КРИТИЧНИЙ ФІКС ===
+    // Перемальовуємо ВСЕ чітко, без анти-аліасингу
+    ctx.imageSmoothingEnabled = false;
+
+    // Повністю перемальовуємо пікселі з pixelData (це найчистіший спосіб)
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    for (let row = 0; row < this.rows; row++) {
+      for (let col = 0; col < this.columns; col++) {
+        const color = this.pixelData[row][col];
+        if (color !== '#ffffff') {
+          ctx.fillStyle = color;
+          ctx.fillRect(col * this.pixelSize, row * this.pixelSize, this.pixelSize, this.pixelSize);
+        }
+      }
+    }
+
+    
+
+    const dataUrl = canvas.toDataURL('image/png', 1.0); // якість 1.0
+
+    this.sketchTransferService.setSketch(dataUrl, true);
+    this.router.navigate(['/pixel']);
   }
 
   updateCanvasSize(): void {
