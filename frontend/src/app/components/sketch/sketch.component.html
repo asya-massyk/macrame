@@ -2,10 +2,8 @@
 
   <div class="main-layout">
 
-    <!-- Бічна панель -->
     <aside class="sidebar-controls">
 
-      <!-- Розмір полотна -->
       <div class="size-controls">
         <div class="control-group inline">
           <label for="canvasWidth">Ширина:</label>
@@ -22,12 +20,10 @@
       <div class="palette">
         <label for="colorPicker">Колір:</label>
 
-        <!-- Колір -->
         <div class="color-picker-wrapper">
           <input type="color" id="colorPicker" [(ngModel)]="selectedColor" name="selectedColor" />
         </div>
 
-        <!-- Кнопки -->
         <div class="tools-row">
           <button (click)="fillCanvas()" class="pixelation-button pixelation-button--small">
             Залити
@@ -45,14 +41,12 @@
         </div>
       </div>
 
-      <!-- Масштаб -->
       <div class="scale-section">
         <label for="scale">Масштаб:</label>
         <input type="range" id="scale" min="0.5" max="2" step="0.1" [(ngModel)]="scale" (ngModelChange)="adjustScale()"
           name="scale" />
       </div>
 
-      <!-- Рядки -->
       <div class="control-group row-col-group">
         <label>Рядки:</label>
         <input type="number" [(ngModel)]="rowIndex" [min]="1" [max]="rows + 1"
@@ -63,7 +57,6 @@
         </div>
       </div>
 
-      <!-- Стовпці -->
       <div class="control-group row-col-group">
         <label>Стовпці:</label>
         <input type="number" [(ngModel)]="columnIndex" [min]="1" [max]="columns + 1"
@@ -74,7 +67,6 @@
         </div>
       </div>
 
-      <!-- Кнопка "Назад" тепер внизу бічної панелі -->
       <div class="sidebar-bottom-actions">
         <div class="button-group">
           <button (click)="undoLastAction()" [disabled]="!canUndo" class="pixelation-button pixelation-button--undo">
@@ -89,7 +81,6 @@
 
     </aside>
 
-    <!-- Полотно -->
     <main class="canvas-wrapper">
       <canvas #sketchCanvas class="sketch-canvas" (mousedown)="startPainting($event)" (mousemove)="paintPixel($event)"
         (mouseup)="stopPainting()" (mouseleave)="stopPainting()"></canvas>
@@ -97,7 +88,6 @@
 
   </div>
 
-  <!-- Блок збереження -->
   <div class="save-section">
     <div class="save-controls">
       <div class="save-form">
@@ -121,7 +111,6 @@
           Зберегти
         </button>
 
-        <!-- НОВА КНОПКА -->
         <button (click)="convertToScheme()" class="pixelation-button pixelation-button--scheme">
           Перетворити на схему
         </button>

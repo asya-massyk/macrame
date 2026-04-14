@@ -46,13 +46,13 @@ html, body {
 
 .login-status {
   font-size: 18px;
-  color: #ffffff; /* Білий колір для видимості на темному фоні */
+  color: #ffffff; 
   text-align: center;
   margin-bottom: 15px;
 }
 
 .login-status a {
-  color: #803c5e; /* Рожевий колір для посилань */
+  color: #803c5e; 
   text-decoration: none;
 }
 
@@ -65,19 +65,16 @@ html, body {
   to { opacity: 1; transform: translateY(0); }
 }
 
-
-/* Анімація для тексту */
 @keyframes slideInLeft {
   from { opacity: 0; transform: translateX(-20px); }
   to { opacity: 1; transform: translateX(0); }
 }
 
-/* Анімація для картинки */
 @keyframes slideInRight {
   from { opacity: 0; transform: translateX(20px); }
   to { opacity: 1; transform: translateX(0); }
 }
-/* Секція зображення */
+
 .image-section {
   flex: 1;
   display: flex;
@@ -94,7 +91,6 @@ html, body {
 }
 
 
-/* Адаптивність */
 @media (max-width: 1024px) {
   .home-container {
     flex-direction: column;

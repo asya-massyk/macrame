@@ -245,7 +245,6 @@ $secondary-color: #3344DC;
 
   transition: all 0.25s ease;
 
-  /* нове */
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
 }
 
@@ -297,7 +296,7 @@ $secondary-color: #3344DC;
 }
 
 .pixelation-button--materials:hover {
-  background: linear-gradient(to right, #b84c96, #2233b0) !important; // darken приблизно на 12%
+  background: linear-gradient(to right, #b84c96, #2233b0) !important; 
   transform: scale(1.05);
 }
 
@@ -337,8 +336,6 @@ $secondary-color: #3344DC;
   box-shadow: none;
   transform: none;
 }
-
-
 
 .pixelation-material-color {
   display: inline-block;
@@ -533,8 +530,6 @@ $secondary-color: #3344DC;
   padding: 0;
 }
 
-/* ====================== ВИПРАВЛЕНИЙ ЛЕЙАУТ ====================== */
-
 .edit-container {
   width: 100%;
   min-height: calc(100vh - 195px);
@@ -543,13 +538,11 @@ $secondary-color: #3344DC;
   box-sizing: border-box;
 }
 
-/* Центруємо назву сторінки */
 .centered-title {
   text-align: center;
   margin: 15px 15px 0;
 }
 
-/* Головний лейаут */
 .main-layout {
   display: grid;
   grid-template-columns: 260px 1fr 260px;
@@ -574,7 +567,6 @@ justify-content: center;
   padding: 30px 24px;
   border-radius: 16px;
   justify-content: flex-start;
-  /* початок, а не space-between */
   gap: 20px;
 
   display: flex;
@@ -588,9 +580,7 @@ justify-content: center;
 }
 
 .pixelation-canvas {
-
   max-width: 720px;
-  /* значно збільшили зображення */
   max-height: 540px;
   border-radius: 12px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
@@ -600,7 +590,6 @@ justify-content: center;
 
 .sidebar-controls {
   width: 260px;
-  /* зробили панель ширшою */
   flex-shrink: 0;
   background: #111;
   padding: 30px 26px;
@@ -623,7 +612,6 @@ justify-content: center;
   margin-bottom: 9px;
 }
 
-/* Адаптивність */
 @media (max-width: 1200px) {
   .main-layout {
     flex-direction: column;
@@ -649,8 +637,6 @@ justify-content: center;
   }
 }
 
-/* ====================== ВИПРАВЛЕНИЙ ЛЕЙАУТ + РІВНІ ВІДСТАНІ ====================== */
-
 .sidebar-controls {
   width: 260px;
   flex-shrink: 0;
@@ -660,7 +646,6 @@ justify-content: center;
   display: flex;
   flex-direction: column;
   gap: 14px;
-  /* загальний відступ між секціями */
 }
 
 .control-group {
@@ -676,21 +661,19 @@ justify-content: center;
 }
 
 .color-row input[type="range"] {
-  flex: 1; // займає доступне місце
-  min-width: 0; // 🔥 важливо щоб не вилазив
+  flex: 1; 
+  min-width: 0;
 }
 
 .small-input {
   width: 60px;
-  flex-shrink: 0; // 🔥 не стискається
+  flex-shrink: 0; 
 }
 
-/* Кнопки редагування — РІВНІ відстані */
 .tools-buttons {
   display: flex;
   flex-direction: column;
   gap: 14px;
-  /* однакові відступи */
 }
 
 .generate-btn {
@@ -702,7 +685,6 @@ justify-content: center;
   width: 100%;
   height: 56px;
   background: linear-gradient(135deg, #D95DB0, #3344DC);
-  /* такий же градієнт */
   border-radius: 14px;
   font-size: 17px;
   font-weight: 600;
@@ -726,7 +708,6 @@ justify-content: center;
   box-shadow: 0 4px 12px rgba(217, 93, 176, 0.3);
 }
 
-/* Блок збереження (залишаємо як є, але з рівними відступами) */
 .save-section {
   max-width: 1550px;
   margin: 0 auto;
@@ -763,13 +744,12 @@ justify-content: center;
   margin-top: 25px;
 }
 
-/* ====================== CANVAS + ЛЕГЕНДА ПІД НИМ (того ж розміру) ====================== */
 .canvas-wrapper {
   display: flex;
   justify-content: center;
   align-items: flex-start;
   margin-top: 20px;
-  grid-column: 2;           /* фіксуємо в центральній колонці */
+  grid-column: 2;           
 }
 
 .canvas-and-legend {
@@ -778,7 +758,7 @@ justify-content: center;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 40px;                    /* відступ між фото і легендою */
+  gap: 40px;                  
 }
 
 .legend-container {
@@ -797,7 +777,6 @@ justify-content: center;
   border-radius: 12px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
   width: 100%;
-  /* важливо */
   height: auto;
   display: block;
   margin: 0 auto;
@@ -867,8 +846,6 @@ justify-content: center;
   justify-content: center;
 }
 
-
-
 @media (max-width: 1099px) and (min-width: 800px) {
   .legend-grid {
     grid-template-columns: repeat(3, 1fr);
@@ -887,7 +864,6 @@ justify-content: center;
   }
 }
 
-/* Додай в pixelation.component.scss */
 .control-note {
   font-size: 13px;
   color: #d657c1;

@@ -1,10 +1,8 @@
 <div class="pixelation-container">
 
-  <!-- Декорації тільки на welcome -->
   <div *ngIf="!imageSrc" class="pixelation-decor-left"></div>
   <div *ngIf="!imageSrc" class="pixelation-decor-right"></div>
 
-  <!-- Welcome сторінка — показуємо ТІЛЬКИ якщо немає зображення І НЕ прийшли зі скетчу -->
   <div *ngIf="!imageSrc && !isFromSketch" class="pixelation-welcome">
     <h1 class="pixelation-title">Створіть власну схему!</h1>
     <p class="pixelation-subtitle">
@@ -18,15 +16,12 @@
       class="pixelation-input-hidden" />
   </div>
 
-  <!-- Основна сторінка -->
   <div *ngIf="imageSrc" class="edit-container">
 
     <div class="main-layout">
 
-      <!--  ЛІВА ПАНЕЛЬ (ІНСТРУМЕНТИ) -->
       <aside class="sidebar-controls">
 
-        <!-- === Кількість пікселів === -->
         <div class="control-group">
           <label>Кількість пікселів ({{ pixelGridLabel }}):</label>
           <input type="range" [min]="minPixelCount" [max]="maxPixelCount" step="1" [(ngModel)]="sliderValue"
@@ -37,7 +32,6 @@
           </div>
         </div>
 
-        <!-- === Кількість кольорів === -->
         <div class="control-group">
           <label>Кількість кольорів:</label>
           <div class="color-row">
@@ -111,7 +105,6 @@
         </div>
       </main>
 
-      <!--  ПРАВА ПАНЕЛЬ ТЕПЕР ОКРЕМО -->
       <aside class="save-sidebar">
 
         <div class="save-field">

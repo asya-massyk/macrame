@@ -1,9 +1,6 @@
 $primary-color: #D95DB0;
 $secondary-color: #3344DC;
 
-// ────────────────────────────────────────────────
-// Основний контейнер сторінки
-
 .edit-container {
   padding: 0 24px;
   display: flex;
@@ -25,9 +22,6 @@ $secondary-color: #3344DC;
   position: relative;
 }
 
-// ────────────────────────────────────────────────
-// Головний лейаут (sidebar + canvas)
-
 .main-layout {
   display: grid;
   grid-template-columns: 340px 1fr;
@@ -43,9 +37,9 @@ $secondary-color: #3344DC;
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  min-width: 0; 
+  min-width: 0;
   width: 100%;
-   overflow: auto;
+  overflow: auto;
 }
 
 .sketch-canvas {
@@ -62,12 +56,11 @@ $secondary-color: #3344DC;
   cursor: crosshair;
 }
 
+.sidebar-controls {
 
-  .sidebar-controls {
-
-    padding: 20px 16px;
-    gap: 24px;
-  }
+  padding: 20px 16px;
+  gap: 24px;
+}
 
 
 @media (max-width: 1024px) {
@@ -80,8 +73,6 @@ $secondary-color: #3344DC;
   }
 }
 
-// ────────────────────────────────────────────────
-// Заголовок
 .pixelation-title {
   font-size: 30px;
   font-weight: bold;
@@ -90,8 +81,6 @@ $secondary-color: #3344DC;
   color: $secondary-color;
 }
 
-// ────────────────────────────────────────────────
-// Бічна панель — компактніша
 .sidebar-controls {
   border-radius: 16px;
   display: flex;
@@ -101,7 +90,6 @@ $secondary-color: #3344DC;
   background: #111;
 }
 
-// Кнопка "Назад" внизу бічної панелі
 .sidebar-bottom-actions {
   margin-top: auto;
   width: 100%;
@@ -110,8 +98,6 @@ $secondary-color: #3344DC;
   border-top: 1px solid rgba(#fff, 0.1);
 }
 
-// ────────────────────────────────────────────────
-// Лейбли в бічній панелі — зменшені
 .sidebar-controls label,
 .palette label,
 .scale-section label,
@@ -124,8 +110,6 @@ $secondary-color: #3344DC;
   text-align: center;
 }
 
-// ────────────────────────────────────────────────
-// Групи контролів — без зайвих відступів знизу
 .palette,
 .scale-section,
 .control-group.row-col-group,
@@ -133,8 +117,6 @@ $secondary-color: #3344DC;
   margin-bottom: 0;
 }
 
-// ────────────────────────────────────────────────
-// Повзунок масштабу — блакитний
 .scale-section input[type="range"] {
   -webkit-appearance: none;
   appearance: none;
@@ -174,16 +156,12 @@ $secondary-color: #3344DC;
   }
 }
 
-// ────────────────────────────────────────────────
-// Розмір полотна
 .size-controls {
   display: flex;
   justify-content: center;
   gap: 32px;
 }
 
-// ────────────────────────────────────────────────
-// Рядки та стовпці
 .control-group.row-col-group {
   display: flex;
   flex-direction: column;
@@ -199,8 +177,6 @@ $secondary-color: #3344DC;
   max-width: 260px;
 }
 
-// ────────────────────────────────────────────────
-// Кнопки
 .pixelation-button {
   height: 48px;
   padding: 0 18px;
@@ -230,7 +206,7 @@ $secondary-color: #3344DC;
 .pixelation-button.active {
   background: linear-gradient(135deg, #D95DB0, #3344DC);
   box-shadow:
-    0 0 0 2px rgba(255,255,255,0.15),
+    0 0 0 2px rgba(255, 255, 255, 0.15),
     0 0 12px rgba(217, 93, 176, 0.6),
     0 0 20px rgba(51, 68, 220, 0.6);
 
@@ -251,23 +227,23 @@ $secondary-color: #3344DC;
 }
 
 .tools-row button:nth-child(1) {
-  background-color: #6633dc; // Залити
+  background-color: #6633dc;
 }
 
 .tools-row button:nth-child(2) {
-  background-color: #d657c1; // Ластик
+  background-color: #d657c1;
 }
 
 .tools-row button:nth-child(3) {
-  background-color: #3344dc; // Пензель
+  background-color: #3344dc;
 }
 
 .button-group button:first-child {
-  background-color: #3344dc; // Додати
+  background-color: #3344dc;
 }
 
 .button-group button:last-child {
-  background-color: #803ca0; // Видалити
+  background-color: #803ca0;
 }
 
 .pixelation-button--undo:not(:disabled) {
@@ -275,13 +251,13 @@ $secondary-color: #3344DC;
 }
 
 .sidebar-bottom-actions button:last-child {
-  background-color: #d657c1; // Очистити
+  background-color: #d657c1;
 }
 
 .tools-row button.active {
   outline: 2px solid #fff;
   transform: scale(1.05);
-  box-shadow: 0 0 12px rgba(255,255,255,0.6);
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.6);
 }
 
 .pixelation-button--download {
@@ -304,8 +280,6 @@ $secondary-color: #3344DC;
   background: linear-gradient(135deg, #e96bc0, #3d4df0);
 }
 
-// ────────────────────────────────────────────────
-// Інпути
 .control-input {
   width: 100%;
   max-width: 220px;
@@ -326,8 +300,6 @@ $secondary-color: #3344DC;
   }
 }
 
-// ────────────────────────────────────────────────
-// Блок збереження — під полотном, по центру
 .save-section {
   width: 100%;
   max-width: 600px;
@@ -377,7 +349,6 @@ $secondary-color: #3344DC;
   padding: 12px 24px;
 }
 
-// Мобільна адаптація
 @media (max-width: 768px) {
   .edit-container {
     padding: 20px 20px 80px;
@@ -392,8 +363,6 @@ $secondary-color: #3344DC;
     max-width: 100%;
   }
 }
-
-
 
 .canvas-wrapper {
   overflow: auto;
@@ -417,7 +386,7 @@ $secondary-color: #3344DC;
   gap: 30px;
 
   width: 100%;
-  max-width: 240px; // щоб виглядало компактно
+  max-width: 240px;
 }
 
 .color-row {
@@ -440,7 +409,7 @@ $secondary-color: #3344DC;
 }
 
 .tools-row button {
-  flex: 1; // всі кнопки однакові
+  flex: 1;
   max-width: 90px;
 }
 
@@ -456,6 +425,7 @@ $secondary-color: #3344DC;
   justify-content: center;
   flex-wrap: wrap;
 }
+
 .save-actions {
   display: flex;
   gap: 12px;
@@ -480,7 +450,7 @@ $secondary-color: #3344DC;
 }
 
 .pixelation-button--scheme {
-  background: linear-gradient(135deg, #d657c1, #803ca0);   /* рожево-фіолетовий */
+  background: linear-gradient(135deg, #d657c1, #803ca0);
 }
 
 .pixelation-button--download:hover,

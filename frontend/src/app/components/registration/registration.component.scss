@@ -58,7 +58,7 @@ h1 {
   flex-direction: column;
   align-items: center;
   position: relative;
-  height: 50px;  // Фіксована висота для кожного поля
+  height: 50px;  
 }
 
 input[type="text"],
@@ -118,7 +118,7 @@ a {
 .toggle-password {
   position: absolute;
   right: 10px;
-  top: 10px;  // Вирівнюємо по вертикалі
+  top: 10px;  
   width: 20px;
   height: 20px;
   cursor: pointer;
@@ -128,7 +128,7 @@ a {
   color: red;
   font-size: 10px;
   position: absolute;
-  bottom: -10px;  // Розташовуємо під полем
+  bottom: -10px;  
   left: 0;
   right: 0;
   text-align: center;

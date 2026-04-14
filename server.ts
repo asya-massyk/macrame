@@ -8,21 +8,21 @@ import { initUserModel, User } from './backend/backend/models/User';
 
 dotenv.config();
 
-// Підключення до бази даних
+
 const sequelize = new Sequelize(
   process.env['DB_NAME']!,
   process.env['DB_USER']!,
   process.env['DB_PASS']!,
   {
     host: process.env['DB_HOST'],
-    dialect: 'postgres', // можна змінити на іншу СУБД, якщо потрібно
+    dialect: 'postgres', 
   }
 );
 
-// Ініціалізація моделі користувача
+
 initUserModel(sequelize);
 
-// Авторизація користувача
+
 const authenticateUser = async (username: string, password: string) => {
   const user = await User.findOne({ where: { username } });
   if (!user) {
@@ -37,16 +37,16 @@ const authenticateUser = async (username: string, password: string) => {
   return user;
 };
 
-// Створення JWT токену
+
 const generateJWT = (user: any) => {
   return jwt.sign({ id: user.id, username: user.username }, process.env['JWT_SECRET']!, { expiresIn: '1h' });
 };
 
-// Запуск сервера
+
 const app = express();
 app.use(express.json());
 
-// Маршрут для авторизації
+
 app.post('/api/login', async (req: Request, res: Response, next: NextFunction) => {
   const { username, password } = req.body;
 
@@ -59,7 +59,7 @@ app.post('/api/login', async (req: Request, res: Response, next: NextFunction) =
   }
 });
 
-// Маршрут для реєстрації користувача
+
 app.post('/api/register', async (req: Request, res: Response, next: NextFunction) => {
   const { username, email, password } = req.body;
 
@@ -70,10 +70,10 @@ app.post('/api/register', async (req: Request, res: Response, next: NextFunction
       isEmailConfirmed: false
     });
 
-    // Генерація токену для підтвердження пошти
+
     const confirmationToken = jwt.sign({ id: newUser.id }, process.env['JWT_SECRET']!, { expiresIn: '1h' });
 
-    // Відправка email для підтвердження (потрібно налаштувати email-сервер)
+
 
     res.status(201).json({ message: 'Користувача успішно зареєстровано! Перевірте вашу пошту для підтвердження.' });
   } catch (err) {
@@ -81,13 +81,13 @@ app.post('/api/register', async (req: Request, res: Response, next: NextFunction
   }
 });
 
-// Підключення до бази даних і запуск сервера
+
 sequelize.authenticate()
   .then(() => {
-    console.log('✅ Підключено до бази даних PostgreSQL');
+    console.log(' Підключено до бази даних PostgreSQL');
   })
   .catch((error) => {
-    console.error('❌ Помилка підключення до бази даних:', error);
+    console.error(' Помилка підключення до бази даних:', error);
   });
 
 app.listen(4000, () => {

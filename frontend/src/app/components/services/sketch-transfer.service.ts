@@ -14,7 +14,7 @@ export class SketchTransferService {
 
   getAndClearSketch(): string | null {
     const data = this.sketchImage;
-    this.sketchImage = null;        // очищаємо після використання
+    this.sketchImage = null;       
     return data;
   }
 

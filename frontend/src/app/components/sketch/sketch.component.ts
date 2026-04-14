@@ -38,7 +38,6 @@ export class EditSketchComponent implements AfterViewInit {
   Math: any;
   currentTool: 'brush' | 'eraser' = 'brush';
 
-
   constructor(
     private router: Router,
     @Inject(PLATFORM_ID) private platformId: Object,
@@ -154,7 +153,7 @@ export class EditSketchComponent implements AfterViewInit {
   private redrawPixels(): void {
     if (!this.ctx) return;
     const canvas = this.canvasRef.nativeElement;
-    this.ctx.fillStyle = '#ffffff'; // Білий фон
+    this.ctx.fillStyle = '#ffffff';
     this.ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     for (let row = 0; row < this.rows; row++) {
@@ -202,11 +201,8 @@ export class EditSketchComponent implements AfterViewInit {
     const ctx = canvas.getContext('2d', { willReadFrequently: true });
     if (!ctx) return;
 
-    // === КРИТИЧНИЙ ФІКС ===
-    // Перемальовуємо ВСЕ чітко, без анти-аліасингу
     ctx.imageSmoothingEnabled = false;
 
-    // Повністю перемальовуємо пікселі з pixelData (це найчистіший спосіб)
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -220,9 +216,7 @@ export class EditSketchComponent implements AfterViewInit {
       }
     }
 
-    
-
-    const dataUrl = canvas.toDataURL('image/png', 1.0); // якість 1.0
+    const dataUrl = canvas.toDataURL('image/png', 1.0);
 
     this.sketchTransferService.setSketch(dataUrl, true);
     this.router.navigate(['/pixel']);
@@ -518,19 +512,16 @@ export class EditSketchComponent implements AfterViewInit {
 
   private updateCanUndo(): void {
     this.canUndo = this.actionHistory.length > 0;
-    this.cdr.detectChanges(); // Оновлюємо UI
+    this.cdr.detectChanges();
   }
 
   clearCanvas(): void {
-    // очищаємо всі пікселі в білий
     this.pixelData = Array(this.rows)
       .fill(null)
       .map(() => Array(this.columns).fill('#ffffff'));
 
-    // очищаємо історію (щоб undo не повертав старе)
     this.actionHistory = [];
 
-    // перемальовуємо
     this.redrawCanvas();
     this.saveDrawing();
     this.updateCanUndo();
@@ -539,15 +530,12 @@ export class EditSketchComponent implements AfterViewInit {
   }
 
   fillCanvas(): void {
-    // Зберігаємо попередній стан для undo
     const oldPixelData = this.pixelData.map(row => [...row]);
 
-    // Заповнюємо все вибраним кольором
     this.pixelData = Array(this.rows)
       .fill(null)
       .map(() => Array(this.columns).fill(this.selectedColor));
 
-    // Додаємо в історію
     this.actionHistory.push({
       type: 'fill',
       data: { oldPixelData }

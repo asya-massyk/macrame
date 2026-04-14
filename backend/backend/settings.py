@@ -64,7 +64,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 
-# Database
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -76,21 +75,18 @@ DATABASES = {
     }
 }
 
-# REST Framework and JWT
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
 }
 
-# CORS
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:4200',
     "http://127.0.0.1:4200",
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
-# Email settings
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
@@ -100,10 +96,8 @@ EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = config('EMAIL_HOST_USER')
 BASE_URL = config('BASE_URL', default='http://localhost:8000')
 
-# Authentication
 AUTH_USER_MODEL = 'accounts.User'
 
-# Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -119,15 +113,13 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Internationalization
-LANGUAGE_CODE = 'uk'  # або 'en-us' залежно від мови
+LANGUAGE_CODE = 'uk'  
 DEFAULT_CHARSET = 'utf-8'
 FILE_CHARSET = 'utf-8'
-TIME_ZONE = 'Europe/Kyiv'  # Змінено на локальний час
+TIME_ZONE = 'Europe/Kyiv'  
 USE_I18N = True
 USE_TZ = True
 
-# Static and media files
 STATIC_URL = 'static/'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'

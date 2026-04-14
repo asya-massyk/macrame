@@ -13,14 +13,12 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.serializers import Serializer, DictField, CharField, ListField
 
-# ====================== ФІКС КОДУВАННЯ ДЛЯ WINDOWS ======================
 if sys.platform.startswith('win'):
     sys.stdout.reconfigure(encoding='utf-8')
     sys.stderr.reconfigure(encoding='utf-8')
 
 logger = logging.getLogger(__name__)
 
-# ====================== SERIALIZERS ======================
 class MaterialInputSerializer(Serializer):
     colors = ListField(child=DictField(child=CharField()), required=True)
     materialType = CharField(required=True, allow_blank=False)
@@ -32,14 +30,12 @@ class MaterialOutputSerializer(Serializer):
     number = CharField()
 
 
-# ====================== LAB COLOR SPACE ======================
 def rgb_to_lab(r: int, g: int, b: int) -> dict:
     """Перетворення RGB в LAB для точнішого порівняння кольорів"""
     rr = r / 255.0
     gg = g / 255.0
     bb = b / 255.0
 
-    # sRGB to linear
     rr = rr > 0.04045 and ((rr + 0.055) / 1.055) ** 2.4 or rr / 12.92
     gg = gg > 0.04045 and ((gg + 0.055) / 1.055) ** 2.4 or gg / 12.92
     bb = bb > 0.04045 and ((bb + 0.055) / 1.055) ** 2.4 or bb / 12.92
@@ -74,7 +70,6 @@ def color_distance_lab(c1: dict, c2: dict) -> float:
     )
 
 
-# ====================== ЗАВАНТАЖЕННЯ КОЛЬОРІВ DMC ======================
 _dmc_cache = None
 
 
@@ -84,11 +79,10 @@ def load_dmc_colors():
     if _dmc_cache is not None:
         return _dmc_cache
 
-    base_dir = Path(__file__).parent.parent  # вказує на папку backend/
+    base_dir = Path(__file__).parent.parent  
     json_path = base_dir / "assets" / "dmc-threads.json"
 
     try:
-        # 1. Спроба завантажити з локального JSON
         if json_path.exists():
             with open(json_path, 'r', encoding='utf-8') as f:
                 data = json.load(f)
@@ -109,7 +103,6 @@ def load_dmc_colors():
             _dmc_cache = colors
             return colors
 
-        # 2. Fallback — завантаження з GitHub (CSV)
         logger.info("Локальний JSON не знайдено. Завантажуємо DMC кольори з GitHub (CSV)")
         url = "https://raw.githubusercontent.com/nathantspencer/DMC-ColorCodes/master/result.csv"
         response = requests.get(url, timeout=10)
@@ -134,14 +127,13 @@ def load_dmc_colors():
 
     except Exception as e:
         logger.error(f"Помилка завантаження DMC кольорів: {e}")
-        # Мінімальний fallback
+
         return [
             {'brand': 'DMC', 'number': '310', 'color': {'r': 0, 'g': 0, 'b': 0}},
             {'brand': 'DMC', 'number': 'blanc', 'color': {'r': 255, 'g': 255, 'b': 255}},
         ]
 
 
-# ====================== НОВЕ: ЗАВАНТАЖЕННЯ MIYUKI ======================
 _miyuki_cache = None
 def load_miyuki_beads():
     global _miyuki_cache
@@ -162,7 +154,6 @@ def load_miyuki_beads():
     logger.warning("miyuki-beads.json не знайдено")
     return []
 
-# ====================== API VIEW (оновлений) ======================
 class MaterialsAPIView(APIView):
     def post(self, request):
         serializer = MaterialInputSerializer(data=request.data)
@@ -180,7 +171,6 @@ class MaterialsAPIView(APIView):
             return Response({'error': 'Підтримується тільки threads або beads'}, 
                           status=status.HTTP_400_BAD_REQUEST)
 
-        # === ЖАДІБНИЙ ПІДБІР УНІКАЛЬНИХ НИТОК ===
         used_numbers = set()
         materials = []
 
@@ -193,7 +183,7 @@ class MaterialsAPIView(APIView):
 
             for material in available_materials:
                 if material['number'] in used_numbers:
-                    continue  # вже використана нитка
+                    continue 
 
                 dist = color_distance_lab(color, material['color'])
 
@@ -201,7 +191,6 @@ class MaterialsAPIView(APIView):
                     min_distance = dist
                     best_material = material
 
-            # Якщо всі нитки вже використані (дуже рідкісний випадок)
             if best_material is None:
                 best_material = available_materials[0]
 

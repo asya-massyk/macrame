@@ -59,7 +59,7 @@ export class AddSketchComponent {
     formData.append('caption', this.newSketch.caption);
 
     const url = `${environment.apiUrl}/accounts/sketches/`;
-    console.log('Posting to:', url); // Debug URL
+    console.log('Posting to:', url); 
     this.http
       .post(url, formData, {
         headers: { Authorization: `Bearer ${token}` },

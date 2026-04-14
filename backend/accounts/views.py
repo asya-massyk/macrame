@@ -13,7 +13,6 @@ from rest_framework.permissions import IsAuthenticated
 import base64
 import logging
 
-# Налаштування логування
 logger = logging.getLogger(__name__)
 
 class LoginView(APIView):
@@ -169,20 +168,17 @@ class ForgotPasswordView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        # Нормалізація email: видаляємо пробіли та приводимо до нижнього регістру
         email = email.strip().lower()
         logger.info(f"Normalized email from request: {email}")
 
-        # Спочатку шукаємо за email
         user = User.objects.filter(email__iexact=email).first()
         
-        # Якщо не знайдено за email, шукаємо за nickname
         if not user:
             logger.info(f"User not found by email: {email}, trying to search by nickname")
             user = User.objects.filter(nickname__iexact=email).first()
             if user:
                 logger.info(f"User found by nickname: {user.nickname}, associated email: {user.email}")
-                email = user.email  # Використовуємо email, пов’язаний із користувачем
+                email = user.email  
 
         if not user:
             logger.error(f"User not found for email or nickname: {email}")
@@ -195,7 +191,6 @@ class ForgotPasswordView(APIView):
             )
 
         try:
-            # Генеруємо токен для скидання пароля
             token = generate_verification_token(user.email)
             reset_url = f"http://localhost:4200/reset-password?token={token}"
             subject = 'Скидання пароля для Macrame'
@@ -408,11 +403,9 @@ class EditProfileAPIView(APIView):
         try:
             user = request.user
             logger.info(f"Editing profile for user: {user.nickname}")
+
+            MAX_IMAGE_SIZE = 5 * 1024 * 1024  
             
-            # Обмеження розміру зображення (5 МБ)
-            MAX_IMAGE_SIZE = 5 * 1024 * 1024  # 5 MB
-            
-            # Оновлення полів
             name = request.POST.get('name')
             bio = request.POST.get('bio')
             password = request.POST.get('password')

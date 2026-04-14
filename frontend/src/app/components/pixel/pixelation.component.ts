@@ -11,7 +11,7 @@ import { SketchTransferService } from '../services/sketch-transfer.service';
 interface MaterialResponse {
   number: string;
   color: { r: string; g: string; b: string };
-  brand: string;      // завжди буде 'DMC'
+  brand: string;
 }
 
 @Component({
@@ -124,11 +124,10 @@ export class PixelationComponent implements AfterViewInit {
 
       if (this.imageSrc) {
         this.loadImage(this.imageSrc);
-        return;   // якщо успішно — виходимо
+        return;
       }
     }
 
-    // Якщо state не спрацював — перевіряємо, чи є вже imageSrc (наприклад, після reload)
     if (!this.imageSrc) {
       console.warn(' Не знайдено sketchImage в state');
     }
@@ -157,13 +156,12 @@ export class PixelationComponent implements AfterViewInit {
   }
 
   private buildColorPalette(colors: { r: number; g: number; b: number }[]): void {
-    if (this.exactSketchMode) return;   // ← не чіпаємо скетчі
+    if (this.exactSketchMode) return;
     if (colors.length === 0) return;
     if (colors.length === 0) return;
 
     const k = this.colorCount;
 
-    // 1. Випадкові центри (старт)
     let centers = [];
     for (let i = 0; i < k; i++) {
       centers.push(colors[Math.floor(Math.random() * colors.length)]);
@@ -172,7 +170,6 @@ export class PixelationComponent implements AfterViewInit {
     for (let iter = 0; iter < 6; iter++) {
       const clusters: { r: number; g: number; b: number }[][] = Array.from({ length: k }, () => []);
 
-      // 2. Розкидаємо кольори по найближчих центрах
       for (const c of colors) {
         let bestIndex = 0;
         let minDist = Infinity;
@@ -193,7 +190,6 @@ export class PixelationComponent implements AfterViewInit {
         clusters[bestIndex].push(c);
       }
 
-      // 3. Перерахунок центрів
       for (let i = 0; i < k; i++) {
         const cluster = clusters[i];
         if (cluster.length === 0) continue;
@@ -256,7 +252,6 @@ export class PixelationComponent implements AfterViewInit {
 
     const last = this.history[this.history.length - 1];
 
-    // ❗ тепер перевірка глибша
     if (
       last &&
       last.imageSrc === state.imageSrc &&
@@ -275,7 +270,7 @@ export class PixelationComponent implements AfterViewInit {
   undo(): void {
     if (this.history.length <= 1) return;
 
-    this.history.pop(); // видаляємо поточний
+    this.history.pop();
 
     const prevState = this.history[this.history.length - 1];
     if (!prevState) return;
@@ -310,8 +305,7 @@ export class PixelationComponent implements AfterViewInit {
     let newHeight: number;
 
     if (this.exactSketchMode) {
-      // Для скетчів робимо значно більший розмір
-      newWidth = Math.min(820, this.originalImage.width * 1.4);   // збільшуємо
+      newWidth = Math.min(820, this.originalImage.width * 1.4);
       newHeight = newWidth / aspectRatio;
 
       if (newHeight > 620) {
@@ -319,7 +313,6 @@ export class PixelationComponent implements AfterViewInit {
         newWidth = newHeight * aspectRatio;
       }
     } else {
-      // Для звичайних фото — як було
       newWidth = Math.min(820, this.originalImage.width);
       newHeight = newWidth / aspectRatio;
 
@@ -391,16 +384,14 @@ export class PixelationComponent implements AfterViewInit {
 
     img.onload = () => {
       if (this.exactSketchMode) {
-        // ← Асинхронно чистимо сітку і ТІЛЬКИ після цього продовжуємо
         this.removeGridFromSketch(img).then((cleanedImage) => {
           this.originalImage = cleanedImage;
-          console.log('✅ Сітка повністю видалена з скетчу');
+          console.log(' Сітка повністю видалена з скетчу');
           this.processSketchAfterClean();
         });
         return;
       }
 
-      // Для звичайних фото — відразу
       this.originalImage = img;
       this.processSketchAfterClean();
     };
@@ -408,13 +399,12 @@ export class PixelationComponent implements AfterViewInit {
     img.onerror = () => console.error('Не вдалося завантажити зображення');
   }
 
-  // === НОВА ВЕРСІЯ — повертає Promise ===
   private removeGridFromSketch(originalImg: HTMLImageElement): Promise<HTMLImageElement> {
     return new Promise((resolve) => {
       const tempCanvas = document.createElement('canvas');
       const ctx = tempCanvas.getContext('2d', { willReadFrequently: true });
       if (!ctx) {
-        resolve(originalImg); // fallback
+        resolve(originalImg);
         return;
       }
 
@@ -425,7 +415,6 @@ export class PixelationComponent implements AfterViewInit {
       const imageData = ctx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
       const data = imageData.data;
 
-      // === БІЛЬШ АГРЕСИВНЕ ВИДАЛЕННЯ СІТКИ ===
       for (let i = 0; i < data.length; i += 4) {
         const r = data[i];
         const g = data[i + 1];
@@ -433,15 +422,14 @@ export class PixelationComponent implements AfterViewInit {
 
         const avgGray = (r + g + b) / 3;
 
-        // Сітка зазвичай #F0F0F0, #E8E8E8, #F5F5F5, #FAFAFA тощо
         const isLightGray =
           Math.abs(r - g) < 30 &&
           Math.abs(g - b) < 30 &&
           Math.abs(r - b) < 30 &&
-          avgGray > 200 && avgGray < 255;   // ← розширили діапазон
+          avgGray > 200 && avgGray < 255;
 
         if (isLightGray) {
-          data[i] = 255;   // чисто білий
+          data[i] = 255;
           data[i + 1] = 255;
           data[i + 2] = 255;
         }
@@ -457,7 +445,6 @@ export class PixelationComponent implements AfterViewInit {
     });
   }
 
-  // === НЕ ЗМІНЮЄМО (вже гарно) ===
   private processSketchAfterClean(): void {
     if (!this.originalImage) return;
 
@@ -517,7 +504,6 @@ export class PixelationComponent implements AfterViewInit {
       }
     }
 
-
     return this.getClosestColor(
       Math.round(sumR / count),
       Math.round(sumG / count),
@@ -529,7 +515,6 @@ export class PixelationComponent implements AfterViewInit {
   private renderPixelated(): void {
     if (!this.originalImage) return;
 
-    // === СПЕЦІАЛЬНИЙ РЕЖИМ ДЛЯ ЕСКІЗУ ===
     if (this.exactSketchMode) {
       const tempCanvas = document.createElement('canvas');
       const ctx = tempCanvas.getContext('2d', { willReadFrequently: true });
@@ -580,8 +565,6 @@ export class PixelationComponent implements AfterViewInit {
 
     this.buildColorPalette(allColors);
 
-
-    // ⬇️ твоя логіка блоків БЕЗ змін
     const minSide = Math.min(width, height);
     const maxSide = Math.max(width, height);
     const isWidthMin = width <= height;
@@ -652,7 +635,6 @@ export class PixelationComponent implements AfterViewInit {
   renderImage(): void {
     if (!this.originalImage || !this.canvasRef?.nativeElement) return;
 
-    //  критично — синхронізація з layout
     this.adjustCanvasSize();
 
     this.renderPixelated();
@@ -687,11 +669,9 @@ export class PixelationComponent implements AfterViewInit {
 
     ctx.save();
 
-    // Затемнення всього полотна
     ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // === ВИПРАВЛЕНО: правильно вирізати вибрану область ===
     const sourceX = (cropX - offsetX) / scale;
     const sourceY = (cropY - offsetY) / scale;
     const sourceW = cropW / scale;
@@ -699,23 +679,21 @@ export class PixelationComponent implements AfterViewInit {
 
     ctx.drawImage(
       this.pixelatedCanvas,
-      sourceX,          // sx
-      sourceY,          // sy
-      sourceW,          // sWidth
-      sourceH,          // sHeight
-      cropX,            // dx
-      cropY,            // dy
-      cropW,            // dWidth
-      cropH             // dHeight
+      sourceX,
+      sourceY,
+      sourceW,
+      sourceH,
+      cropX,
+      cropY,
+      cropW,
+      cropH
     );
 
-    // Рамка виділення
     ctx.strokeStyle = '#ffffff';
     ctx.lineWidth = 3;
     ctx.setLineDash([6, 4]);
     ctx.strokeRect(cropX, cropY, cropW, cropH);
 
-    // Додаткова тонка темна рамка для контрасту
     ctx.strokeStyle = 'rgba(0,0,0,0.6)';
     ctx.lineWidth = 1.5;
     ctx.setLineDash([]);
@@ -723,6 +701,7 @@ export class PixelationComponent implements AfterViewInit {
 
     ctx.restore();
   }
+
   private mapSliderToPixelCount(value: number): number {
     const normalized = (value - this.minPixelCount) / (this.maxPixelCount - this.minPixelCount);
     const adjusted = Math.pow(normalized, 2.8);
@@ -741,20 +720,20 @@ export class PixelationComponent implements AfterViewInit {
       Math.max(this.minPixelCount, mappedValue)
     );
 
-    if (newPixelCount === this.pixelCount) return; // 🔥 щоб не спамити історію
+    if (newPixelCount === this.pixelCount) return;
 
     this.pixelCount = newPixelCount;
 
     this.resetDerivedState();
     this.renderImage();
 
-    this.saveState(); // ✅ ПІСЛЯ змін
+    this.saveState();
   }
 
   onSchemeModeChange(): void {
     this.saveState();
     this.resetDerivedState();
-    this.renderImage();   // просто оновлює фон, символи зникають — як і повинно
+    this.renderImage();
   }
 
   onColorCountChange(): void {
@@ -907,7 +886,6 @@ export class PixelationComponent implements AfterViewInit {
 
     const newImageSrc = tempCanvas.toDataURL('image/png', 1.0);
 
-    // 🔥 очищаємо crop-стан
     this.isCropping = false;
     this.cropStart = null;
     this.cropEnd = null;
@@ -915,14 +893,11 @@ export class PixelationComponent implements AfterViewInit {
     this.pixelatedCanvas = null;
     this.lastPixelParams = '';
 
-    // 🔥 застосовуємо зміну
     this.imageSrc = newImageSrc;
     this.resetDerivedState();
 
-    // 🔥 завантажуємо нове зображення
     this.loadImage(newImageSrc);
 
-    // ✅ ГОЛОВНЕ — зберігаємо ПІСЛЯ зміни
     this.saveState();
   }
   private resetCrop(): void {
@@ -937,7 +912,6 @@ export class PixelationComponent implements AfterViewInit {
     return this.history.length > 1;
   }
 
-  // ==================== ГОЛОВНИЙ МЕТОД ЗБЕРЕЖЕННЯ ====================
   downloadImage(): void {
     const safeFileName = (this.fileName || 'pixelated_image')
       .replace(/[^a-zA-Z0-9_-]/g, '');
@@ -949,7 +923,6 @@ export class PixelationComponent implements AfterViewInit {
     }
   }
 
-  // ==================== Збереження ТІЛЬКИ canvas ====================
   private downloadCanvasOnly(fileName: string): void {
     const canvas = this.canvasRef.nativeElement;
     const scaleFactor = this.pixelCount > 100 ? 3 : 2;
@@ -967,12 +940,10 @@ export class PixelationComponent implements AfterViewInit {
     this.saveCanvasAsFile(tempCanvas, fileName);
   }
 
-  // ==================== Збереження canvas + легенда ====================
   private async downloadWithLegend(fileName: string): Promise<void> {
     const mainCanvas = this.canvasRef.nativeElement;
     const scaleFactor = this.pixelCount > 100 ? 3 : 2;
 
-    // 1. Підготовка основного зображення
     const mainTemp = document.createElement('canvas');
     mainTemp.width = mainCanvas.width * scaleFactor;
     mainTemp.height = mainCanvas.height * scaleFactor;
@@ -981,7 +952,6 @@ export class PixelationComponent implements AfterViewInit {
     mainCtx.imageSmoothingEnabled = false;
     mainCtx.drawImage(mainCanvas, 0, 0, mainTemp.width, mainTemp.height);
 
-    // 2. Створення canvas з легенди
     const legendCanvas = await this.createLegendCanvas(scaleFactor);
 
     if (!legendCanvas) {
@@ -989,19 +959,16 @@ export class PixelationComponent implements AfterViewInit {
       return;
     }
 
-    // 3. Фінальне комбіноване зображення
     const finalCanvas = document.createElement('canvas');
     finalCanvas.width = Math.max(mainTemp.width, legendCanvas.width);
-    finalCanvas.height = mainTemp.height + legendCanvas.height + 60; // відступ між схемою і легендою
+    finalCanvas.height = mainTemp.height + legendCanvas.height + 60;
 
     const finalCtx = finalCanvas.getContext('2d')!;
     finalCtx.fillStyle = '#111111';
     finalCtx.fillRect(0, 0, finalCanvas.width, finalCanvas.height);
 
-    // Малюємо схему зверху
     finalCtx.drawImage(mainTemp, 0, 0);
 
-    // Малюємо легенду знизу по центру
     finalCtx.drawImage(
       legendCanvas,
       (finalCanvas.width - legendCanvas.width) / 2,
@@ -1011,7 +978,6 @@ export class PixelationComponent implements AfterViewInit {
     this.saveCanvasAsFile(finalCanvas, fileName);
   }
 
-  // ==================== Створення canvas з легенди (html2canvas) ====================
   private async createLegendCanvas(scale: number = 2): Promise<HTMLCanvasElement | null> {
     const legendEl = document.querySelector('.legend-container') as HTMLElement;
     if (!legendEl) return null;
@@ -1034,7 +1000,6 @@ export class PixelationComponent implements AfterViewInit {
     }
   }
 
-  // ==================== Збереження canvas у файл (PDF або PNG/JPG) ====================
   private saveCanvasAsFile(canvas: HTMLCanvasElement, fileName: string): void {
     if (this.downloadFormat === 'application/pdf') {
       const pdf = new jsPDF({
@@ -1088,14 +1053,12 @@ export class PixelationComponent implements AfterViewInit {
 
     this.loadImage(newImageSrc);
 
-    //  ЗБЕРІГАЄМО ПІСЛЯ зміни
     this.saveState();
   }
 
   onMaterialTypeChange(): void {
-    this.materialList = [];           // очищаємо тільки легенду
+    this.materialList = [];
 
-    // Відновлюємо символи на canvas (щоб вони не зникали)
     if (this.pixelatedCanvas && this.symbolColors.length > 0) {
       this.generateNumberedScheme();
     }
@@ -1106,30 +1069,30 @@ export class PixelationComponent implements AfterViewInit {
   }
 
   private extractUniqueColorsFromCanvas() {
-  const colorsMap = new Map<string, { r: number; g: number; b: number }>();
+    const colorsMap = new Map<string, { r: number; g: number; b: number }>();
 
-  const canvas = this.pixelatedCanvas;
-  if (!canvas) return [];
+    const canvas = this.pixelatedCanvas;
+    if (!canvas) return [];
 
-  const ctx = canvas.getContext('2d', { willReadFrequently: true });
-  if (!ctx) return [];
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    if (!ctx) return [];
 
-  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-  const data = imageData.data;
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const data = imageData.data;
 
-  for (let i = 0; i < data.length; i += 4) {
-    const r = data[i];
-    const g = data[i + 1];
-    const b = data[i + 2];
+    for (let i = 0; i < data.length; i += 4) {
+      const r = data[i];
+      const g = data[i + 1];
+      const b = data[i + 2];
 
-    const key = `${r},${g},${b}`;
-    if (!colorsMap.has(key)) {
-      colorsMap.set(key, { r, g, b });
+      const key = `${r},${g},${b}`;
+      if (!colorsMap.has(key)) {
+        colorsMap.set(key, { r, g, b });
+      }
     }
-  }
 
-  return Array.from(colorsMap.values());
-}
+    return Array.from(colorsMap.values());
+  }
 
   onGenerateScheme(): void {
     if (!this.imageSrc) return;
@@ -1148,7 +1111,6 @@ export class PixelationComponent implements AfterViewInit {
     this.generateNumberedScheme();
     this.materialList = [];
 
-    // в кінці onGenerateScheme()
     setTimeout(() => {
       this.adjustCanvasSize();
       this.drawToCanvas();
@@ -1173,7 +1135,6 @@ export class PixelationComponent implements AfterViewInit {
     const imageData = ctx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
     const data = imageData.data;
 
-    // 🔥 ВИКОРИСТОВУЄМО ВЖЕ ОБМЕЖЕНУ ПАЛІТРУ
     const palette = this.reducedPalette;
 
     console.log(`[Sketch] Унікальних кольорів після видалення сітки: ${this.reducedPalette.length}`);
@@ -1201,7 +1162,6 @@ export class PixelationComponent implements AfterViewInit {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // малюємо фон (без сітки!)
     this.drawToCanvas();
 
     const width = this.pixelatedCanvas.width;
@@ -1218,7 +1178,6 @@ export class PixelationComponent implements AfterViewInit {
     const imageData = tempCtx.getImageData(0, 0, width, height);
     const data = imageData.data;
 
-    // === СІТКА — тільки для розрахунку, НЕ малюємо її на фінальному canvas ===
     const minSide = Math.min(width, height);
     const maxSide = Math.max(width, height);
     const isWidthMin = width <= height;
@@ -1232,7 +1191,6 @@ export class PixelationComponent implements AfterViewInit {
     const colInfo = this.getBlockInfo(width, numCols);
     const rowInfo = this.getBlockInfo(height, numRows);
 
-    // === МАПА СИМВОЛІВ ===
     const symbolMap: { [key: string]: any } = {};
     this.symbolColors.forEach(sc => {
       const key = `${sc.color.r},${sc.color.g},${sc.color.b}`;
@@ -1247,7 +1205,6 @@ export class PixelationComponent implements AfterViewInit {
     const offsetX = (canvas.width - width * scale) / 2;
     const offsetY = (canvas.height - height * scale) / 2;
 
-    // === МАЛЮЄМО ТІЛЬКИ СИМВОЛИ (без сітки) ===
     for (let row = 0; row < numRows; row++) {
       const py = rowInfo.starts[row];
       const blockH = rowInfo.sizes[row];
@@ -1290,7 +1247,6 @@ export class PixelationComponent implements AfterViewInit {
   }
 
 
-  // Допоміжний метод для отримання кольору блоку з оригінального зображення
   private getBlockColorFromOriginal(
     px: number, py: number, blockW: number, blockH: number, width: number, height: number
   ): { r: number; g: number; b: number } {
@@ -1310,11 +1266,7 @@ export class PixelationComponent implements AfterViewInit {
     return this.getBlockColor(px, py, blockW, blockH, data, width);
   }
 
-  // === НОВА МЕТОДА ДЛЯ ЛЕГЕНДИ ===
-  renderLegend(): void {
-    // нічого не робимо — легенда рендериться автоматично через *ngFor
-    // (можна додати логіку, якщо треба)
-  }
+  renderLegend(): void { }
 
   findMaterials(): void {
     if (this.symbolColors.length === 0) {
@@ -1322,7 +1274,6 @@ export class PixelationComponent implements AfterViewInit {
       return;
     }
 
-    // === ВАЖЛИВИЙ ФІКС ДЛЯ СКЕТЧУ ===
     const actualColorCount = this.symbolColors.length;
 
     const colorList = this.symbolColors.map(colorInfo => ({
@@ -1362,7 +1313,6 @@ export class PixelationComponent implements AfterViewInit {
 
         console.log(`Знайдено матеріали для ${this.materialList.length} кольорів (${this.materialType})`);
 
-        // Оновлюємо після отримання легенди
         setTimeout(() => {
           this.adjustCanvasSize();
           this.drawToCanvas();

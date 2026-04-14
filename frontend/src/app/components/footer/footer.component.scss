@@ -6,13 +6,12 @@ footer {
   position: fixed;
   bottom: 0;
   left: 0;
-  right: 0; /* Забезпечує повну ширину */
+  right: 0; 
   width: 100%;
-  z-index: 100; /* Для гарантії, що футер буде поверх іншого контенту */
+  z-index: 100; 
 }
 
 
-/* Для екранів менше 1024px */
 @media (max-width: 1024px) {
   footer {
     padding: 0.75rem;
@@ -20,7 +19,6 @@ footer {
   }
 }
 
-/* Для екранів менше 480px */
 @media (max-width: 480px) {
   footer {
     padding: 0.5rem;
