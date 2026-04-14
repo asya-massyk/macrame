@@ -80,7 +80,9 @@
           </canvas>
 
           <div class="legend-container" *ngIf="materialList.length > 0">
-            <h3 class="legend-title">Легенда матеріалів (DMC)</h3>
+            <h3 class="legend-title">
+              Легенда матеріалів ({{ materialList[0]?.brand || 'DMC / Miyuki' }})
+            </h3>
 
             <div class="legend-grid">
               <div *ngFor="let mat of materialList" class="legend-item">
@@ -88,7 +90,7 @@
                   [style.background-color]="'rgb(' + mat.color.r + ',' + mat.color.g + ',' + mat.color.b + ')'">
                 </div>
                 <span class="legend-symbol">{{ mat.symbol }}</span>
-                <span class="legend-number">DMC {{ mat.number }}</span>
+                <span class="legend-number">{{ mat.brand }} {{ mat.number }}</span>
               </div>
             </div>
           </div>

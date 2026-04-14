@@ -1164,11 +1164,6 @@ export class PixelationComponent implements AfterViewInit {
       return;
     }
 
-    if (this.materialType !== 'threads') {
-      alert('Наразі підбір ниток працює тільки для DMC threads');
-      return;
-    }
-
     const colorList = this.symbolColors.map(colorInfo => ({
       r: colorInfo.color.r.toString(),
       g: colorInfo.color.g.toString(),
@@ -1187,13 +1182,11 @@ export class PixelationComponent implements AfterViewInit {
       'http://localhost:8000/accounts/materials/',
       {
         colors: colorList,
-        materialType: 'threads'
+        materialType: this.materialType   // ← тепер динамічно!
       },
       { headers }
     ).subscribe({
       next: (response) => {
-        // Головне — просто беремо те, що повернув бекенд
-        // Порядок матеріалів відповідає порядку symbolColors
         this.materialList = response.materials.map((m, index) => ({
           number: m.number || '???',
           color: {
@@ -1203,12 +1196,11 @@ export class PixelationComponent implements AfterViewInit {
           },
           symbol: this.symbolColors[index].symbol,
           fillColor: this.symbolColors[index].fillColor,
-          brand: m.brand || 'DMC'
+          brand: m.brand || (this.materialType === 'threads' ? 'DMC' : 'Miyuki')
         }));
 
-        console.log(`✅ Знайдено матеріали для ${this.materialList.length} кольорів`);
+        console.log(` Знайдено матеріали для ${this.materialList.length} кольорів (${this.materialType})`);
 
-        // Оновлюємо відображення після отримання ниток
         setTimeout(() => {
           this.adjustCanvasSize();
           this.renderPixelated();
@@ -1217,15 +1209,9 @@ export class PixelationComponent implements AfterViewInit {
         }, 10);
       },
       error: (err) => {
-        console.error('❌ Помилка при підборі ниток:', err);
-
-        if (err.status === 0) {
-          alert('Не вдалося підключитися до сервера. Перевірте, чи запущений Django (python manage.py runserver)');
-        } else if (err.status === 400) {
-          alert('Помилка в запиті: ' + (err.error?.error || JSON.stringify(err.error)));
-        } else {
-          alert('Не вдалося знайти нитки. Перевірте логи сервера.');
-        }
+        console.error(' Помилка при підборі матеріалів:', err);
+        if (err.status === 0) alert('Не вдалося підключитися до сервера');
+        else alert('Не вдалося знайти матеріали. Перевірте логи сервера.');
       }
     });
   }
